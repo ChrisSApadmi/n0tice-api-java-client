@@ -31,6 +31,10 @@ public class UrlBuilder {
 		return apiUrl + SEARCH  + "?user=" + urlEncode(username);
 	}
 	
+	public String type(String type) {
+		return apiUrl + SEARCH  + "?contentType=" + urlEncode(type);
+	}
+	
 	public String get(String id) {
 		return apiUrl + id;
 	}

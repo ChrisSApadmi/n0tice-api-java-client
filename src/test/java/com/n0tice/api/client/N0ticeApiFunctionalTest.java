@@ -2,15 +2,21 @@ package com.n0tice.api.client;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import com.n0tice.api.client.model.Content;
+
 public class N0ticeApiFunctionalTest {
 	
+	private static final String CONTENT_TYPE = "offer";
+	private static final String USER = "mattmcalister";
 	private static final String LIVE_API_URL = "http://n0ticeapis.com/1";
 	
 	private N0ticeApi api;
-
+	
 	@Before
 	public void setup() {		
 		api = new N0ticeApi(LIVE_API_URL);
@@ -28,7 +34,20 @@ public class N0ticeApiFunctionalTest {
 	
 	@Test
 	public void canLoadItemsForUser() throws Exception {		
-		assertEquals(20, api.user("mattmcalister").size());
+		List<Content> results = api.user(USER);
+		assertEquals(20, results.size());
+		for (Content result : results) {
+			assertEquals("Result of search restricted by user contained a result with an unexpected user: " + result.toString(), USER, result.getUser());
+		}
+	}
+	
+	@Test
+	public void canRestrictSearchResultByContentType() throws Exception {
+		List<Content> results = api.type(CONTENT_TYPE);
+		assertEquals(20, results.size());
+		for (Content result : results) {
+			assertEquals("Result of search restricted by content type contained an unexpected result: " + result.toString(), CONTENT_TYPE, result.getType());
+		}
 	}
 	
 	@Test
