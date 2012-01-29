@@ -18,19 +18,22 @@ import com.n0tice.api.client.parsers.SearchParser;
 import com.n0tice.api.client.urls.UrlBuilder;
 import com.n0tice.api.client.util.HttpFetcher;
 
-
 public class N0ticeApiTest {
 	
+	private static final String REPORT_ID = "/report/123";
 	private static final String LOCATION_NAME = "London";
 	private static final String USER_NAME = "User";
 	private static final String LATEST_ITEMS_URL = "http://n0ticeapi.../search";
+	private static final String REPORT_API_URL = "http://n0ticeapi.../report/123";
 	private static final String LATEST_ITEMS_JSON = "{some json}";
+	private static final String REPORT_JSON = "{report json}";
 		
 	@Mock UrlBuilder urlBuilder;
 	@Mock HttpFetcher httpFetcher;	
 	@Mock SearchParser searchParser;
 	
 	@Mock List<Content> latestItems;
+	@Mock Content report;
 	
 	private N0ticeApi api;
 	
@@ -44,7 +47,7 @@ public class N0ticeApiTest {
 	public void canFetchLatestItems() throws Exception {		
 		when(urlBuilder.latest()).thenReturn(LATEST_ITEMS_URL);
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
-		when(searchParser.parse(LATEST_ITEMS_JSON)).thenReturn(latestItems);
+		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
 		List<Content> returnedItems = api.latest();
 		
@@ -52,10 +55,21 @@ public class N0ticeApiTest {
 	}
 	
 	@Test
+	public void canFetchReportDetails() throws Exception {
+		when(urlBuilder.get(REPORT_ID)).thenReturn(REPORT_API_URL);
+		when(httpFetcher.fetchContent(REPORT_API_URL, "UTF-8")).thenReturn(REPORT_JSON);
+		when(searchParser.parseReport(REPORT_JSON)).thenReturn(report);
+		
+		Content returnedReport = api.get(REPORT_ID);
+		
+		assertEquals(report, returnedReport);
+	}
+	
+	@Test
 	public void canFetchLatestItemsNearNamedLocation() throws Exception {		
 		when(urlBuilder.near(LOCATION_NAME)).thenReturn(LATEST_ITEMS_URL);
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
-		when(searchParser.parse(LATEST_ITEMS_JSON)).thenReturn(latestItems);
+		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
 		List<Content> returnedItems = api.near(LOCATION_NAME);
 		
@@ -66,7 +80,7 @@ public class N0ticeApiTest {
 	public void canFetchLatestItemsForUser() throws Exception {		
 		when(urlBuilder.user(USER_NAME)).thenReturn(LATEST_ITEMS_URL);
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
-		when(searchParser.parse(LATEST_ITEMS_JSON)).thenReturn(latestItems);
+		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
 		List<Content> returnedItems = api.user(USER_NAME);
 		
@@ -85,7 +99,7 @@ public class N0ticeApiTest {
 	public void shouldThrowInformativeExceptionIfParsingFails() throws Exception {
 		when(urlBuilder.latest()).thenReturn(LATEST_ITEMS_URL);
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
-		when(searchParser.parse(LATEST_ITEMS_JSON)).thenThrow(new ParsingException());
+		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenThrow(new ParsingException());
 		
 		api.latest();
 	}

@@ -37,4 +37,8 @@ public class UrlBuilderTest {
 		assertEquals("http://n0ticeapis.com/1/search?user=auser", urlBuilder.user("auser"));
 	}
 	
+	public void canConstructUrlFromContentId() throws Exception {
+		assertEquals("http://n0ticeapis.com/1/report/123", urlBuilder.get("/report/123"));
+	}
+	
 }

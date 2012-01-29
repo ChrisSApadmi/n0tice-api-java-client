@@ -10,18 +10,26 @@ import org.json.JSONObject;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
 
-
 public class SearchParser {
 
+	private static final String USER = "user";
+	private static final String TYPE = "type";
+	private static final String WEB_URL = "webUrl";
+	private static final String API_URL = "apiUrl";
+	private static final String PLACE = "place";
+	private static final String LONGITUDE = "longitude";
+	private static final String LATITUDE = "latitude";
+	private static final String ID = "id";
 	private static final String RESULTS = "results";
+	private static final String HEADLINE = "headline";
 
-	public List<Content> parse(String json) throws ParsingException {
+	public List<Content> parseSearchResults(String json) throws ParsingException {
 		try {
-			JSONObject stopBoardJSON = new JSONObject(json);			
-			if (stopBoardJSON.has(RESULTS)) {
+			JSONObject searchResultsJSON = new JSONObject(json);			
+			if (searchResultsJSON.has(RESULTS)) {
 				List<Content> contentItems = new ArrayList<Content>();
 				
-				JSONArray resultContentItems = stopBoardJSON.getJSONArray(RESULTS);
+				JSONArray resultContentItems = searchResultsJSON.getJSONArray(RESULTS);
 				for (int i = 0; i < resultContentItems.length(); i++) {
 					JSONObject contentItem = resultContentItems.getJSONObject(i);					
 					contentItems.add(jsonToContentItem(contentItem));
@@ -29,7 +37,7 @@ public class SearchParser {
 				return contentItems;
 			}			
 			
-		} catch (JSONException e) {	
+		} catch (JSONException e) {
 			e.printStackTrace();
 			throw new ParsingException();
 		}
@@ -38,15 +46,37 @@ public class SearchParser {
 	}
 
 	private Content jsonToContentItem(JSONObject contentItem) throws JSONException {
-		return new Content(contentItem.getString("id"), 
-				contentItem.getString("apiUrl"), 
-				contentItem.getString("webUrl"), 
-				contentItem.getString("type"), 
-				contentItem.getString("headline"), 
-				contentItem.getString("place"), 
-				contentItem.getString("user"), 
-				contentItem.getDouble("latitude"), 
-				contentItem.getDouble("longitude"));
+		return new Content(contentItem.getString(ID), 
+				contentItem.getString(API_URL), 
+				contentItem.getString(WEB_URL), 
+				contentItem.getString(TYPE), 
+				contentItem.getString(HEADLINE), 
+				contentItem.getString(PLACE), 
+				contentItem.getString(USER), 
+				contentItem.getDouble(LATITUDE), 
+				contentItem.getDouble(LONGITUDE),
+				null);														// TODO noticeboard needs to be included in the search results
+	}
+
+	public Content parseReport(String json) throws ParsingException {
+		try {
+			JSONObject reportJSON = new JSONObject(json);			
+			Content report = new Content(reportJSON.getString("report_id"),	// TODO not consistent with search results format
+					null,													// TODO api url not shown when loading from the api url - probably a fair assumption
+					reportJSON.getString(WEB_URL),
+					null, 													// TODO type not available in json
+					reportJSON.getString(HEADLINE), 
+					reportJSON.getString(PLACE),
+					reportJSON.getString("user_login"), 					// TODO not consistent with search results format
+					reportJSON.getDouble("coordinates_latitude"),			// TODO not consistent with search results format
+					reportJSON.getDouble("coordinates_longitude"),			// TODO not consistent with search results format
+					reportJSON.getString("noticeboard"));
+			return report;
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+			throw new ParsingException();
+		}
 	}
 
 }

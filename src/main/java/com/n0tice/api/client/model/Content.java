@@ -11,9 +11,10 @@ public class Content {
 	final private String user;
 	final private double latitude;
 	final private double longitude;
+	final private String noticeBoard;
 	
 	public Content(String id, String apiUrl, String webUrl, String type,
-			String headline, String place, String user, double latitude, double longitude) {
+			String headline, String place, String user, double latitude, double longitude, String noticeBoard) {
 		super();
 		this.id = id;
 		this.apiUrl = apiUrl;
@@ -24,6 +25,7 @@ public class Content {
 		this.user = user;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.noticeBoard = noticeBoard;
 	}
 
 	public String getId() {
@@ -60,6 +62,19 @@ public class Content {
 
 	public double getLongitude() {
 		return longitude;
+	}
+
+	public String getNoticeBoard() {
+		return noticeBoard;
+	}
+
+	@Override
+	public String toString() {
+		return "Content [id=" + id + ", apiUrl=" + apiUrl + ", webUrl="
+				+ webUrl + ", type=" + type + ", headline=" + headline
+				+ ", place=" + place + ", user=" + user + ", latitude="
+				+ latitude + ", longitude=" + longitude + ", noticeBoard="
+				+ noticeBoard + "]";
 	}
 	
 }

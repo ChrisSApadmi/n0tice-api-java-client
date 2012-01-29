@@ -3,21 +3,24 @@ package com.n0tice.api.client.parsers;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import com.n0tice.api.client.model.Content;
-import com.n0tice.api.client.parsers.SearchParser;
-
 
 public class SearchParserTest {
 
 	private SearchParser searchParser;
 	
-	@Test
-	public void canParseStopBoardJsonIntoListOfArrivals() throws Exception {
+	@Before
+	public void setup() {
 		searchParser = new SearchParser();
-		
-		List<Content> parsedItems = searchParser.parse(ContentLoader.loadContent("latestItems.json"));
+	}
+	
+	@Test
+	public void canParseContentItemsFromSearchResults() throws Exception {		
+		List<Content> parsedItems = searchParser.parseSearchResults(ContentLoader.loadContent("latestItems.json"));
 		
 		assertEquals(20, parsedItems.size());
 		Content firstItem = parsedItems.get(0);
@@ -30,6 +33,21 @@ public class SearchParserTest {
 		assertEquals("KeithMagnum", firstItem.getUser());
 		assertEquals(51.545032, firstItem.getLatitude(), 0);
 		assertEquals(-0.056434, firstItem.getLongitude(), 0);
+	}
+	
+	@Test
+	public void canParseSingleReportFromReportDetailsJson() throws Exception {
+		Content report = searchParser.parseReport(ContentLoader.loadContent("reportWithUpdates.json"));
+		
+		assertEquals("2276", report.getId());			// TODO format is inconsistent with search
+		assertEquals(null, report.getApiUrl());			// TODO not setting the api url is inconsistent with search
+		assertEquals("http://n0tice.com/report/2276/graffiti-by-anonymous-in-brighton", report.getWebUrl());
+		assertEquals(null, report.getType());			// TODO not setting the type is inconsistent with search
+		assertEquals("Graffiti by Anonymous in Brighton", report.getHeadline());
+		assertEquals("Western Rd, Brighton and Hove, The City of Brighton and Hove BN1, UK", report.getPlace());
+		assertEquals("Luke", report.getUser());
+		assertEquals(50.825080, report.getLatitude(), 0);
+		assertEquals(-0.154179, report.getLongitude(), 0);
 	}
 	
 }

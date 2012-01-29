@@ -5,9 +5,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.n0tice.api.client.N0ticeApi;
-
-
 public class N0ticeApiFunctionalTest {
 	
 	private static final String LIVE_API_URL = "http://n0ticeapis.com/1";
@@ -32,6 +29,11 @@ public class N0ticeApiFunctionalTest {
 	@Test
 	public void canLoadItemsForUser() throws Exception {		
 		assertEquals(20, api.user("mattmcalister").size());
+	}
+	
+	@Test
+	public void canLoadSingleReport() throws Exception {
+		assertEquals("Graffiti by Anonymous in Brighton", api.get("/report/2276").getHeadline());
 	}
 	
 }

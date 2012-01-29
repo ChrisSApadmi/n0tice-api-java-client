@@ -9,7 +9,6 @@ import com.n0tice.api.client.parsers.SearchParser;
 import com.n0tice.api.client.urls.UrlBuilder;
 import com.n0tice.api.client.util.HttpFetcher;
 
-
 public class N0ticeApi {
 	
 	private static final String UTF_8 = "UTF-8";
@@ -31,15 +30,19 @@ public class N0ticeApi {
 	}
 	
 	public List<Content> latest() throws HttpFetchException, ParsingException {
-		return searchParser.parse(httpFetcher.fetchContent(urlBuilder.latest(), UTF_8));
+		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.latest(), UTF_8));
 	}
 
 	public List<Content> near(String locationName) throws HttpFetchException, ParsingException {
-		return searchParser.parse(httpFetcher.fetchContent(urlBuilder.near(locationName), UTF_8));
+		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.near(locationName), UTF_8));
 	}
 
 	public List<Content> user(String userName) throws HttpFetchException, ParsingException {
-		return searchParser.parse(httpFetcher.fetchContent(urlBuilder.user(userName), UTF_8));
+		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.user(userName), UTF_8));
+	}
+
+	public Content get(String id) throws HttpFetchException, ParsingException {
+		return searchParser.parseReport(httpFetcher.fetchContent(urlBuilder.get(id), UTF_8));
 	}
 	
 }
