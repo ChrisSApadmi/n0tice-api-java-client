@@ -22,7 +22,7 @@ public class SearchParser {
 	private static final String ID = "id";
 	private static final String RESULTS = "results";
 	private static final String HEADLINE = "headline";
-	private static final String NOTICEBOARD = "domain";	// TODO rename
+	private static final String NOTICEBOARD = "noticeboard";
 
 	public List<Content> parseSearchResults(String json) throws ParsingException {
 		try {
@@ -69,10 +69,10 @@ public class SearchParser {
 					null, 													// TODO type not available in json
 					reportJSON.getString(HEADLINE), 
 					reportJSON.getString(PLACE),
-					reportJSON.getString("user_login"), 					// TODO not consistent with search results format
-					reportJSON.getDouble("coordinates_latitude"),			// TODO not consistent with search results format
-					reportJSON.getDouble("coordinates_longitude"),			// TODO not consistent with search results format
-					reportJSON.getString("noticeboard"));
+					reportJSON.getString("user"),
+					reportJSON.getDouble("latitude"),
+					reportJSON.getDouble("longitude"),
+					getNoticeBoardFromJSON(reportJSON));
 			return report;
 			
 		} catch (JSONException e) {
