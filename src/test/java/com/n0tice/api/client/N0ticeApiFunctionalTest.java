@@ -21,7 +21,7 @@ public class N0ticeApiFunctionalTest {
 	
 	@Before
 	public void setup() {		
-		final String apiUrl = System.getProperty(API_URL_ENV_PROP_KEY) != null ? System.getProperty(API_URL_ENV_PROP_KEY) : LIVE_API_URL;
+		final String apiUrl = System.getenv(API_URL_ENV_PROP_KEY) != null ? System.getenv(API_URL_ENV_PROP_KEY) : LIVE_API_URL;
 		System.out.println("Api url is: " + apiUrl);
 		api = new N0ticeApi(apiUrl);
 	}
