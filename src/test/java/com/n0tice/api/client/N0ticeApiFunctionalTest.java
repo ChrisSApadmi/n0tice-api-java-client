@@ -14,6 +14,7 @@ public class N0ticeApiFunctionalTest {
 	private static final String CONTENT_TYPE = "offer";
 	private static final String USER = "mattmcalister";
 	private static final String LIVE_API_URL = "http://n0ticeapis.com/1";
+	private static final String NOTICE_BOARD = "streetart";
 	
 	private N0ticeApi api;
 	
@@ -47,6 +48,15 @@ public class N0ticeApiFunctionalTest {
 		assertEquals(20, results.size());
 		for (Content result : results) {
 			assertEquals("Result of search restricted by content type contained an unexpected result: " + result.toString(), CONTENT_TYPE, result.getType());
+		}
+	}
+	
+	@Test
+	public void canRestrictSearchResultByNoticeboard() throws Exception {
+		List<Content> results = api.noticeboard(NOTICE_BOARD);
+		assertEquals(20, results.size());
+		for (Content result : results) {
+			assertEquals("Result of search restricted by notice board contained an unexpected result: " + result.toString(), NOTICE_BOARD, result.getNoticeBoard());
 		}
 	}
 	

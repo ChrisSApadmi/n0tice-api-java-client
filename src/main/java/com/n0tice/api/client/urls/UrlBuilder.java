@@ -35,6 +35,10 @@ public class UrlBuilder {
 		return apiUrl + SEARCH  + "?contentType=" + urlEncode(type);
 	}
 	
+	public String noticeboard(String noticeBoard) {
+		return apiUrl + SEARCH  + "?domain=" + urlEncode(noticeBoard);
+	}
+	
 	public String get(String id) {
 		return apiUrl + id;
 	}

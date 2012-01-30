@@ -28,7 +28,8 @@ public class N0ticeApiTest {
 	private static final String LATEST_ITEMS_JSON = "{some json}";
 	private static final String REPORT_JSON = "{report json}";
 	private static final String CONTENT_TYPE = "offer";
-		
+	private static final String NOTICE_BOARD = "streetart";
+	
 	@Mock UrlBuilder urlBuilder;
 	@Mock HttpFetcher httpFetcher;	
 	@Mock SearchParser searchParser;
@@ -95,6 +96,17 @@ public class N0ticeApiTest {
 		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
 		List<Content> returnedItems = api.type(CONTENT_TYPE);
+		
+		assertEquals(latestItems, returnedItems);	
+	}
+	
+	@Test
+	public void canRestrictSearchToSpecificNoticeboard() throws Exception {
+		when(urlBuilder.noticeboard(NOTICE_BOARD)).thenReturn(LATEST_ITEMS_URL);
+		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
+		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
+		
+		List<Content> returnedItems = api.noticeboard(NOTICE_BOARD);
 		
 		assertEquals(latestItems, returnedItems);	
 	}

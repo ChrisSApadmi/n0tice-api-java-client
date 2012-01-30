@@ -39,8 +39,13 @@ public class UrlBuilderTest {
 	}
 	
 	@Test
-	public void canConstructUrlForSpecificContentTyoe() throws Exception {
+	public void canConstructUrlForSpecificContentType() throws Exception {
 		assertEquals("http://n0ticeapis.com/1/search?contentType=offer", urlBuilder.type("offer"));
+	}
+	
+	@Test
+	public void canConstructUrlForSpecificNoticeboard() throws Exception {
+		assertEquals("http://n0ticeapis.com/1/search?domain=aboard", urlBuilder.noticeboard("aboard"));
 	}
 	
 	@Test

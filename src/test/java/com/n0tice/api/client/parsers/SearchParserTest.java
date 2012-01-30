@@ -31,6 +31,7 @@ public class SearchParserTest {
 		assertEquals("Hackney shares top position in London jobless league", firstItem.getHeadline());
 		assertEquals("London Borough of Hackney, London E8 1EA, UK", firstItem.getPlace());
 		assertEquals("KeithMagnum", firstItem.getUser());
+		assertEquals("hackney", firstItem.getNoticeBoard());
 		assertEquals(51.545032, firstItem.getLatitude(), 0);
 		assertEquals(-0.056434, firstItem.getLongitude(), 0);
 	}

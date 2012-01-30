@@ -22,6 +22,7 @@ public class SearchParser {
 	private static final String ID = "id";
 	private static final String RESULTS = "results";
 	private static final String HEADLINE = "headline";
+	private static final String NOTICEBOARD = "domain";	// TODO rename
 
 	public List<Content> parseSearchResults(String json) throws ParsingException {
 		try {
@@ -46,6 +47,7 @@ public class SearchParser {
 	}
 
 	private Content jsonToContentItem(JSONObject contentItem) throws JSONException {
+		
 		return new Content(contentItem.getString(ID), 
 				contentItem.getString(API_URL), 
 				contentItem.getString(WEB_URL), 
@@ -55,9 +57,9 @@ public class SearchParser {
 				contentItem.getString(USER), 
 				contentItem.getDouble(LATITUDE), 
 				contentItem.getDouble(LONGITUDE),
-				null);														// TODO noticeboard needs to be included in the search results
+				getNoticeBoardFromJSON(contentItem));
 	}
-
+	
 	public Content parseReport(String json) throws ParsingException {
 		try {
 			JSONObject reportJSON = new JSONObject(json);			
@@ -78,5 +80,12 @@ public class SearchParser {
 			throw new ParsingException();
 		}
 	}
-
+	
+	private String getNoticeBoardFromJSON(JSONObject contentItem) throws JSONException {
+		if (contentItem.has(NOTICEBOARD)) {
+			return contentItem.getString(NOTICEBOARD);
+		}
+		return null;
+	}
+	
 }
