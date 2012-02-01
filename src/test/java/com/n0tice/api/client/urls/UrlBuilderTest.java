@@ -45,7 +45,7 @@ public class UrlBuilderTest {
 	
 	@Test
 	public void canConstructUrlForSpecificNoticeboard() throws Exception {
-		assertEquals("http://n0ticeapis.com/1/search?domain=aboard", urlBuilder.noticeboard("aboard"));
+		assertEquals("http://n0ticeapis.com/1/search?noticeboard=aboard", urlBuilder.noticeboard("aboard"));
 	}
 	
 	@Test
