@@ -1,6 +1,7 @@
 package com.n0tice.api.client;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -61,6 +62,11 @@ public class N0ticeApiFunctionalTest {
 		for (Content result : results) {
 			assertEquals("Result of search restricted by notice board contained an unexpected result: " + result.toString(), NOTICE_BOARD, result.getNoticeBoard());
 		}
+	}
+	
+	@Test
+	public void canRestrictSearchToSingleTag() throws Exception {
+		fail();
 	}
 	
 	@Test

@@ -34,6 +34,8 @@ public class SearchParserTest {
 		assertEquals("hackney", firstItem.getNoticeBoard());
 		assertEquals(51.545032, firstItem.getLatitude(), 0);
 		assertEquals(-0.056434, firstItem.getLongitude(), 0);
+		assertNotNull(firstItem.getCreated());
+		assertNotNull(firstItem.getModified());
 	}
 	
 	@Test
@@ -49,6 +51,8 @@ public class SearchParserTest {
 		assertEquals("Luke", report.getUser());
 		assertEquals(50.825080, report.getLatitude(), 0);
 		assertEquals(-0.154179, report.getLongitude(), 0);
+		assertNotNull(report.getCreated());
+		assertNotNull(report.getModified());
 	}
 	
 }
