@@ -71,7 +71,7 @@ public class SearchParser {
 			Content report = new Content(reportJSON.getString("report_id"),	// TODO not consistent with search results format
 					null,													// TODO api url not shown when loading from the api url - probably a fair assumption
 					reportJSON.getString(WEB_URL),
-					null, 													// TODO type not available in json
+					reportJSON.getString(TYPE),
 					reportJSON.getString(HEADLINE), 
 					reportJSON.getString(PLACE),
 					reportJSON.getString("user"),

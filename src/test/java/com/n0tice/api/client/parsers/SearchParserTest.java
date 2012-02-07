@@ -47,7 +47,7 @@ public class SearchParserTest {
 		assertEquals("2276", report.getId());			// TODO format is inconsistent with search
 		assertEquals(null, report.getApiUrl());			// TODO not setting the api url is inconsistent with search
 		assertEquals("http://n0tice.com/report/2276/graffiti-by-anonymous-in-brighton", report.getWebUrl());
-		assertEquals(null, report.getType());			// TODO not setting the type is inconsistent with search
+		assertEquals("report", report.getType());
 		assertEquals("Graffiti by Anonymous in Brighton", report.getHeadline());
 		assertEquals("Western Rd, Brighton and Hove, The City of Brighton and Hove BN1, UK", report.getPlace());
 		assertEquals("Luke", report.getUser());
