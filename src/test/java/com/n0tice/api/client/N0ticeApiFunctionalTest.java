@@ -1,7 +1,7 @@
 package com.n0tice.api.client;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ import com.n0tice.api.client.model.Content;
 
 public class N0ticeApiFunctionalTest {
 	
+	private static final String TAG = "reports/tag/hackney";
 	private static final String API_URL_ENV_PROP_KEY = "n0ticeapiurl";
 	private static final String LIVE_API_URL = "http://n0ticeapis.com/1";
 	private static final String CONTENT_TYPE = "offer";
@@ -66,7 +67,11 @@ public class N0ticeApiFunctionalTest {
 	
 	@Test
 	public void canRestrictSearchToSingleTag() throws Exception {
-		fail();
+		List<Content> results = api.tag(TAG);
+		assertTrue(results.size() > 0);
+		for (Content result : results) {
+			assertTrue("Result of search restricted by tag contained an unexpected result: " + result.toString(), result.getTags().contains(TAG));
+		}
 	}
 	
 	@Test

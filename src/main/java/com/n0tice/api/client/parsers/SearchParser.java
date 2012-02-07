@@ -14,6 +14,7 @@ import com.n0tice.api.client.model.Content;
 
 public class SearchParser {
 
+	private static final String TAGS = "tags";
 	private static final String USER = "user";
 	private static final String TYPE = "type";
 	private static final String WEB_URL = "webUrl";
@@ -60,7 +61,8 @@ public class SearchParser {
 				contentItemJSON.getDouble(LONGITUDE),
 				getNoticeBoardFromJSON(contentItemJSON),
 				parseDate(contentItemJSON.getString("created")),
-				parseDate(contentItemJSON.getString("modified"))
+				parseDate(contentItemJSON.getString("modified")),
+				parseTags(contentItemJSON)
 				);
 	}
 	
@@ -78,7 +80,8 @@ public class SearchParser {
 					reportJSON.getDouble("longitude"),
 					getNoticeBoardFromJSON(reportJSON),
 					parseDate(reportJSON.getString("created")),
-					parseDate(reportJSON.getString("modified"))
+					parseDate(reportJSON.getString("modified")),
+					parseTags(reportJSON)
 					);
 			return report;
 			
@@ -97,6 +100,18 @@ public class SearchParser {
 	
 	private Date parseDate(String dateString) {
 		return DateTime.parse(dateString).toDate();
+	}
+	
+	private List<String> parseTags(JSONObject contentItemJSON) throws JSONException {
+		if (contentItemJSON.has(TAGS)) {
+			List<String> tags = new ArrayList<String>();
+			JSONArray jsonTags = contentItemJSON.getJSONArray(TAGS);
+			for (int i = 0; i < jsonTags.length(); i++) {
+				tags.add(jsonTags.getString(i));				
+			}
+			return tags;
+		}
+		return null;
 	}
 	
 }

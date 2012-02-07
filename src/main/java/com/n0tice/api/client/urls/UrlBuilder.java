@@ -39,6 +39,10 @@ public class UrlBuilder {
 		return apiUrl + SEARCH  + "?noticeboard=" + urlEncode(noticeBoard);
 	}
 	
+	public String tag(String tag) {
+		return apiUrl + SEARCH  + "?tags=" + urlEncode(tag);
+	}
+	
 	public String get(String id) {
 		return apiUrl + id;
 	}

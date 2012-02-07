@@ -1,6 +1,7 @@
 package com.n0tice.api.client.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class Content {
 
@@ -16,10 +17,11 @@ public class Content {
 	final private String noticeBoard;
 	final private Date created;
 	final private Date modified;
+	final private List<String> tags;
 	
 	public Content(String id, String apiUrl, String webUrl, String type,
 			String headline, String place, String user, double latitude, double longitude, String noticeBoard,
-			Date created, Date modified) {
+			Date created, Date modified, List<String> tags) {
 		super();
 		this.id = id;
 		this.apiUrl = apiUrl;
@@ -33,6 +35,7 @@ public class Content {
 		this.noticeBoard = noticeBoard;
 		this.created = created;
 		this.modified = modified;
+		this.tags = tags;
 	}
 
 	public String getId() {
@@ -83,6 +86,10 @@ public class Content {
 		return modified;
 	}
 
+	public List<String> getTags() {
+		return tags;
+	}
+	
 	@Override
 	public String toString() {
 		return "Content [apiUrl=" + apiUrl + ", created=" + created

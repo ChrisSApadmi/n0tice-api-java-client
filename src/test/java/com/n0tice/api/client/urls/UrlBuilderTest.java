@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import com.n0tice.api.client.urls.UrlBuilder;
 
-
 public class UrlBuilderTest {
 
 	private static final String API_PREFIX = "http://n0ticeapis.com/1";
@@ -46,6 +45,11 @@ public class UrlBuilderTest {
 	@Test
 	public void canConstructUrlForSpecificNoticeboard() throws Exception {
 		assertEquals("http://n0ticeapis.com/1/search?noticeboard=aboard", urlBuilder.noticeboard("aboard"));
+	}
+	
+	@Test
+	public void canConstructUrlForSpecificTag() throws Exception {
+		assertEquals("http://n0ticeapis.com/1/search?tags=reports%2Ftag%2Fhackney", urlBuilder.tag("reports/tag/hackney"));
 	}
 	
 	@Test

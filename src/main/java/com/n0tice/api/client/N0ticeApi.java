@@ -49,6 +49,10 @@ public class N0ticeApi {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.noticeboard(noticeBoard), UTF_8));
 	}
 	
+	public List<Content> tag(String tag)  throws HttpFetchException, ParsingException {
+		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.tag(tag), UTF_8));
+	}
+	
 	public Content get(String id) throws HttpFetchException, ParsingException {
 		return searchParser.parseReport(httpFetcher.fetchContent(urlBuilder.get(id), UTF_8));
 	}

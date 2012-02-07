@@ -1,6 +1,7 @@
 package com.n0tice.api.client.parsers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -37,6 +38,8 @@ public class SearchParserTest {
 		assertEquals(-0.056434, firstItem.getLongitude(), 0);		
 		assertEquals(new DateTime("2012-01-28T10:44:39Z"), new DateTime(firstItem.getCreated()));
 		assertEquals(new DateTime("2012-01-28T10:44:39Z"), new DateTime(firstItem.getModified()));
+		assertEquals(5, firstItem.getTags().size());
+		assertEquals("reports/tag/hackney", firstItem.getTags().get(0));
 	}
 	
 	@Test
@@ -54,6 +57,7 @@ public class SearchParserTest {
 		assertEquals(-0.154179, report.getLongitude(), 0);
 		assertEquals(new DateTime("2012-01-16T14:49:08Z"), new DateTime(report.getCreated()));
 		assertEquals(new DateTime("2012-01-16T14:49:08Z"), new DateTime(report.getModified()));
+		assertNotNull(report.getTags());	// TODO shows that reports endpoint does not include tags
 	}
 	
 }

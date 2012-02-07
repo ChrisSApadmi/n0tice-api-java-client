@@ -23,12 +23,13 @@ public class N0ticeApiTest {
 	private static final String REPORT_ID = "/report/123";
 	private static final String LOCATION_NAME = "London";
 	private static final String USER_NAME = "User";
-	private static final String LATEST_ITEMS_URL = "http://n0ticeapi.../search";
+	private static final String LATEST_ITEMS_URL = "http://n0ticeapi.../someuri";
 	private static final String REPORT_API_URL = "http://n0ticeapi.../report/123";
 	private static final String LATEST_ITEMS_JSON = "{some json}";
 	private static final String REPORT_JSON = "{report json}";
 	private static final String CONTENT_TYPE = "offer";
 	private static final String NOTICE_BOARD = "streetart";
+	private static final String TAG = "reports/tag/hackney";
 	
 	@Mock UrlBuilder urlBuilder;
 	@Mock HttpFetcher httpFetcher;	
@@ -107,6 +108,17 @@ public class N0ticeApiTest {
 		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
 		List<Content> returnedItems = api.noticeboard(NOTICE_BOARD);
+		
+		assertEquals(latestItems, returnedItems);	
+	}
+	
+	@Test
+	public void canRestrictSearchToSpecificTag() throws Exception {
+		when(urlBuilder.tag(TAG)).thenReturn(LATEST_ITEMS_URL);
+		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
+		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
+		
+		List<Content> returnedItems = api.tag(TAG);
 		
 		assertEquals(latestItems, returnedItems);	
 	}
