@@ -1,5 +1,7 @@
 package com.n0tice.api.client.model;
 
+import java.util.Date;
+
 public class Content {
 
 	final private String id;
@@ -12,9 +14,12 @@ public class Content {
 	final private double latitude;
 	final private double longitude;
 	final private String noticeBoard;
+	final private Date created;
+	final private Date modified;
 	
 	public Content(String id, String apiUrl, String webUrl, String type,
-			String headline, String place, String user, double latitude, double longitude, String noticeBoard) {
+			String headline, String place, String user, double latitude, double longitude, String noticeBoard,
+			Date created, Date modified) {
 		super();
 		this.id = id;
 		this.apiUrl = apiUrl;
@@ -26,6 +31,8 @@ public class Content {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.noticeBoard = noticeBoard;
+		this.created = created;
+		this.modified = modified;
 	}
 
 	public String getId() {
@@ -67,14 +74,23 @@ public class Content {
 	public String getNoticeBoard() {
 		return noticeBoard;
 	}
+	
+	public Date getCreated() {
+		return created;
+	}
+
+	public Date getModified() {
+		return modified;
+	}
 
 	@Override
 	public String toString() {
-		return "Content [id=" + id + ", apiUrl=" + apiUrl + ", webUrl="
-				+ webUrl + ", type=" + type + ", headline=" + headline
-				+ ", place=" + place + ", user=" + user + ", latitude="
-				+ latitude + ", longitude=" + longitude + ", noticeBoard="
-				+ noticeBoard + "]";
+		return "Content [apiUrl=" + apiUrl + ", created=" + created
+				+ ", headline=" + headline + ", id=" + id + ", latitude="
+				+ latitude + ", longitude=" + longitude + ", modified="
+				+ modified + ", noticeBoard=" + noticeBoard + ", place="
+				+ place + ", type=" + type + ", user=" + user + ", webUrl="
+				+ webUrl + "]";
 	}
 	
 }

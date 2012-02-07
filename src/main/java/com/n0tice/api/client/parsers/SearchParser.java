@@ -1,8 +1,10 @@
 package com.n0tice.api.client.parsers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,18 +48,21 @@ public class SearchParser {
 		return null;
 	}
 
-	private Content jsonToContentItem(JSONObject contentItem) throws JSONException {
+	private Content jsonToContentItem(JSONObject contentItemJSON) throws JSONException {
 		
-		return new Content(contentItem.getString(ID), 
-				contentItem.getString(API_URL), 
-				contentItem.getString(WEB_URL), 
-				contentItem.getString(TYPE), 
-				contentItem.getString(HEADLINE), 
-				contentItem.getString(PLACE), 
-				contentItem.getString(USER), 
-				contentItem.getDouble(LATITUDE), 
-				contentItem.getDouble(LONGITUDE),
-				getNoticeBoardFromJSON(contentItem));
+		return new Content(contentItemJSON.getString(ID), 
+				contentItemJSON.getString(API_URL), 
+				contentItemJSON.getString(WEB_URL), 
+				contentItemJSON.getString(TYPE), 
+				contentItemJSON.getString(HEADLINE), 
+				contentItemJSON.getString(PLACE), 
+				contentItemJSON.getString(USER), 
+				contentItemJSON.getDouble(LATITUDE), 
+				contentItemJSON.getDouble(LONGITUDE),
+				getNoticeBoardFromJSON(contentItemJSON),
+				parseDate(contentItemJSON.getString("created")),
+				parseDate(contentItemJSON.getString("modified"))
+				);
 	}
 	
 	public Content parseReport(String json) throws ParsingException {
@@ -72,7 +77,10 @@ public class SearchParser {
 					reportJSON.getString("user"),
 					reportJSON.getDouble("latitude"),
 					reportJSON.getDouble("longitude"),
-					getNoticeBoardFromJSON(reportJSON));
+					getNoticeBoardFromJSON(reportJSON),
+					parseDate(reportJSON.getString("created")),
+					parseDate(reportJSON.getString("modified"))
+					);
 			return report;
 			
 		} catch (JSONException e) {
@@ -86,6 +94,10 @@ public class SearchParser {
 			return contentItem.getString(NOTICEBOARD);
 		}
 		return null;
+	}
+	
+	private Date parseDate(String dateString) {
+		return DateTime.parse(dateString).toDate();
 	}
 	
 }

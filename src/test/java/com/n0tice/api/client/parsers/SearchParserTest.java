@@ -1,9 +1,11 @@
 package com.n0tice.api.client.parsers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,9 +35,9 @@ public class SearchParserTest {
 		assertEquals("KeithMagnum", firstItem.getUser());
 		assertEquals("hackney", firstItem.getNoticeBoard());
 		assertEquals(51.545032, firstItem.getLatitude(), 0);
-		assertEquals(-0.056434, firstItem.getLongitude(), 0);
-		assertNotNull(firstItem.getCreated());
-		assertNotNull(firstItem.getModified());
+		assertEquals(-0.056434, firstItem.getLongitude(), 0);		
+		assertEquals(new DateTime("2012-01-28T10:44:39Z"), new DateTime(firstItem.getCreated()));
+		assertEquals(new DateTime("2012-01-28T10:44:39Z"), new DateTime(firstItem.getModified()));
 	}
 	
 	@Test
