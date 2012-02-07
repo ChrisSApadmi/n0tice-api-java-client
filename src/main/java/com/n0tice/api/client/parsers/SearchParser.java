@@ -48,8 +48,7 @@ public class SearchParser {
 		return null;
 	}
 
-	private Content jsonToContentItem(JSONObject contentItemJSON) throws JSONException {
-		
+	private Content jsonToContentItem(JSONObject contentItemJSON) throws JSONException {		
 		return new Content(contentItemJSON.getString(ID), 
 				contentItemJSON.getString(API_URL), 
 				contentItemJSON.getString(WEB_URL), 

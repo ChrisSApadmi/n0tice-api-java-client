@@ -52,8 +52,8 @@ public class SearchParserTest {
 		assertEquals("Luke", report.getUser());
 		assertEquals(50.825080, report.getLatitude(), 0);
 		assertEquals(-0.154179, report.getLongitude(), 0);
-		assertEquals(new DateTime("2012-01-16 14:49:08"), report.getCreated());
-		assertEquals(new DateTime("2012-01-16 14:49:08"), report.getModified());
+		assertEquals(new DateTime("2012-01-16T14:49:08Z"), new DateTime(report.getCreated()));
+		assertEquals(new DateTime("2012-01-16T14:49:08Z"), new DateTime(report.getModified()));
 	}
 	
 }

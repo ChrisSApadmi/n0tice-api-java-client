@@ -19,6 +19,7 @@ public class ContentLoader {
 		}
 		in.close();
 		freader.close();
+		
 		return content.toString();
 	}
 
