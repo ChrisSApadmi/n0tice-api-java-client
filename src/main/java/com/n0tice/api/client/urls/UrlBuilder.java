@@ -32,7 +32,7 @@ public class UrlBuilder {
 	}
 	
 	public String type(String type) {
-		return apiUrl + SEARCH  + "?contentType=" + urlEncode(type);
+		return apiUrl + SEARCH  + "?type=" + urlEncode(type);
 	}
 	
 	public String noticeboard(String noticeBoard) {
