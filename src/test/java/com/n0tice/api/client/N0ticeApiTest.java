@@ -30,6 +30,7 @@ public class N0ticeApiTest {
 	private static final String CONTENT_TYPE = "offer";
 	private static final String NOTICE_BOARD = "streetart";
 	private static final String TAG = "reports/tag/hackney";
+	private static final String TYPE = "offer";
 	
 	@Mock UrlBuilder urlBuilder;
 	@Mock HttpFetcher httpFetcher;	
@@ -119,6 +120,17 @@ public class N0ticeApiTest {
 		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
 		List<Content> returnedItems = api.tag(TAG);
+		
+		assertEquals(latestItems, returnedItems);	
+	}
+	
+	@Test
+	public void canRestrictSearchToSpecificType() throws Exception {
+		when(urlBuilder.type(TYPE)).thenReturn(LATEST_ITEMS_URL);
+		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
+		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
+		
+		List<Content> returnedItems = api.type(TYPE);
 		
 		assertEquals(latestItems, returnedItems);	
 	}

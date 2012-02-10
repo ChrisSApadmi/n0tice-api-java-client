@@ -18,6 +18,7 @@ public class N0ticeApiFunctionalTest {
 	private static final String CONTENT_TYPE = "offer";
 	private static final String USER = "mattmcalister";
 	private static final String NOTICE_BOARD = "streetart";
+	private static final String TYPE = "offer";
 	
 	private N0ticeApi api;
 	
@@ -71,6 +72,15 @@ public class N0ticeApiFunctionalTest {
 		assertTrue(results.size() > 0);
 		for (Content result : results) {
 			assertTrue("Result of search restricted by tag contained an unexpected result: " + result.toString(), result.getTags().contains(TAG));
+		}
+	}
+	
+	@Test
+	public void canRestrictSearchToSingleContentType() throws Exception {
+		List<Content> results = api.type(TYPE);
+		assertTrue(results.size() > 0);
+		for (Content result : results) {
+			assertTrue("Result of search restricted by type contained an unexpected result: " + result.toString(), result.getType().contains(TYPE));
 		}
 	}
 	
