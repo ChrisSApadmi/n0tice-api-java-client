@@ -10,17 +10,15 @@ public class Content {
 	final private String webUrl;
 	final private String type;
 	final private String headline;
-	final private String place;
-	final private String user;
-	final private double latitude;
-	final private double longitude;
+	final private Place place;
+	final private User user;
 	final private String noticeBoard;
 	final private Date created;
 	final private Date modified;
 	final private List<String> tags;
 	
 	public Content(String id, String apiUrl, String webUrl, String type,
-			String headline, String place, String user, double latitude, double longitude, String noticeBoard,
+			String headline, Place place, User user, String noticeBoard,
 			Date created, Date modified, List<String> tags) {
 		super();
 		this.id = id;
@@ -30,8 +28,6 @@ public class Content {
 		this.headline = headline;
 		this.place = place;
 		this.user = user;
-		this.latitude = latitude;
-		this.longitude = longitude;
 		this.noticeBoard = noticeBoard;
 		this.created = created;
 		this.modified = modified;
@@ -58,22 +54,14 @@ public class Content {
 		return headline;
 	}
 
-	public String getPlace() {
+	public Place getPlace() {
 		return place;
 	}
 
-	public String getUser() {
+	public User getUser() {
 		return user;
 	}
-
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
+	
 	public String getNoticeBoard() {
 		return noticeBoard;
 	}
@@ -93,8 +81,7 @@ public class Content {
 	@Override
 	public String toString() {
 		return "Content [apiUrl=" + apiUrl + ", created=" + created
-				+ ", headline=" + headline + ", id=" + id + ", latitude="
-				+ latitude + ", longitude=" + longitude + ", modified="
+				+ ", headline=" + headline + ", id=" + id + ", modified="
 				+ modified + ", noticeBoard=" + noticeBoard + ", place="
 				+ place + ", type=" + type + ", user=" + user + ", webUrl="
 				+ webUrl + "]";

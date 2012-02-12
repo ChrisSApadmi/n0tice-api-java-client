@@ -11,9 +11,12 @@ import org.json.JSONObject;
 
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
+import com.n0tice.api.client.model.Place;
+import com.n0tice.api.client.model.User;
 
 public class SearchParser {
 
+	private static final String DISPLAY_NAME = "displayName";
 	private static final String TAGS = "tags";
 	private static final String USER = "user";
 	private static final String TYPE = "type";
@@ -26,6 +29,8 @@ public class SearchParser {
 	private static final String RESULTS = "results";
 	private static final String HEADLINE = "headline";
 	private static final String NOTICEBOARD = "noticeboard";
+	private static final String USERNAME = "username";
+	private static final String PROFILE_IMAGE = "profileImage";
 
 	public List<Content> parseSearchResults(String json) throws ParsingException {
 		try {
@@ -49,16 +54,36 @@ public class SearchParser {
 		return null;
 	}
 
-	private Content jsonToContentItem(JSONObject contentItemJSON) throws JSONException {		
+	private Content jsonToContentItem(JSONObject contentItemJSON) throws JSONException {
+		User user = null;
+		if (contentItemJSON.has(USER)) {
+			JSONObject userJSON = contentItemJSON.getJSONObject(USER);			
+			String displayName = null;
+			String profileImage = null;
+			if (userJSON.has(DISPLAY_NAME)) {
+				displayName = userJSON.getString(DISPLAY_NAME);
+			}
+			if (userJSON.has(PROFILE_IMAGE)) {
+				profileImage = userJSON.getString(PROFILE_IMAGE);
+			}
+			
+			JSONObject userJson = contentItemJSON.getJSONObject(USER);
+			user = new User(userJson.getString(USERNAME), displayName, profileImage);
+		}
+		
+		Place place = null;
+		if (contentItemJSON.has(PLACE)) {
+			JSONObject placeJson = contentItemJSON.getJSONObject(PLACE);
+			place = new Place(placeJson.getDouble(LATITUDE), placeJson.getDouble(LONGITUDE));
+		}
+		
 		return new Content(contentItemJSON.getString(ID), 
 				contentItemJSON.getString(API_URL), 
 				contentItemJSON.getString(WEB_URL), 
 				contentItemJSON.getString(TYPE), 
 				contentItemJSON.getString(HEADLINE), 
-				contentItemJSON.getString(PLACE), 
-				contentItemJSON.getString(USER), 
-				contentItemJSON.getDouble(LATITUDE), 
-				contentItemJSON.getDouble(LONGITUDE),
+				place, 
+				user, 
 				getNoticeBoardFromJSON(contentItemJSON),
 				parseDate(contentItemJSON.getString("created")),
 				parseDate(contentItemJSON.getString("modified")),
@@ -69,21 +94,7 @@ public class SearchParser {
 	public Content parseReport(String json) throws ParsingException {
 		try {
 			JSONObject reportJSON = new JSONObject(json);			
-			Content report = new Content(reportJSON.getString("report_id"),	// TODO not consistent with search results format
-					null,													// TODO api url not shown when loading from the api url - probably a fair assumption
-					reportJSON.getString(WEB_URL),
-					reportJSON.getString(TYPE),
-					reportJSON.getString(HEADLINE), 
-					reportJSON.getString(PLACE),
-					reportJSON.getString("user"),
-					reportJSON.getDouble("latitude"),
-					reportJSON.getDouble("longitude"),
-					getNoticeBoardFromJSON(reportJSON),
-					parseDate(reportJSON.getString("created")),
-					parseDate(reportJSON.getString("modified")),
-					parseTags(reportJSON)
-					);
-			return report;
+			return jsonToContentItem(reportJSON);
 			
 		} catch (JSONException e) {
 			e.printStackTrace();

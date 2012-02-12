@@ -1,6 +1,7 @@
 package com.n0tice.api.client;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class N0ticeApiFunctionalTest {
 	private static final String LIVE_API_URL = "http://n0ticeapis.com/1";
 	private static final String CONTENT_TYPE = "offer";
 	private static final String USER = "mattmcalister";
-	private static final String NOTICE_BOARD = "streetart";
+	private static final String NOTICE_BOARD = "northerner";
 	private static final String TYPE = "offer";
 	
 	private N0ticeApi api;
@@ -35,16 +36,23 @@ public class N0ticeApiFunctionalTest {
 	}
 	
 	@Test
+	public void searchResultsShouldHaveTypeSet() throws Exception {		
+		for (Content content : api.latest()) {
+			assertNotNull(content.getType());
+		}
+	}
+	
+	@Test
 	public void canLoadItemsNearLocation() throws Exception {		
 		assertEquals(20, api.near("London").size());		
 	}
 	
 	@Test
-	public void canLoadItemsForUser() throws Exception {		
+	public void canLoadItemsForSpecificUser() throws Exception {		
 		List<Content> results = api.user(USER);
 		assertEquals(20, results.size());
 		for (Content result : results) {
-			assertEquals("Result of search restricted by user contained a result with an unexpected user: " + result.toString(), USER, result.getUser());
+			assertEquals("Result of search restricted by user contained a result with an unexpected user: " + result.toString(), USER, result.getUser().getUsername());
 		}
 	}
 	
@@ -76,17 +84,32 @@ public class N0ticeApiFunctionalTest {
 	}
 	
 	@Test
-	public void canRestrictSearchToSingleContentType() throws Exception {
-		List<Content> results = api.type(TYPE);
-		assertTrue(results.size() > 0);
-		for (Content result : results) {
-			assertTrue("Result of search restricted by type contained an unexpected result: " + result.toString(), result.getType().contains(TYPE));
-		}
+	public void canLoadSingleReport() throws Exception {
+		assertEquals("Finsbury Park Road. Neighbour's car broken into.", api.get("report/1054").getHeadline());
 	}
 	
 	@Test
-	public void canLoadSingleReport() throws Exception {
-		assertEquals("Graffiti by Anonymous in Brighton", api.get("/report/2276").getHeadline());
+	public void singleReportsShouldShowId() throws Exception {
+		assertEquals("report/1054", api.get("report/1054").getId());
+	}
+	
+	@Test
+	public void singleReportsShouldShowType() throws Exception {
+		assertEquals("report", api.get("report/1054").getType());
+	}
+	
+	@Test
+	public void singleReportsShouldShowUsernameAndDisplayNameOfThePostingUser() throws Exception {
+		Content content = api.get("report/1054");
+		assertEquals("demwell", content.getUser().getUsername());
+		assertEquals("Rachael Demwell", content.getUser().getDisplayName());
+	}
+	
+	@Test
+	public void singleReportsShouldShowFullyQualifiedProfileImageForPostingUser() throws Exception {
+		Content content = api.get("report/1054");
+		assertTrue(content.getUser().getProfileImage().startsWith("http://"));
+		assertTrue(content.getUser().getProfileImage().endsWith("/images/profile/small/c1890f2a09cdba36.jpg"));
 	}
 	
 }

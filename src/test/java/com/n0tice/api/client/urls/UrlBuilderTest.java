@@ -54,7 +54,7 @@ public class UrlBuilderTest {
 	
 	@Test
 	public void canConstructUrlFromContentId() throws Exception {
-		assertEquals("http://n0ticeapis.com/1/report/123", urlBuilder.get("/report/123"));
+		assertEquals("http://n0ticeapis.com/1/report/123", urlBuilder.get("report/123"));
 	}
 	
 }

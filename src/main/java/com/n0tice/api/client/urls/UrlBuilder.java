@@ -44,7 +44,7 @@ public class UrlBuilder {
 	}
 	
 	public String get(String id) {
-		return apiUrl + id;
+		return apiUrl + "/" + id;
 	}
 	
 	private String urlEncode(String value) {
