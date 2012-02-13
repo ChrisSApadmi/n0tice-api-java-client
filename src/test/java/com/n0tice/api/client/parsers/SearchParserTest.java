@@ -34,8 +34,8 @@ public class SearchParserTest {
 		assertEquals("London Borough of Hackney, London E8 1EA, UK", firstItem.getPlace());
 		assertEquals("KeithMagnum", firstItem.getUser());
 		assertEquals("hackney", firstItem.getNoticeBoard());
-		assertEquals(51.545032, firstItem.getLatitude(), 0);
-		assertEquals(-0.056434, firstItem.getLongitude(), 0);		
+		assertEquals(51.545032, firstItem.getPlace().getLatitude(), 0);
+		assertEquals(-0.056434, firstItem.getPlace().getLongitude(), 0);		
 		assertEquals(new DateTime("2012-01-28T10:44:39Z"), new DateTime(firstItem.getCreated()));
 		assertEquals(new DateTime("2012-01-28T10:44:39Z"), new DateTime(firstItem.getModified()));
 		assertEquals(5, firstItem.getTags().size());
@@ -53,8 +53,8 @@ public class SearchParserTest {
 		assertEquals("Graffiti by Anonymous in Brighton", report.getHeadline());
 		assertEquals("Western Rd, Brighton and Hove, The City of Brighton and Hove BN1, UK", report.getPlace());
 		assertEquals("Luke", report.getUser());
-		assertEquals(50.825080, report.getLatitude(), 0);
-		assertEquals(-0.154179, report.getLongitude(), 0);
+		assertEquals(50.825080, report.getPlace().getLatitude(), 0);
+		assertEquals(-0.154179, report.getPlace().getLongitude(), 0);
 		assertEquals(new DateTime("2012-01-16T14:49:08Z"), new DateTime(report.getCreated()));
 		assertEquals(new DateTime("2012-01-16T14:49:08Z"), new DateTime(report.getModified()));
 		assertNotNull(report.getTags());	// TODO shows that reports endpoint does not include tags

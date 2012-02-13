@@ -1,8 +1,10 @@
 package com.n0tice.api.client;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -10,9 +12,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.n0tice.api.client.model.Content;
+import com.n0tice.api.client.model.Place;
 
 public class N0ticeApiFunctionalTest {
 	
+	private static final double TWICKENHAM_LATITUDE = 51.446144;
+	private static final double TWICKENHAM_LONGITUDE = -0.329719;
 	private static final String TAG = "reports/tag/hackney";
 	private static final String API_URL_ENV_PROP_KEY = "n0ticeapiurl";
 	private static final String LIVE_API_URL = "http://n0ticeapis.com/1";
@@ -35,6 +40,16 @@ public class N0ticeApiFunctionalTest {
 	}
 	
 	@Test
+	public void searchResultsShowsTotalMatchesCount() throws Exception {
+		fail();
+	}
+	
+	@Test
+	public void searchResultsShowsCorrectStartIndex() throws Exception {
+		fail();
+	}
+	
+	@Test
 	public void searchResultsShouldHaveTypeSet() throws Exception {		
 		for (Content content : api.latest()) {
 			assertNotNull(content.getType());
@@ -42,14 +57,26 @@ public class N0ticeApiFunctionalTest {
 	}
 	
 	@Test
-	public void canLoadItemsNearLocation() throws Exception {		
-		assertEquals(20, api.near("London").size());		
+	public void canLoadItemsNearNamedLocation() throws Exception {		
+		List<Content> results = api.near("Twickenham, London");
+		assertFalse(results.isEmpty());
+		for (Content content : results) {		
+			assertTrue("Result with place '" + content.getPlace() + "' is further than expected from named location", isWithinAboutTenKilometesOf(TWICKENHAM_LATITUDE, TWICKENHAM_LONGITUDE, content.getPlace()));
+		}
 	}
 	
 	@Test
+	public void canLoadItemsNearLatitideAndLonditude() throws Exception {		
+		List<Content> results = api.near(TWICKENHAM_LATITUDE, TWICKENHAM_LONGITUDE);
+		for (Content content : results) {		
+			assertTrue("Result with place '" + content.getPlace() + "' is further than expected from named location", isWithinAboutTenKilometesOf(TWICKENHAM_LATITUDE, TWICKENHAM_LONGITUDE, content.getPlace()));
+		}
+	}
+
+	@Test
 	public void canLoadItemsForSpecificUser() throws Exception {		
 		List<Content> results = api.user(USER);
-		assertEquals(20, results.size());
+		assertFalse(results.isEmpty());
 		for (Content result : results) {
 			assertEquals("Result of search restricted by user contained a result with an unexpected user: " + result.toString(), USER, result.getUser().getUsername());
 		}
@@ -109,6 +136,13 @@ public class N0ticeApiFunctionalTest {
 		Content content = api.get("report/1054");
 		assertTrue(content.getUser().getProfileImage().startsWith("http://"));
 		assertTrue(content.getUser().getProfileImage().endsWith("/images/profile/small/c1890f2a09cdba36.jpg"));
+	}
+	
+	private boolean isWithinAboutTenKilometesOf(double latitude, double longitude, Place place) {
+		final int radius = 10;
+		final double woobleInDegrees = radius * 0.01;		
+		return place.getLatitude() > latitude - woobleInDegrees && place.getLatitude() < latitude + woobleInDegrees 
+			&& place.getLongitude() > longitude - woobleInDegrees && place.getLongitude() < longitude + woobleInDegrees;
 	}
 	
 }

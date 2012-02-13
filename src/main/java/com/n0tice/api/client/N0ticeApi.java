@@ -36,7 +36,11 @@ public class N0ticeApi {
 	public List<Content> near(String locationName) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.near(locationName), UTF_8));
 	}
-
+	
+	public List<Content> near(double latitude, double longitude) throws HttpFetchException, ParsingException {
+		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.near(latitude, longitude), UTF_8));
+	}
+	
 	public List<Content> user(String userName) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.user(userName), UTF_8));
 	}
