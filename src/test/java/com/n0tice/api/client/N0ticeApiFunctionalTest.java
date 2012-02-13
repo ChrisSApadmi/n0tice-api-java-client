@@ -16,7 +16,6 @@ public class N0ticeApiFunctionalTest {
 	private static final String TAG = "reports/tag/hackney";
 	private static final String API_URL_ENV_PROP_KEY = "n0ticeapiurl";
 	private static final String LIVE_API_URL = "http://n0ticeapis.com/1";
-	private static final String CONTENT_TYPE = "offer";
 	private static final String USER = "mattmcalister";
 	private static final String NOTICE_BOARD = "northerner";
 	private static final String TYPE = "offer";
@@ -58,10 +57,10 @@ public class N0ticeApiFunctionalTest {
 	
 	@Test
 	public void canRestrictSearchResultByContentType() throws Exception {
-		List<Content> results = api.type(CONTENT_TYPE);
+		List<Content> results = api.type(TYPE);
 		assertEquals(20, results.size());
 		for (Content result : results) {
-			assertEquals("Result of search restricted by content type contained an unexpected result: " + result.toString(), CONTENT_TYPE, result.getType());
+			assertEquals("Result of search restricted by content type contained an unexpected result: " + result.toString(), TYPE, result.getType());
 		}
 	}
 	
