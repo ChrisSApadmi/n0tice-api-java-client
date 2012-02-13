@@ -15,11 +15,11 @@ public class Content {
 	final private String noticeBoard;
 	final private Date created;
 	final private Date modified;
-	final private List<String> tags;
+	final private List<Tag> tags;
 	
 	public Content(String id, String apiUrl, String webUrl, String type,
 			String headline, Place place, User user, String noticeBoard,
-			Date created, Date modified, List<String> tags) {
+			Date created, Date modified, List<Tag> tags) {
 		super();
 		this.id = id;
 		this.apiUrl = apiUrl;
@@ -74,7 +74,7 @@ public class Content {
 		return modified;
 	}
 
-	public List<String> getTags() {
+	public List<Tag> getTags() {
 		return tags;
 	}
 	

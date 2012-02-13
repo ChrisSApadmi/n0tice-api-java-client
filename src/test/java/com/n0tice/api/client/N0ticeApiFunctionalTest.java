@@ -138,6 +138,13 @@ public class N0ticeApiFunctionalTest {
 		assertTrue(content.getUser().getProfileImage().endsWith("/images/profile/small/c1890f2a09cdba36.jpg"));
 	}
 	
+	@Test
+	public void singleReportsShouldShowTagsWithCorrectTagIdFields() throws Exception {
+		Content content = api.get("report/2527");
+		assertFalse(content.getTags().isEmpty());
+		assertEquals("reports/tag/hackney", content.getTags().get(0).getId());
+	}
+	
 	private boolean isWithinAboutTenKilometesOf(double latitude, double longitude, Place place) {
 		final int radius = 10;
 		final double woobleInDegrees = radius * 0.01;		

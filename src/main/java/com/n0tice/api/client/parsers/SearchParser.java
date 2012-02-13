@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.Place;
+import com.n0tice.api.client.model.Tag;
 import com.n0tice.api.client.model.User;
 
 public class SearchParser {
@@ -113,12 +114,12 @@ public class SearchParser {
 		return DateTime.parse(dateString).toDate();
 	}
 	
-	private List<String> parseTags(JSONObject contentItemJSON) throws JSONException {
+	private List<Tag> parseTags(JSONObject contentItemJSON) throws JSONException {
 		if (contentItemJSON.has(TAGS)) {
-			List<String> tags = new ArrayList<String>();
+			List<Tag> tags = new ArrayList<Tag>();
 			JSONArray jsonTags = contentItemJSON.getJSONArray(TAGS);
 			for (int i = 0; i < jsonTags.length(); i++) {
-				tags.add(jsonTags.getString(i));				
+				tags.add(new Tag(jsonTags.getString(i)));
 			}
 			return tags;
 		}
