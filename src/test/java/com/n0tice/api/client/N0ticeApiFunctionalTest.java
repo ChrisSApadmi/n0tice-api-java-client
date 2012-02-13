@@ -58,7 +58,7 @@ public class N0ticeApiFunctionalTest {
 	
 	@Test
 	public void canLoadItemsNearNamedLocation() throws Exception {		
-		List<Content> results = api.near("Twickenham, London");
+		List<Content> results = api.near("Twickenham");
 		assertFalse(results.isEmpty());
 		for (Content content : results) {		
 			assertTrue("Result with place '" + content.getPlace() + "' is further than expected from named location", isWithinAboutTenKilometesOf(TWICKENHAM_LATITUDE, TWICKENHAM_LONGITUDE, content.getPlace()));
@@ -66,7 +66,7 @@ public class N0ticeApiFunctionalTest {
 	}
 	
 	@Test
-	public void canLoadItemsNearLatitideAndLonditude() throws Exception {		
+	public void canLoadItemsNearLatitideAndLongitude() throws Exception {		
 		List<Content> results = api.near(TWICKENHAM_LATITUDE, TWICKENHAM_LONGITUDE);
 		for (Content content : results) {		
 			assertTrue("Result with place '" + content.getPlace() + "' is further than expected from named location", isWithinAboutTenKilometesOf(TWICKENHAM_LATITUDE, TWICKENHAM_LONGITUDE, content.getPlace()));
