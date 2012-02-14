@@ -119,7 +119,10 @@ public class SearchParser {
 			List<Tag> tags = new ArrayList<Tag>();
 			JSONArray jsonTags = contentItemJSON.getJSONArray(TAGS);
 			for (int i = 0; i < jsonTags.length(); i++) {
-				tags.add(new Tag(jsonTags.getString(i)));
+				JSONObject jsonTag = jsonTags.getJSONObject(i);
+				tags.add(new Tag(jsonTag.getString("id"),
+						jsonTag.getString("slug"),
+						jsonTag.getString("name")));
 			}
 			return tags;
 		}

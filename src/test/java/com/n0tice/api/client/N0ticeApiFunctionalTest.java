@@ -139,14 +139,29 @@ public class N0ticeApiFunctionalTest {
 	public void singleReportsShouldShowFullyQualifiedProfileImageForPostingUser() throws Exception {
 		Content content = api.get("report/1054");
 		assertTrue(content.getUser().getProfileImage().startsWith("http://"));
-		assertTrue(content.getUser().getProfileImage().endsWith("/images/profile/small/c1890f2a09cdba36.jpg"));
+		System.out.println(content.getUser().getProfileImage());
+		assertTrue(content.getUser().getProfileImage().endsWith("/images/profile/small/efdf615faf4cd167.jpg"));
 	}
 	
 	@Test
 	public void singleReportsShouldShowTagsWithCorrectTagIdFields() throws Exception {
 		Content content = api.get("report/2527");
 		assertFalse(content.getTags().isEmpty());
-		assertEquals("reports/tag/hackney", content.getTags().get(0).getId());
+		assertEquals("report/tags/hackney", content.getTags().get(0).getId());
+	}
+	
+	@Test
+	public void singleEventsShouldShowTagsWithCorrectTagIdFields() throws Exception {
+		Content content = api.get("event/551");
+		assertFalse(content.getTags().isEmpty());
+		assertEquals("event/tags/real-ale", content.getTags().get(1).getId());
+	}
+	
+	@Test
+	public void singleOffersShouldShowTagsWithCorrectTagIdFields() throws Exception {
+		Content content = api.get("offer/430");
+		assertFalse(content.getTags().isEmpty());
+		assertEquals("offer/tags/valentines", content.getTags().get(0).getId());
 	}
 	
 	private boolean isWithinAboutTenKilometesOf(double latitude, double longitude, Place place) {
