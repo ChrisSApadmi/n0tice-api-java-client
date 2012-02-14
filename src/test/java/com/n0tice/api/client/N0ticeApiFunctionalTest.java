@@ -39,6 +39,10 @@ public class N0ticeApiFunctionalTest {
 		assertEquals(20, api.latest().size());		
 	}
 	
+	public void canLimitNumberOfResults() throws Exception {
+		fail();
+	}
+	
 	@Test
 	public void searchResultsShowsTotalMatchesCount() throws Exception {
 		fail();
