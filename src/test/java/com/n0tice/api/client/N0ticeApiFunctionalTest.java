@@ -146,6 +146,11 @@ public class N0ticeApiFunctionalTest {
 		System.out.println(content.getUser().getProfileImage());
 		assertTrue(content.getUser().getProfileImage().endsWith("/images/profile/small/efdf615faf4cd167.jpg"));
 	}
+
+	@Test
+	public void singleEventsShouldShowFullyQualifiedProfileImageForPostingUser() throws Exception {
+		fail();
+	}
 	
 	@Test
 	public void singleReportsShouldShowTagsWithCorrectTagIdFields() throws Exception {
