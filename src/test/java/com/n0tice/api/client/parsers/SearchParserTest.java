@@ -3,13 +3,12 @@ package com.n0tice.api.client.parsers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.List;
-
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.n0tice.api.client.model.Content;
+import com.n0tice.api.client.model.ResultSet;
 
 public class SearchParserTest {
 
@@ -22,10 +21,12 @@ public class SearchParserTest {
 	
 	@Test
 	public void canParseContentItemsFromSearchResults() throws Exception {		
-		List<Content> parsedItems = searchParser.parseSearchResults(ContentLoader.loadContent("latestItems.json"));
+		ResultSet results = searchParser.parseSearchResults(ContentLoader.loadContent("latestItems.json"));
+		assertEquals(2628, results.getTotalMatches());
+		assertEquals(60, results.getStartIndex());
 		
-		assertEquals(20, parsedItems.size());
-		Content firstItem = parsedItems.get(0);
+		assertEquals(20, results.getContent().size());
+		Content firstItem = results.getContent().get(0);
 		assertEquals("report/2443/hackney-shares-top-position-in-london-jobless-league", firstItem.getId());
 		assertEquals("/report/2443", firstItem.getApiUrl());
 		assertEquals("http://hackney.n0tice.com/report/2443/hackney-shares-top-position-in-london-jobless-league", firstItem.getWebUrl());

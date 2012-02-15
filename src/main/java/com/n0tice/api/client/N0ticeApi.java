@@ -1,10 +1,9 @@
 package com.n0tice.api.client;
 
-import java.util.List;
-
 import com.n0tice.api.client.exceptions.HttpFetchException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
+import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.parsers.SearchParser;
 import com.n0tice.api.client.urls.UrlBuilder;
 import com.n0tice.api.client.util.HttpFetcher;
@@ -29,31 +28,31 @@ public class N0ticeApi {
 		this.searchParser = searchParser;	
 	}
 	
-	public List<Content> latest() throws HttpFetchException, ParsingException {
+	public ResultSet latest() throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.latest(), UTF_8));
 	}
 
-	public List<Content> near(String locationName) throws HttpFetchException, ParsingException {
+	public ResultSet near(String locationName) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.near(locationName), UTF_8));
 	}
 	
-	public List<Content> near(double latitude, double longitude) throws HttpFetchException, ParsingException {
+	public ResultSet near(double latitude, double longitude) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.near(latitude, longitude), UTF_8));
 	}
 	
-	public List<Content> user(String userName) throws HttpFetchException, ParsingException {
+	public ResultSet user(String userName) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.user(userName), UTF_8));
 	}
 
-	public List<Content> type(String type) throws HttpFetchException, ParsingException {
+	public ResultSet type(String type) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.type(type), UTF_8));
 	}
 	
-	public List<Content> noticeboard(String noticeBoard) throws HttpFetchException, ParsingException {
+	public ResultSet noticeboard(String noticeBoard) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.noticeboard(noticeBoard), UTF_8));
 	}
 	
-	public List<Content> tag(String tag)  throws HttpFetchException, ParsingException {
+	public ResultSet tag(String tag)  throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.tag(tag), UTF_8));
 	}
 	

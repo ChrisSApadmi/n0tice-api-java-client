@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.Place;
+import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.Tag;
 import com.n0tice.api.client.model.User;
 
@@ -33,9 +34,11 @@ public class SearchParser {
 	private static final String USERNAME = "username";
 	private static final String PROFILE_IMAGE = "profileImage";
 
-	public List<Content> parseSearchResults(String json) throws ParsingException {
+	public ResultSet parseSearchResults(String json) throws ParsingException {
 		try {
-			JSONObject searchResultsJSON = new JSONObject(json);			
+			JSONObject searchResultsJSON = new JSONObject(json);
+			final int totalMatches = searchResultsJSON.getInt("numberFound");
+			final int startIndex = searchResultsJSON.getInt("startIndex");
 			if (searchResultsJSON.has(RESULTS)) {
 				List<Content> contentItems = new ArrayList<Content>();
 				
@@ -44,8 +47,8 @@ public class SearchParser {
 					JSONObject contentItem = resultContentItems.getJSONObject(i);					
 					contentItems.add(jsonToContentItem(contentItem));
 				}
-				return contentItems;
-			}			
+				return new ResultSet(totalMatches, startIndex, contentItems);
+			}
 			
 		} catch (JSONException e) {
 			e.printStackTrace();

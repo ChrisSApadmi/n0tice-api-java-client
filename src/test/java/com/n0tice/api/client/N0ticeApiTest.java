@@ -3,17 +3,15 @@ package com.n0tice.api.client;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.n0tice.api.client.N0ticeApi;
 import com.n0tice.api.client.exceptions.HttpFetchException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
+import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.parsers.SearchParser;
 import com.n0tice.api.client.urls.UrlBuilder;
 import com.n0tice.api.client.util.HttpFetcher;
@@ -36,7 +34,7 @@ public class N0ticeApiTest {
 	@Mock HttpFetcher httpFetcher;	
 	@Mock SearchParser searchParser;
 	
-	@Mock List<Content> latestItems;
+	@Mock ResultSet latestItems;
 	@Mock Content report;
 	
 	private N0ticeApi api;
@@ -53,7 +51,7 @@ public class N0ticeApiTest {
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
 		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
-		List<Content> returnedItems = api.latest();
+		ResultSet returnedItems = api.latest();
 		
 		assertEquals(latestItems, returnedItems);		
 	}
@@ -75,7 +73,7 @@ public class N0ticeApiTest {
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
 		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
-		List<Content> returnedItems = api.near(LOCATION_NAME);
+		ResultSet returnedItems = api.near(LOCATION_NAME);
 		
 		assertEquals(latestItems, returnedItems);		
 	}
@@ -86,7 +84,7 @@ public class N0ticeApiTest {
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
 		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
-		List<Content> returnedItems = api.user(USER_NAME);
+		ResultSet returnedItems = api.user(USER_NAME);
 		
 		assertEquals(latestItems, returnedItems);		
 	}
@@ -97,7 +95,7 @@ public class N0ticeApiTest {
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
 		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
-		List<Content> returnedItems = api.type(CONTENT_TYPE);
+		ResultSet returnedItems = api.type(CONTENT_TYPE);
 		
 		assertEquals(latestItems, returnedItems);	
 	}
@@ -108,7 +106,7 @@ public class N0ticeApiTest {
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
 		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
-		List<Content> returnedItems = api.noticeboard(NOTICE_BOARD);
+		ResultSet returnedItems = api.noticeboard(NOTICE_BOARD);
 		
 		assertEquals(latestItems, returnedItems);	
 	}
@@ -119,7 +117,7 @@ public class N0ticeApiTest {
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
 		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
-		List<Content> returnedItems = api.tag(TAG);
+		ResultSet returnedItems = api.tag(TAG);
 		
 		assertEquals(latestItems, returnedItems);	
 	}
@@ -130,7 +128,7 @@ public class N0ticeApiTest {
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
 		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
-		List<Content> returnedItems = api.type(TYPE);
+		ResultSet returnedItems = api.type(TYPE);
 		
 		assertEquals(latestItems, returnedItems);	
 	}

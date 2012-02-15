@@ -6,13 +6,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.Place;
+import com.n0tice.api.client.model.ResultSet;
 
 public class N0ticeApiFunctionalTest {
 	
@@ -36,7 +35,7 @@ public class N0ticeApiFunctionalTest {
 
 	@Test
 	public void canLoadLatestItems() throws Exception {		
-		assertEquals(20, api.latest().size());		
+		assertEquals(20, api.latest().getContent().size());		
 	}
 	
 	public void canLimitNumberOfResults() throws Exception {
@@ -45,70 +44,75 @@ public class N0ticeApiFunctionalTest {
 	
 	@Test
 	public void searchResultsShowsTotalMatchesCount() throws Exception {
-		fail();
+		assertTrue(api.latest().getTotalMatches() > 1000);		
 	}
 	
 	@Test
-	public void searchResultsShowsCorrectStartIndex() throws Exception {
-		fail();
+	public void searchResultsShowsCorrectStartIndexForNoPagination() throws Exception {
+		assertEquals(0, api.latest().getStartIndex());
+	}
+	
+	@Test
+	public void searchResultsShowsCorrectStartIndexAsTheUserPaginations() throws Exception {
+		fail();	
 	}
 	
 	@Test
 	public void searchResultsShouldHaveTypeSet() throws Exception {		
-		for (Content content : api.latest()) {
+		for (Content content : api.latest().getContent()) {
 			assertNotNull(content.getType());
 		}
 	}
 	
 	@Test
 	public void canLoadItemsNearNamedLocation() throws Exception {		
-		List<Content> results = api.near("Twickenham");
-		assertFalse(results.isEmpty());
-		for (Content content : results) {		
+		ResultSet results = api.near("Twickenham");
+		assertFalse(results.getContent().isEmpty());
+		for (Content content : results.getContent()) {		
 			assertTrue("Result with place '" + content.getPlace() + "' is further than expected from named location", isWithinAboutTenKilometesOf(TWICKENHAM_LATITUDE, TWICKENHAM_LONGITUDE, content.getPlace()));
 		}
 	}
 	
 	@Test
 	public void canLoadItemsNearLatitideAndLongitude() throws Exception {		
-		List<Content> results = api.near(TWICKENHAM_LATITUDE, TWICKENHAM_LONGITUDE);
-		for (Content content : results) {		
+		ResultSet results = api.near(TWICKENHAM_LATITUDE, TWICKENHAM_LONGITUDE);
+		for (Content content : results.getContent()) {		
 			assertTrue("Result with place '" + content.getPlace() + "' is further than expected from named location", isWithinAboutTenKilometesOf(TWICKENHAM_LATITUDE, TWICKENHAM_LONGITUDE, content.getPlace()));
 		}
 	}
 
 	@Test
 	public void canLoadItemsForSpecificUser() throws Exception {		
-		List<Content> results = api.user(USER);
-		assertFalse(results.isEmpty());
-		for (Content result : results) {
+		ResultSet results = api.user(USER);
+		assertFalse(results.getContent().isEmpty());
+		for (Content result : results.getContent()) {
 			assertEquals("Result of search restricted by user contained a result with an unexpected user: " + result.toString(), USER, result.getUser().getUsername());
 		}
 	}
 	
 	@Test
 	public void canRestrictSearchResultByContentType() throws Exception {
-		List<Content> results = api.type(TYPE);
-		assertEquals(20, results.size());
-		for (Content result : results) {
+		ResultSet results = api.type(TYPE);
+		assertEquals(20, results.getContent().size());
+		for (Content result : results.getContent()) {
 			assertEquals("Result of search restricted by content type contained an unexpected result: " + result.toString(), TYPE, result.getType());
 		}
 	}
 	
 	@Test
 	public void canRestrictSearchResultByNoticeboard() throws Exception {
-		List<Content> results = api.noticeboard(NOTICE_BOARD);
-		assertEquals(20, results.size());
-		for (Content result : results) {
+		ResultSet results = api.noticeboard(NOTICE_BOARD);
+		assertEquals(20, results.getContent().size());
+		for (Content result : results.getContent()) {
 			assertEquals("Result of search restricted by notice board contained an unexpected result: " + result.toString(), NOTICE_BOARD, result.getNoticeBoard());
 		}
 	}
 	
 	@Test
 	public void canRestrictSearchToSingleTag() throws Exception {
-		List<Content> results = api.tag(TAG);
-		assertTrue(results.size() > 0);
-		for (Content result : results) {
+		ResultSet results = api.tag(TAG);
+		assertTrue(results.getContent().size() > 0);
+		for (Content result : results.getContent()) {
 			assertTrue("Result of search restricted by tag contained an unexpected result: " + result.toString(), result.getTags().contains(TAG));
 		}
 	}
