@@ -12,12 +12,14 @@ import org.junit.Test;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.Place;
 import com.n0tice.api.client.model.ResultSet;
+import com.n0tice.api.client.model.Tag;
 
 public class N0ticeApiFunctionalTest {
 	
+	private static final String EVENT = "event";
 	private static final double TWICKENHAM_LATITUDE = 51.446144;
 	private static final double TWICKENHAM_LONGITUDE = -0.329719;
-	private static final String TAG = "reports/tag/hackney";
+	private static final String TAG = "report/tags/hackney";
 	private static final String API_URL_ENV_PROP_KEY = "n0ticeapiurl";
 	private static final String LIVE_API_URL = "http://n0ticeapis.com/1";
 	private static final String USER = "mattmcalister";
@@ -61,6 +63,14 @@ public class N0ticeApiFunctionalTest {
 	public void searchResultsShouldHaveTypeSet() throws Exception {		
 		for (Content content : api.latest().getContent()) {
 			assertNotNull(content.getType());
+		}
+	}
+	
+	@Test
+	public void eventsSearchResultsShouldHaveStartAndEndDateFieldsSet() throws Exception {
+		for (Content content : api.type(EVENT).getContent()) {
+			//assertNotNull((Event) content.getType());	TODO implement content types
+			fail();
 		}
 	}
 	
@@ -113,7 +123,7 @@ public class N0ticeApiFunctionalTest {
 		ResultSet results = api.tag(TAG);
 		assertTrue(results.getContent().size() > 0);
 		for (Content result : results.getContent()) {
-			assertTrue("Result of search restricted by tag contained an unexpected result: " + result.toString(), result.getTags().contains(TAG));
+			assertTrue("Result of search restricted by tag contained an unexpected result: " + result.getTags().toString(), result.getTags().contains(new Tag(TAG)));
 		}
 	}
 	
