@@ -4,9 +4,9 @@ public class User {
 	
 	private final String username;
 	private String displayName;
-	private String profileImage;
+	private Image profileImage;
 	
-	public User(String username, String displayName, String profileImage) {
+	public User(String username, String displayName, Image profileImage) {
 		this.username = username;
 		this.displayName = displayName;
 		this.profileImage = profileImage;
@@ -20,7 +20,7 @@ public class User {
 		return displayName;
 	}
 
-	public String getProfileImage() {
+	public Image getProfileImage() {
 		return profileImage;
 	}
 

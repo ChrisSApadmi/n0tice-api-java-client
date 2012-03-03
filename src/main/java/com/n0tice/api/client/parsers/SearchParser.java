@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
+import com.n0tice.api.client.model.Image;
 import com.n0tice.api.client.model.Place;
 import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.Tag;
@@ -18,6 +19,7 @@ import com.n0tice.api.client.model.User;
 
 public class SearchParser {
 
+	private static final String SMALL = "small";
 	private static final String DISPLAY_NAME = "displayName";
 	private static final String TAGS = "tags";
 	private static final String USER = "user";
@@ -63,12 +65,13 @@ public class SearchParser {
 		if (contentItemJSON.has(USER)) {
 			JSONObject userJSON = contentItemJSON.getJSONObject(USER);			
 			String displayName = null;
-			String profileImage = null;
+			Image profileImage = null;
 			if (userJSON.has(DISPLAY_NAME)) {
 				displayName = userJSON.getString(DISPLAY_NAME);
 			}
 			if (userJSON.has(PROFILE_IMAGE)) {
-				profileImage = userJSON.getString(PROFILE_IMAGE);
+				JSONObject imageJSON = userJSON.getJSONObject(PROFILE_IMAGE);
+				profileImage = new Image(imageJSON.getString(SMALL));
 			}
 			
 			JSONObject userJson = contentItemJSON.getJSONObject(USER);

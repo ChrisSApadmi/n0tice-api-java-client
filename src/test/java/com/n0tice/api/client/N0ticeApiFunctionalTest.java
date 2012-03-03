@@ -152,14 +152,17 @@ public class N0ticeApiFunctionalTest {
 	@Test
 	public void singleReportsShouldShowFullyQualifiedProfileImageForPostingUser() throws Exception {
 		Content content = api.get("report/1054");
-		assertTrue(content.getUser().getProfileImage().startsWith("http://"));
+		assertTrue(content.getUser().getProfileImage().getSmall().startsWith("http://"));
 		System.out.println(content.getUser().getProfileImage());
-		assertTrue(content.getUser().getProfileImage().endsWith("/images/profile/small/efdf615faf4cd167.jpg"));
+		assertTrue(content.getUser().getProfileImage().getSmall().endsWith("/images/profile/small/efdf615faf4cd167.jpg"));
 	}
 
 	@Test
 	public void singleEventsShouldShowFullyQualifiedProfileImageForPostingUser() throws Exception {
-		fail();
+		Content content = api.get("event/555");
+		assertTrue(content.getUser().getProfileImage().getSmall().startsWith("http://"));
+		System.out.println(content.getUser().getProfileImage());
+		assertTrue(content.getUser().getProfileImage().getSmall().endsWith("/images/profile/small/827ef32cee7ecff6.jpg"));
 	}
 	
 	@Test
