@@ -16,6 +16,8 @@ public class N0ticeApi {
 	final private HttpFetcher httpFetcher;
 	final private SearchParser searchParser;
 	
+	private int page = 1;
+	
 	public N0ticeApi(String apiUrl) {
 		this.urlBuilder = new UrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
@@ -29,7 +31,7 @@ public class N0ticeApi {
 	}
 	
 	public ResultSet latest() throws HttpFetchException, ParsingException {
-		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.latest(), UTF_8));
+		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.page(page).latest(), UTF_8));
 	}
 
 	public ResultSet near(String locationName) throws HttpFetchException, ParsingException {
@@ -58,6 +60,11 @@ public class N0ticeApi {
 	
 	public Content get(String id) throws HttpFetchException, ParsingException {
 		return searchParser.parseReport(httpFetcher.fetchContent(urlBuilder.get(id), UTF_8));
+	}
+
+	public N0ticeApi page(int page) {
+		this.page = page;
+		return this;
 	}
 	
 }

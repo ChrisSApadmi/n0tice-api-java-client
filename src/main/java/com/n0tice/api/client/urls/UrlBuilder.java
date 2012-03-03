@@ -11,12 +11,18 @@ public class UrlBuilder {
 
 	final private String apiUrl;
 
+	private int page = 0;
+
 	public UrlBuilder(String apiUrl) {
 		this.apiUrl = apiUrl;
 	}
 	
 	public String latest() {
-		return apiUrl + SEARCH;
+		String url = apiUrl + SEARCH;
+		if (page > 0) {
+			url = url + "?page=" + page;
+		}
+		return url;
 	}
 
 	public String near(String location) {
@@ -53,6 +59,11 @@ public class UrlBuilder {
 		} catch (UnsupportedEncodingException e) {
 			return value;
 		}
+	}
+
+	public UrlBuilder page(int page) {
+		this.page = page;
+		return this;
 	}
 	
 }

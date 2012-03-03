@@ -56,7 +56,7 @@ public class N0ticeApiFunctionalTest {
 	
 	@Test
 	public void searchResultsShowsCorrectStartIndexAsTheUserPaginations() throws Exception {
-		fail();	
+		assertEquals(40, api.page(3).latest().getStartIndex());
 	}
 	
 	@Test
