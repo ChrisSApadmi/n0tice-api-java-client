@@ -20,6 +20,7 @@ public class N0ticeApiFunctionalTest {
 	private static final double TWICKENHAM_LATITUDE = 51.446144;
 	private static final double TWICKENHAM_LONGITUDE = -0.329719;
 	private static final String TAG = "report/tags/hackney";
+	private static final String ANOTHER_TAG = "reports/tags/crime";
 	private static final String API_URL_ENV_PROP_KEY = "n0ticeapiurl";
 	private static final String LIVE_API_URL = "http://n0ticeapis.com/1";
 	private static final String USER = "mattmcalister";
@@ -31,8 +32,7 @@ public class N0ticeApiFunctionalTest {
 	@Before
 	public void setup() {		
 		final String apiUrl = System.getenv(API_URL_ENV_PROP_KEY) != null ? System.getenv(API_URL_ENV_PROP_KEY) : LIVE_API_URL;
-		System.out.println("Api url is: " + apiUrl);
-		api = new N0ticeApi(apiUrl);
+		api = new N0ticeApi("http:/dev.n0ticeapis.com/1");
 	}
 
 	@Test
@@ -128,6 +128,12 @@ public class N0ticeApiFunctionalTest {
 	}
 	
 	@Test
+	public void queriesWithMultipleTagsShouldReturnRecordsMatchingEthierTag() throws Exception {
+		ResultSet results = api.tag(TAG);	// TODO implement double tag queries
+		fail();
+	}
+	
+	@Test
 	public void canLoadSingleReport() throws Exception {
 		assertEquals("Finsbury Park Road. Neighbour's car broken into.", api.get("report/1054").getHeadline());
 	}
@@ -152,7 +158,7 @@ public class N0ticeApiFunctionalTest {
 	@Test
 	public void singleReportsShouldShowFullyQualifiedProfileImageForPostingUser() throws Exception {
 		Content content = api.get("report/1054");
-		String userProfileSmallImageUrl = content.getUser().getProfileImage().getSmall();
+		final String userProfileSmallImageUrl = content.getUser().getProfileImage().getSmall();
 		assertTrue(userProfileSmallImageUrl.startsWith("http://"));
 		assertTrue(userProfileSmallImageUrl.endsWith("/images/profile/small/b71d44947e8aeaa3.jpg"));
 	}
