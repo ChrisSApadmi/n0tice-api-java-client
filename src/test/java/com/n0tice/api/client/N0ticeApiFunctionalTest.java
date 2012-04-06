@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.Place;
 import com.n0tice.api.client.model.ResultSet;
+import com.n0tice.api.client.model.SearchQuery;
 import com.n0tice.api.client.model.Tag;
 
 public class N0ticeApiFunctionalTest {
@@ -40,8 +41,9 @@ public class N0ticeApiFunctionalTest {
 		assertEquals(20, api.latest().getContent().size());		
 	}
 	
+	@Test
 	public void canLimitNumberOfResults() throws Exception {
-		fail();
+		assertEquals(3, api.search(new SearchQuery().limit(3)).getContent().size());
 	}
 	
 	@Test

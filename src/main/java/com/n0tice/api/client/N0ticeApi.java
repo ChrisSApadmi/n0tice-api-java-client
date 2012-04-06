@@ -4,7 +4,9 @@ import com.n0tice.api.client.exceptions.HttpFetchException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.ResultSet;
+import com.n0tice.api.client.model.SearchQuery;
 import com.n0tice.api.client.parsers.SearchParser;
+import com.n0tice.api.client.urls.SearchUrlBuilder;
 import com.n0tice.api.client.urls.UrlBuilder;
 import com.n0tice.api.client.util.HttpFetcher;
 
@@ -15,19 +17,16 @@ public class N0ticeApi {
 	final private UrlBuilder urlBuilder;
 	final private HttpFetcher httpFetcher;
 	final private SearchParser searchParser;
+	final private String apiUrl;
 	
 	private int page = 1;
+
 	
 	public N0ticeApi(String apiUrl) {
 		this.urlBuilder = new UrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
 		this.searchParser = new SearchParser();	
-	}
-	
-	public N0ticeApi(UrlBuilder urlBuilder, HttpFetcher httpFetcher, SearchParser searchParser) {
-		this.urlBuilder = urlBuilder;
-		this.httpFetcher = httpFetcher;
-		this.searchParser = searchParser;	
+		this.apiUrl = apiUrl;
 	}
 	
 	public ResultSet latest() throws HttpFetchException, ParsingException {
@@ -65,6 +64,12 @@ public class N0ticeApi {
 	public N0ticeApi page(int page) {
 		this.page = page;
 		return this;
+	}
+
+	public ResultSet search(SearchQuery query) throws ParsingException, HttpFetchException {
+		SearchUrlBuilder searchUrlBuilder = new SearchUrlBuilder(apiUrl);
+		searchUrlBuilder.limit(query.getLimit());
+		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(), UTF_8));
 	}
 	
 }
