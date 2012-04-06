@@ -33,7 +33,7 @@ public class N0ticeApiFunctionalTest {
 	@Before
 	public void setup() {		
 		final String apiUrl = System.getenv(API_URL_ENV_PROP_KEY) != null ? System.getenv(API_URL_ENV_PROP_KEY) : LIVE_API_URL;
-		api = new N0ticeApi("http:/dev.n0ticeapis.com/1");
+		api = new N0ticeApi("http://localhost:8080/api-0.0.1-SNAPSHOT");
 	}
 
 	@Test
@@ -131,8 +131,12 @@ public class N0ticeApiFunctionalTest {
 	
 	@Test
 	public void queriesWithMultipleTagsShouldReturnRecordsMatchingEthierTag() throws Exception {
-		ResultSet results = api.tag(TAG);	// TODO implement double tag queries
-		fail();
+		ResultSet results = api.search(new SearchQuery().tag(TAG).tag(ANOTHER_TAG));
+		assertTrue(results.getContent().size() > 0);
+		for (Content result : results.getContent()) {
+			final boolean resultContainsOneOfTheExpectedTags = result.getTags().contains(new Tag(TAG)) || result.getTags().contains(new Tag(ANOTHER_TAG));
+			assertTrue("Result of search restricted by tags contained an unexpected result: " + result.getTags().toString(), resultContainsOneOfTheExpectedTags);
+		}
 	}
 	
 	@Test

@@ -42,7 +42,7 @@ public class N0ticeApiTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		api = new N0ticeApi(urlBuilder, httpFetcher, searchParser);
+		api = new N0ticeApi(null);	// TODO
 	}
 	
 	@Test

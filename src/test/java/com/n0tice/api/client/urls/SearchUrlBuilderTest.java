@@ -2,6 +2,8 @@ package com.n0tice.api.client.urls;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 public class SearchUrlBuilderTest {
@@ -26,6 +28,13 @@ public class SearchUrlBuilderTest {
 		SearchUrlBuilder builder = new SearchUrlBuilder(API_URL);
 		builder.page(2);
 		assertEquals("http://api.local/search?page=2", builder.toUrl());
+	}
+	
+	@Test
+	public void canMakeMultiTagSearches() throws Exception {
+		SearchUrlBuilder builder = new SearchUrlBuilder(API_URL);		
+		builder.tags(Arrays.asList("atag", "anothertag"));
+		assertEquals("http://api.local/search?tags=atag,anothertag", builder.toUrl());
 	}
 	
 }

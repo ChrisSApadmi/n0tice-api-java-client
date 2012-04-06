@@ -68,7 +68,12 @@ public class N0ticeApi {
 
 	public ResultSet search(SearchQuery query) throws ParsingException, HttpFetchException {
 		SearchUrlBuilder searchUrlBuilder = new SearchUrlBuilder(apiUrl);
-		searchUrlBuilder.limit(query.getLimit());
+		if (query.getLimit() != null) {
+			searchUrlBuilder.limit(query.getLimit());
+		}
+		if (!query.getTags().isEmpty()) {
+			searchUrlBuilder.tags(query.getTags());
+		}
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(), UTF_8));
 	}
 	
