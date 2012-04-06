@@ -34,7 +34,7 @@ public class SearchParser {
 	private static final String HEADLINE = "headline";
 	private static final String NOTICEBOARD = "noticeboard";
 	private static final String USERNAME = "username";
-	private static final String PROFILE_IMAGE = "profileImage";
+	private static final String PROFILE_IMAGE = "image";
 
 	public ResultSet parseSearchResults(String json) throws ParsingException {
 		try {
