@@ -20,12 +20,19 @@ public class N0ticeApi {
 	final private String apiUrl;
 	
 	private int page = 1;
-
 	
 	public N0ticeApi(String apiUrl) {
 		this.urlBuilder = new UrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
 		this.searchParser = new SearchParser();	
+		this.apiUrl = apiUrl;
+	}
+	
+	public N0ticeApi(UrlBuilder urlBuilder, HttpFetcher httpFetcher, SearchParser searchParser, String apiUrl) {
+		super();
+		this.urlBuilder = urlBuilder;
+		this.httpFetcher = httpFetcher;
+		this.searchParser = searchParser;
 		this.apiUrl = apiUrl;
 	}
 	
