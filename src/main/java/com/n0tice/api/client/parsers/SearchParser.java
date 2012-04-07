@@ -35,6 +35,8 @@ public class SearchParser {
 	private static final String NOTICEBOARD = "noticeboard";
 	private static final String USERNAME = "username";
 	private static final String PROFILE_IMAGE = "image";
+	private static final String START_DATE = "startDate";
+	private static final String END_DATE = "endDate";
 
 	public ResultSet parseSearchResults(String json) throws ParsingException {
 		try {
@@ -84,6 +86,14 @@ public class SearchParser {
 			place = new Place(placeJson.getDouble(LATITUDE), placeJson.getDouble(LONGITUDE));
 		}
 		
+		Date startDate = null;
+		if (contentItemJSON.has(START_DATE)) {
+			startDate = parseDate(contentItemJSON.getString(START_DATE));
+		}
+		Date endDate = null;
+		if (contentItemJSON.has(END_DATE)) {
+			endDate = parseDate(contentItemJSON.getString(END_DATE));
+		}
 		return new Content(contentItemJSON.getString(ID), 
 				contentItemJSON.getString(API_URL), 
 				contentItemJSON.getString(WEB_URL), 
@@ -94,7 +104,9 @@ public class SearchParser {
 				getNoticeBoardFromJSON(contentItemJSON),
 				parseDate(contentItemJSON.getString("created")),
 				parseDate(contentItemJSON.getString("modified")),
-				parseTags(contentItemJSON)
+				parseTags(contentItemJSON),
+				startDate,
+				endDate
 				);
 	}
 	

@@ -69,10 +69,10 @@ public class N0ticeApiFunctionalTest {
 	}
 	
 	@Test
-	public void eventsSearchResultsShouldHaveStartAndEndDateFieldsSet() throws Exception {
+	public void eventsSearchResultsShouldHaveStartDateFieldsSet() throws Exception {
 		for (Content content : api.type(EVENT).getContent()) {
-			//assertNotNull((Event) content.getType());	TODO implement content types
-			fail();
+			assertNotNull(content.getStartDate());
+			assertNotNull(content.getEndDate());
 		}
 	}
 	
@@ -173,7 +173,6 @@ public class N0ticeApiFunctionalTest {
 	public void singleEventsShouldShowFullyQualifiedProfileImageForPostingUser() throws Exception {
 		Content content = api.get("event/555");
 		assertTrue(content.getUser().getProfileImage().getSmall().startsWith("http://"));
-		System.out.println(content.getUser().getProfileImage());
 		assertTrue(content.getUser().getProfileImage().getSmall().endsWith("/images/profile/small/827ef32cee7ecff6.jpg"));
 	}
 	
@@ -193,9 +192,9 @@ public class N0ticeApiFunctionalTest {
 	
 	@Test
 	public void singleOffersShouldShowTagsWithCorrectTagIdFields() throws Exception {
-		Content content = api.get("offer/430");
+		Content content = api.get("offer/459");
 		assertFalse(content.getTags().isEmpty());
-		assertEquals("offer/tags/valentines", content.getTags().get(0).getId());
+		assertEquals("offer/tags/armchair", content.getTags().get(0).getId());
 	}
 	
 	private boolean isWithinAboutTenKilometesOf(double latitude, double longitude, Place place) {
