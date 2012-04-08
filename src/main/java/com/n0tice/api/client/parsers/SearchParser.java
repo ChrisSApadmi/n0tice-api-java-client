@@ -19,6 +19,7 @@ import com.n0tice.api.client.model.User;
 
 public class SearchParser {
 
+	private static final String NAME = "name";
 	private static final String SMALL = "small";
 	private static final String DISPLAY_NAME = "displayName";
 	private static final String TAGS = "tags";
@@ -83,7 +84,7 @@ public class SearchParser {
 		Place place = null;
 		if (contentItemJSON.has(PLACE)) {
 			JSONObject placeJson = contentItemJSON.getJSONObject(PLACE);
-			place = new Place(placeJson.getDouble(LATITUDE), placeJson.getDouble(LONGITUDE));
+			place = new Place(placeJson.getString(NAME), placeJson.getDouble(LATITUDE), placeJson.getDouble(LONGITUDE));
 		}
 		
 		Date startDate = null;
@@ -139,7 +140,7 @@ public class SearchParser {
 			for (int i = 0; i < jsonTags.length(); i++) {
 				JSONObject jsonTag = jsonTags.getJSONObject(i);
 				tags.add(new Tag(jsonTag.getString("id"),					
-						jsonTag.has("name") ? jsonTag.getString("name") : null));
+						jsonTag.has(NAME) ? jsonTag.getString(NAME) : null));
 			}
 			return tags;
 		}
