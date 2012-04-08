@@ -21,7 +21,7 @@ public class N0ticeApiTest {
 	private static final String REPORT_ID = "/report/123";
 	private static final String LOCATION_NAME = "London";
 	private static final String USER_NAME = "User";
-	private static final String LATEST_ITEMS_URL = "http://n0ticeapi.../someuri";
+	private static final String LATEST_ITEMS_URL = "http://n0ticeapi.../search";
 	private static final String REPORT_API_URL = "http://n0ticeapi.../report/123";
 	private static final String LATEST_ITEMS_JSON = "{some json}";
 	private static final String REPORT_JSON = "{report json}";
@@ -42,11 +42,12 @@ public class N0ticeApiTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		api = new N0ticeApi(urlBuilder, httpFetcher, searchParser, "http://api.local");
+		api = new N0ticeApi(urlBuilder, httpFetcher, searchParser, "http://n0ticeapi...");
 	}
 	
 	@Test
-	public void canFetchLatestItems() throws Exception {		
+	public void canFetchLatestItems() throws Exception {
+		when(urlBuilder.page(1)).thenReturn(urlBuilder);
 		when(urlBuilder.latest()).thenReturn(LATEST_ITEMS_URL);
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
 		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
@@ -135,6 +136,7 @@ public class N0ticeApiTest {
 	
 	@Test(expected = HttpFetchException.class)
 	public void shouldThrowInformativeExceptionIfHttpFetchFails() throws Exception {
+		when(urlBuilder.page(1)).thenReturn(urlBuilder);
 		when(urlBuilder.latest()).thenReturn(LATEST_ITEMS_URL);
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenThrow(new HttpFetchException());
 		
@@ -143,6 +145,7 @@ public class N0ticeApiTest {
 	
 	@Test(expected = ParsingException.class)
 	public void shouldThrowInformativeExceptionIfParsingFails() throws Exception {
+		when(urlBuilder.page(1)).thenReturn(urlBuilder);
 		when(urlBuilder.latest()).thenReturn(LATEST_ITEMS_URL);
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
 		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenThrow(new ParsingException());
