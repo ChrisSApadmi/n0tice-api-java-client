@@ -23,8 +23,8 @@ public class N0ticeApiFunctionalTest {
 	private static final String ANOTHER_TAG = "reports/tags/crime";
 	private static final String API_URL_ENV_PROP_KEY = "n0ticeapiurl";
 	private static final String LIVE_API_URL = "http://n0ticeapis.com/1";
-	private static final String USER = "mattmcalister";
-	private static final String NOTICE_BOARD = "northerner";
+	private static final String USER = "tonytw1";
+	private static final String NOTICE_BOARD = "hackney";
 	private static final String TYPE = "offer";
 	
 	private N0ticeApi api;
@@ -113,7 +113,7 @@ public class N0ticeApiFunctionalTest {
 	@Test
 	public void canRestrictSearchResultByNoticeboard() throws Exception {
 		ResultSet results = api.noticeboard(NOTICE_BOARD);
-		assertEquals(20, results.getContent().size());
+		assertEquals(11, results.getContent().size());
 		for (Content result : results.getContent()) {
 			assertEquals("Result of search restricted by notice board contained an unexpected result: " + result.toString(), NOTICE_BOARD, result.getNoticeBoard());
 		}
