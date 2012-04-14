@@ -7,13 +7,15 @@ import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
+import com.n0tice.api.client.oauth.DevN0ticeApi;
+
 public class OauthTest {
 
 	
 	public static void main(String[] args) {
-		OAuthService service = new ServiceBuilder().provider(N0ticeApiOauthApi.class)
-        .apiKey("tonr-consumer-key")
-        .apiSecret("SHHHHH!!!!!!!!!!")
+		OAuthService service = new ServiceBuilder().provider(DevN0ticeApi.class)
+        .apiKey("testkey")
+        .apiSecret("testsecret")
         .build();
 		
 		Token requestToken = service.getRequestToken();
@@ -21,6 +23,7 @@ public class OauthTest {
 
 		System.out.println(service.getAuthorizationUrl(requestToken));
 		
+	
 	    Scanner in = new Scanner(System.in);
 	    Verifier verifier = new Verifier(in.nextLine());
 	    System.out.println();

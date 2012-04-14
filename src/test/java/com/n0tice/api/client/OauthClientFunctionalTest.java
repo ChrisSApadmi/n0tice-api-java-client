@@ -9,13 +9,15 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 
+import com.n0tice.api.client.oauth.DevN0ticeApi;
+
 public class OauthClientFunctionalTest {
 	
 	private OAuthService service;
 
 	@Before
 	public void setup() {
-		service = new ServiceBuilder().provider(N0ticeApiOauthApi.class)
+		service = new ServiceBuilder().provider(DevN0ticeApi.class)
         .apiKey("tonr-consumer-key")
         .apiSecret("SHHHHH!!!!!!!!!!")
         .build();
