@@ -14,7 +14,7 @@ import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.SearchQuery;
 import com.n0tice.api.client.model.Tag;
 
-public class N0ticeApiFunctionalTest {
+public class ReadApiFunctionalTest {
 	
 	private static final String EVENT = "event";
 	private static final double TWICKENHAM_LATITUDE = 51.446144;
