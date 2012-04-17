@@ -1,10 +1,18 @@
 package com.n0tice.api.client;
 
+import org.scribe.builder.ServiceBuilder;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
+import org.scribe.oauth.OAuthService;
+
 import com.n0tice.api.client.exceptions.HttpFetchException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.SearchQuery;
+import com.n0tice.api.client.oauth.N0ticeOauthApi;
 import com.n0tice.api.client.parsers.SearchParser;
 import com.n0tice.api.client.urls.SearchUrlBuilder;
 import com.n0tice.api.client.urls.UrlBuilder;
@@ -14,26 +22,44 @@ public class N0ticeApi {
 	
 	private static final String UTF_8 = "UTF-8";
 	
-	final private UrlBuilder urlBuilder;
-	final private HttpFetcher httpFetcher;
-	final private SearchParser searchParser;
-	final private String apiUrl;
+	private final String apiUrl;
+	private final String consumerKey;
+	private final String consumerSecret;	
+	private final Token accessToken;
+	private final UrlBuilder urlBuilder;
+	private final HttpFetcher httpFetcher;
+	private final SearchParser searchParser;
 	
 	private int page = 1;
 	
 	public N0ticeApi(String apiUrl) {
+		this.apiUrl = apiUrl;
+		this.consumerKey = null;
+		this.consumerSecret = null;
+		this.accessToken = null;
+		this.urlBuilder = new UrlBuilder(apiUrl);
+		this.httpFetcher = new HttpFetcher();
+		this.searchParser = new SearchParser();
+	}
+	
+	public N0ticeApi(String apiUrl, String consumerKey, String consumerSecret, Token accessToken) {
+		this.apiUrl = apiUrl;
+		this.consumerKey = consumerKey;
+		this.consumerSecret = consumerSecret;
+		this.accessToken = accessToken;
 		this.urlBuilder = new UrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
 		this.searchParser = new SearchParser();	
-		this.apiUrl = apiUrl;
 	}
 	
-	public N0ticeApi(UrlBuilder urlBuilder, HttpFetcher httpFetcher, SearchParser searchParser, String apiUrl) {
-		super();
+	public N0ticeApi(String apiUrl, String consumerKey, String consumerSecret, Token accessToken, UrlBuilder urlBuilder, HttpFetcher httpFetcher, SearchParser searchParser) {
+		this.apiUrl = apiUrl;
+		this.consumerKey = consumerKey;
+		this.consumerSecret = consumerSecret;
+		this.accessToken = accessToken;
 		this.urlBuilder = urlBuilder;
 		this.httpFetcher = httpFetcher;
 		this.searchParser = searchParser;
-		this.apiUrl = apiUrl;
 	}
 	
 	public ResultSet latest() throws HttpFetchException, ParsingException {
@@ -82,6 +108,24 @@ public class N0ticeApi {
 			searchUrlBuilder.tags(query.getTags());
 		}
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(), UTF_8));
+	}
+
+	public String postRepost(String headline, double latitude, double longitude, String body) {
+		OAuthService service = new ServiceBuilder().provider(new N0ticeOauthApi(apiUrl))
+			.apiKey(consumerKey)
+			.apiSecret(consumerSecret)
+			.build();
+		
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");	
+		request.addBodyParameter("headline", headline);
+		request.addBodyParameter("latitude", Double.toString(latitude));
+		request.addBodyParameter("longitude", Double.toString(longitude));
+		request.addBodyParameter("body", body);
+		service.signRequest(accessToken, request);
+	    
+		Response response = request.send();	    
+	    final String responseBody = response.getBody();
+		return responseBody;
 	}
 	
 }
