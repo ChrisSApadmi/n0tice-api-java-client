@@ -16,8 +16,8 @@ import com.n0tice.api.client.oauth.N0ticeOauthApi;
 public class WriteApiFunctionalTest {
 	
 	private static final String API_URL = "http://dev.n0ticeapis.com/1";
-	private static final String TOKEN = "7c13ca58-6454-40d7-82fe-5b04d24379a4";
-	private static final String SECRET = "hGqnaW6TwQZLopSzkH6oRwEwE4K79IUiYeIgQrNWe4Gt6HO5eRIqSFTY9e1KLBJ8ppdY5wOZCWYZTkrxEI7jhwMkbB8INB5YHRv/8on0n48=";
+	private static final String TOKEN = "6a3663d1-24c2-407f-8898-0d0aeaff130d";
+	private static final String SECRET = "IrEq7VyCY6FpCVtKKBvXSoWv/Lv8fvT0qq3EsNDnmdN3iLlnGbXgqTZGXU87fnBFQgRk7Z9weNcw9uUqd9+CgBpSjfrMWqwBmPU5X63YnVo=";
 	
 	private OAuthService service;
 
