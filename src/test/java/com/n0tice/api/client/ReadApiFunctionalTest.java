@@ -37,7 +37,7 @@ public class ReadApiFunctionalTest {
 
 	@Test
 	public void canLoadLatestItems() throws Exception {		
-		assertEquals(20, api.latest().getContent().size());		
+		assertEquals(20, api.search(new SearchQuery()).getContent().size());		
 	}
 	
 	@Test
@@ -47,22 +47,22 @@ public class ReadApiFunctionalTest {
 	
 	@Test
 	public void searchResultsShowsTotalMatchesCount() throws Exception {
-		assertTrue(api.latest().getTotalMatches() > 1000);		
+		assertTrue(api.search(new SearchQuery()).getTotalMatches() > 1000);		
 	}
 	
 	@Test
 	public void searchResultsShowsCorrectStartIndexForNoPagination() throws Exception {
-		assertEquals(0, api.latest().getStartIndex());
+		assertEquals(0, api.search(new SearchQuery()).getStartIndex());
 	}
 	
 	@Test
 	public void searchResultsShowsCorrectStartIndexAsTheUserPaginations() throws Exception {
-		assertEquals(40, api.page(3).latest().getStartIndex());
+		assertEquals(40, api.search(new SearchQuery().page(3)).getStartIndex());
 	}
 	
 	@Test
 	public void searchResultsShouldHaveTypeSet() throws Exception {		
-		for (Content content : api.latest().getContent()) {
+		for (Content content : api.search(new SearchQuery()).getContent()) {
 			assertNotNull(content.getType());
 		}
 	}

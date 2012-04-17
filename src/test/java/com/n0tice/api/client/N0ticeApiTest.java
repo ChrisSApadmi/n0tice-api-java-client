@@ -46,18 +46,6 @@ public class N0ticeApiTest {
 	}
 	
 	@Test
-	public void canFetchLatestItems() throws Exception {
-		when(urlBuilder.page(1)).thenReturn(urlBuilder);
-		when(urlBuilder.latest()).thenReturn(LATEST_ITEMS_URL);
-		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
-		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
-		
-		ResultSet returnedItems = api.latest();
-		
-		assertEquals(latestItems, returnedItems);		
-	}
-	
-	@Test
 	public void canFetchReportDetails() throws Exception {
 		when(urlBuilder.get(REPORT_ID)).thenReturn(REPORT_API_URL);
 		when(httpFetcher.fetchContent(REPORT_API_URL, "UTF-8")).thenReturn(REPORT_JSON);
@@ -136,21 +124,19 @@ public class N0ticeApiTest {
 	
 	@Test(expected = HttpFetchException.class)
 	public void shouldThrowInformativeExceptionIfHttpFetchFails() throws Exception {
-		when(urlBuilder.page(1)).thenReturn(urlBuilder);
-		when(urlBuilder.latest()).thenReturn(LATEST_ITEMS_URL);
-		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenThrow(new HttpFetchException());
+		when(urlBuilder.get("report/123")).thenReturn(REPORT_API_URL);
+		when(httpFetcher.fetchContent(REPORT_API_URL, "UTF-8")).thenThrow(new HttpFetchException());
 		
-		api.latest();
+		api.get("report/123");
 	}
 	
 	@Test(expected = ParsingException.class)
 	public void shouldThrowInformativeExceptionIfParsingFails() throws Exception {
-		when(urlBuilder.page(1)).thenReturn(urlBuilder);
-		when(urlBuilder.latest()).thenReturn(LATEST_ITEMS_URL);
-		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
-		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenThrow(new ParsingException());
+		when(urlBuilder.get("report/123")).thenReturn(REPORT_API_URL);
+		when(httpFetcher.fetchContent(REPORT_API_URL, "UTF-8")).thenReturn(REPORT_JSON);
+		when(searchParser.parseReport(REPORT_JSON)).thenThrow(new ParsingException());
 		
-		api.latest();
+		api.get("report/123");
 	}
 	
 }

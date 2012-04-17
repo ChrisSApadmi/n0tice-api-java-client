@@ -30,8 +30,6 @@ public class N0ticeApi {
 	private final HttpFetcher httpFetcher;
 	private final SearchParser searchParser;
 	
-	private int page = 1;
-	
 	public N0ticeApi(String apiUrl) {
 		this.apiUrl = apiUrl;
 		this.consumerKey = null;
@@ -62,10 +60,6 @@ public class N0ticeApi {
 		this.searchParser = searchParser;
 	}
 	
-	public ResultSet latest() throws HttpFetchException, ParsingException {
-		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.page(page).latest(), UTF_8));
-	}
-
 	public ResultSet near(String locationName) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.near(locationName), UTF_8));
 	}
@@ -93,14 +87,12 @@ public class N0ticeApi {
 	public Content get(String id) throws HttpFetchException, ParsingException {
 		return searchParser.parseReport(httpFetcher.fetchContent(urlBuilder.get(id), UTF_8));
 	}
-
-	public N0ticeApi page(int page) {
-		this.page = page;
-		return this;
-	}
-
+	
 	public ResultSet search(SearchQuery query) throws ParsingException, HttpFetchException {
 		SearchUrlBuilder searchUrlBuilder = new SearchUrlBuilder(apiUrl);
+		if (query.getPage() != null) {
+			searchUrlBuilder.page(query.getPage());
+		}
 		if (query.getLimit() != null) {
 			searchUrlBuilder.limit(query.getLimit());
 		}
