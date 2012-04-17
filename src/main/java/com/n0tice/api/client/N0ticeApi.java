@@ -1,5 +1,8 @@
 package com.n0tice.api.client;
 
+import static org.junit.Assert.*;
+
+import org.junit.Test;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -7,6 +10,7 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 
+import com.n0tice.api.client.exceptions.AuthorisationException;
 import com.n0tice.api.client.exceptions.HttpFetchException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
@@ -102,7 +106,7 @@ public class N0ticeApi {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(), UTF_8));
 	}
 
-	public Content postRepost(String headline, double latitude, double longitude, String body) throws ParsingException {
+	public Content postRepost(String headline, double latitude, double longitude, String body) throws ParsingException, AuthorisationException {
 		OAuthService service = new ServiceBuilder().provider(new N0ticeOauthApi(apiUrl))
 			.apiKey(consumerKey)
 			.apiSecret(consumerSecret)
@@ -117,8 +121,16 @@ public class N0ticeApi {
 	    
 		Response response = request.send();
 		
-	    final String responseBody = response.getBody();
-	    return searchParser.parseReport(responseBody);
+		if (response.getCode() == 200) {
+			final String responseBody = response.getBody();
+	    	return searchParser.parseReport(responseBody);
+		}
+	
+		if (response.getCode() == 401) {
+			throw new AuthorisationException();
+		}
+		
+		throw new RuntimeException();
 	}
 	
 }

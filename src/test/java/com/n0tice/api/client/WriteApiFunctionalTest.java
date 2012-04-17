@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.scribe.model.Token;
 
+import com.n0tice.api.client.exceptions.AuthorisationException;
 import com.n0tice.api.client.model.Content;
 
 public class WriteApiFunctionalTest {
@@ -34,6 +35,13 @@ public class WriteApiFunctionalTest {
 		final Content reloadedReport = api.get(result.getId());
 		assertEquals("API test", reloadedReport.getHeadline());
 		assertEquals("tonytw1", reloadedReport.getUser().getUsername());
+	}
+	
+	@Test(expected = AuthorisationException.class)
+	public void should401IfAnInvalidOauthTokenIsPresented() throws Exception {
+		api = new N0ticeApi(API_URL, CONSUMER_KEY, CONSUMER_SECRET, new Token(ACCESS_TOKEN, "Meh"));
+		
+		api.postRepost("API test", 51.0, -0.3, "Blah blah");
 	}
 	
 }
