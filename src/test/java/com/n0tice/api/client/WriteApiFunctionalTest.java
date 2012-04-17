@@ -1,10 +1,12 @@
 package com.n0tice.api.client;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.scribe.model.Token;
+
+import com.n0tice.api.client.model.Content;
 
 public class WriteApiFunctionalTest {
 	
@@ -24,11 +26,14 @@ public class WriteApiFunctionalTest {
 	}
 	
 	@Test
-	public void canPostNewReport() {		
-		final String result = api.postRepost("API test", 51.0, -0.3, "Blah blah");
-		
+	public void canPostNewReport() throws Exception {		
+		final Content result = api.postRepost("API test", 51.0, -0.3, "Blah blah");		
 		System.out.println(result);
-		assertTrue(result.contains("\"headline\":\"API test\""));
+		assertEquals("API test", result.getHeadline());
+		
+		final Content reloadedReport = api.get(result.getId());
+		assertEquals("API test", reloadedReport.getHeadline());
+		assertEquals("tonytw1", reloadedReport.getUser().getUsername());
 	}
 	
 }

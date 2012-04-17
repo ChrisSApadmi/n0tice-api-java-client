@@ -110,7 +110,7 @@ public class N0ticeApi {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(), UTF_8));
 	}
 
-	public String postRepost(String headline, double latitude, double longitude, String body) {
+	public Content postRepost(String headline, double latitude, double longitude, String body) throws ParsingException {
 		OAuthService service = new ServiceBuilder().provider(new N0ticeOauthApi(apiUrl))
 			.apiKey(consumerKey)
 			.apiSecret(consumerSecret)
@@ -123,9 +123,10 @@ public class N0ticeApi {
 		request.addBodyParameter("body", body);
 		service.signRequest(accessToken, request);
 	    
-		Response response = request.send();	    
+		Response response = request.send();
+		
 	    final String responseBody = response.getBody();
-		return responseBody;
+	    return searchParser.parseReport(responseBody);
 	}
 	
 }
