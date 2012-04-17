@@ -1,8 +1,5 @@
 package com.n0tice.api.client;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -33,6 +30,8 @@ public class N0ticeApi {
 	private final UrlBuilder urlBuilder;
 	private final HttpFetcher httpFetcher;
 	private final SearchParser searchParser;
+
+	private OAuthService service;
 	
 	public N0ticeApi(String apiUrl) {
 		this.apiUrl = apiUrl;
@@ -51,7 +50,11 @@ public class N0ticeApi {
 		this.accessToken = accessToken;
 		this.urlBuilder = new UrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
-		this.searchParser = new SearchParser();	
+		this.searchParser = new SearchParser();
+		service = new ServiceBuilder().provider(new N0ticeOauthApi(apiUrl))
+			.apiKey(consumerKey)
+			.apiSecret(consumerSecret)
+			.build();		
 	}
 	
 	public N0ticeApi(String apiUrl, String consumerKey, String consumerSecret, Token accessToken, UrlBuilder urlBuilder, HttpFetcher httpFetcher, SearchParser searchParser) {
@@ -62,6 +65,10 @@ public class N0ticeApi {
 		this.urlBuilder = urlBuilder;
 		this.httpFetcher = httpFetcher;
 		this.searchParser = searchParser;
+		service = new ServiceBuilder().provider(new N0ticeOauthApi(apiUrl))
+			.apiKey(consumerKey)
+			.apiSecret(consumerSecret)
+			.build();	
 	}
 	
 	public ResultSet near(String locationName) throws HttpFetchException, ParsingException {
@@ -106,12 +113,7 @@ public class N0ticeApi {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(), UTF_8));
 	}
 
-	public Content postRepost(String headline, double latitude, double longitude, String body) throws ParsingException, AuthorisationException {
-		OAuthService service = new ServiceBuilder().provider(new N0ticeOauthApi(apiUrl))
-			.apiKey(consumerKey)
-			.apiSecret(consumerSecret)
-			.build();
-		
+	public Content postRepost(String headline, double latitude, double longitude, String body) throws ParsingException, AuthorisationException {		
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");	
 		request.addBodyParameter("headline", headline);
 		request.addBodyParameter("latitude", Double.toString(latitude));
@@ -131,6 +133,25 @@ public class N0ticeApi {
 		}
 		
 		throw new RuntimeException();
+	}
+
+	public Content updateReport(String id, String headline, String body) throws ParsingException, AuthorisationException {	
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id);	
+		request.addBodyParameter("headline", headline);
+		service.signRequest(accessToken, request);
+		Response response = request.send();
+		
+		final String responseBody = response.getBody();
+		if (response.getCode() == 200) {
+	    	return searchParser.parseReport(responseBody);
+		}
+	
+		if (response.getCode() == 401) {
+			System.out.println(responseBody);
+			throw new AuthorisationException();
+		}
+		
+		throw new RuntimeException();		
 	}
 	
 }
