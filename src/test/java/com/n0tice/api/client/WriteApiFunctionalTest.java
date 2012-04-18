@@ -15,8 +15,8 @@ public class WriteApiFunctionalTest {
 	
 	private static final String CONSUMER_SECRET = "testsecret";
 	private static final String CONSUMER_KEY = "testkey";
-	private static final String ACCESS_TOKEN = "6a3663d1-24c2-407f-8898-0d0aeaff130d";
-	private static final String ACCESS_SECRET = "IrEq7VyCY6FpCVtKKBvXSoWv/Lv8fvT0qq3EsNDnmdN3iLlnGbXgqTZGXU87fnBFQgRk7Z9weNcw9uUqd9+CgBpSjfrMWqwBmPU5X63YnVo=";
+	private static final String ACCESS_TOKEN = "9f6be38d-835f-4824-ae94-b85220f76614";
+	private static final String ACCESS_SECRET = "oeL3AzzvWM1mPFkdOzSR6b0VypCGrrs8K6vpxMykJoW9kA2Qd8vDGZ7u27Qjb4OO1mc0KiN8yJPkokP7WG48PXMPhDApL65bIHFq1+QhZVQ=";
 	
 	private N0ticeApi api;
 
