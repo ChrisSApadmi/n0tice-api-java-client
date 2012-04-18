@@ -23,10 +23,8 @@ public class N0ticeApi {
 	
 	private static final String UTF_8 = "UTF-8";
 	
-	private final String apiUrl;
-	private final String consumerKey;
-	private final String consumerSecret;	
-	private final Token accessToken;
+	private final String apiUrl;	
+	private Token accessToken;
 	private final UrlBuilder urlBuilder;
 	private final HttpFetcher httpFetcher;
 	private final SearchParser searchParser;
@@ -35,8 +33,6 @@ public class N0ticeApi {
 	
 	public N0ticeApi(String apiUrl) {
 		this.apiUrl = apiUrl;
-		this.consumerKey = null;
-		this.consumerSecret = null;
 		this.accessToken = null;
 		this.urlBuilder = new UrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
@@ -45,8 +41,6 @@ public class N0ticeApi {
 	
 	public N0ticeApi(String apiUrl, String consumerKey, String consumerSecret, Token accessToken) {
 		this.apiUrl = apiUrl;
-		this.consumerKey = consumerKey;
-		this.consumerSecret = consumerSecret;
 		this.accessToken = accessToken;
 		this.urlBuilder = new UrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
@@ -57,18 +51,11 @@ public class N0ticeApi {
 			.build();		
 	}
 	
-	public N0ticeApi(String apiUrl, String consumerKey, String consumerSecret, Token accessToken, UrlBuilder urlBuilder, HttpFetcher httpFetcher, SearchParser searchParser) {
+	public N0ticeApi(String apiUrl, UrlBuilder urlBuilder, HttpFetcher httpFetcher, SearchParser searchParser) {
 		this.apiUrl = apiUrl;
-		this.consumerKey = consumerKey;
-		this.consumerSecret = consumerSecret;
-		this.accessToken = accessToken;
 		this.urlBuilder = urlBuilder;
 		this.httpFetcher = httpFetcher;
 		this.searchParser = searchParser;
-		service = new ServiceBuilder().provider(new N0ticeOauthApi(apiUrl))
-			.apiKey(consumerKey)
-			.apiSecret(consumerSecret)
-			.build();	
 	}
 	
 	public ResultSet near(String locationName) throws HttpFetchException, ParsingException {
