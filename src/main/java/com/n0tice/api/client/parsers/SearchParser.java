@@ -67,18 +67,7 @@ public class SearchParser {
 		User user = null;
 		if (contentItemJSON.has(USER)) {
 			JSONObject userJSON = contentItemJSON.getJSONObject(USER);			
-			String displayName = null;
-			Image profileImage = null;
-			if (userJSON.has(DISPLAY_NAME)) {
-				displayName = userJSON.getString(DISPLAY_NAME);
-			}
-			if (userJSON.has(PROFILE_IMAGE)) {
-				JSONObject imageJSON = userJSON.getJSONObject(PROFILE_IMAGE);
-				profileImage = new Image(imageJSON.getString(SMALL));
-			}
-			
-			JSONObject userJson = contentItemJSON.getJSONObject(USER);
-			user = new User(userJson.getString(USERNAME), displayName, profileImage);
+			user = jsonToUser(userJSON);
 		}
 		
 		Place place = null;
@@ -109,6 +98,22 @@ public class SearchParser {
 				startDate,
 				endDate
 				);
+	}
+
+	private User jsonToUser(JSONObject userJSON) throws JSONException {
+		User user;
+		String displayName = null;
+		Image profileImage = null;
+		if (userJSON.has(DISPLAY_NAME)) {
+			displayName = userJSON.getString(DISPLAY_NAME);
+		}
+		if (userJSON.has(PROFILE_IMAGE)) {
+			JSONObject imageJSON = userJSON.getJSONObject(PROFILE_IMAGE);
+			profileImage = new Image(imageJSON.getString(SMALL));
+		}
+		
+		user = new User(userJSON.getString(USERNAME), displayName, profileImage);
+		return user;
 	}
 	
 	public Content parseReport(String json) throws ParsingException {

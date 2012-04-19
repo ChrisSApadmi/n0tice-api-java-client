@@ -13,8 +13,10 @@ import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.SearchQuery;
+import com.n0tice.api.client.model.User;
 import com.n0tice.api.client.oauth.N0ticeOauthApi;
 import com.n0tice.api.client.parsers.SearchParser;
+import com.n0tice.api.client.parsers.UserParser;
 import com.n0tice.api.client.urls.SearchUrlBuilder;
 import com.n0tice.api.client.urls.UrlBuilder;
 import com.n0tice.api.client.util.HttpFetcher;
@@ -110,15 +112,16 @@ public class N0ticeApi {
 	    
 		Response response = request.send();
 		
+		final String responseBody = response.getBody();
 		if (response.getCode() == 200) {
-			final String responseBody = response.getBody();
 	    	return searchParser.parseReport(responseBody);
 		}
 	
 		if (response.getCode() == 401) {
 			throw new AuthorisationException();
 		}
-		
+
+		System.out.println(responseBody);
 		throw new RuntimeException();
 	}
 
@@ -126,6 +129,7 @@ public class N0ticeApi {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id);	
 		request.addBodyParameter("headline", headline);
 		service.signRequest(accessToken, request);
+		
 		Response response = request.send();
 		
 		final String responseBody = response.getBody();
@@ -139,6 +143,22 @@ public class N0ticeApi {
 		}
 		
 		throw new RuntimeException();		
+	}
+
+	public User createUser(String username, String password, String email) throws ParsingException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/new");
+		request.addBodyParameter("username", username);		
+		request.addBodyParameter("password", password);
+		request.addBodyParameter("email", password);
+		
+		Response response = request.send();
+
+		final String repsonseBody = response.getBody();
+		System.out.println(repsonseBody);
+		if (response.getCode() == 200) {
+			return new UserParser().parseCreateUserResults(repsonseBody);
+		}
+		return null;
 	}
 	
 }

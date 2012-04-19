@@ -1,17 +1,20 @@
 package com.n0tice.api.client;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.scribe.model.Token;
 
 import com.n0tice.api.client.exceptions.AuthorisationException;
 import com.n0tice.api.client.model.Content;
+import com.n0tice.api.client.model.User;
 
 public class WriteApiFunctionalTest {
 	
-	private static final String API_URL = "http://dev.n0ticeapis.com/1";
+	private static final String API_URL = "http://localhost:8080/api-0.0.1-SNAPSHOT";
 	
 	private static final String CONSUMER_SECRET = "testsecret";
 	private static final String CONSUMER_KEY = "testkey";
@@ -24,6 +27,18 @@ public class WriteApiFunctionalTest {
 	public void setup() {
 		Token accessToken = new Token(ACCESS_TOKEN, ACCESS_SECRET);
 		api = new N0ticeApi(API_URL, CONSUMER_KEY, CONSUMER_SECRET, accessToken);		
+	}
+	
+	@Test
+	public void canCreateNewUser() throws Exception {		
+		final String username = "testuser" + DateTime.now().getSecondOfDay();
+		System.out.println("Creating user: " + username);
+		
+		final User newUser = api.createUser(username, "testpassword", username + "@localhost");
+		
+		System.out.println(newUser);
+		assertEquals(username, newUser.getUsername());
+		assertEquals(username, newUser.getDisplayName());
 	}
 	
 	@Test
