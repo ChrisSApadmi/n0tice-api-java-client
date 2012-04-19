@@ -18,8 +18,8 @@ public class WriteApiFunctionalTest {
 	
 	private static final String CONSUMER_SECRET = "testsecret";
 	private static final String CONSUMER_KEY = "testkey";
-	private static final String ACCESS_TOKEN = "115f412b-e6d1-41f0-94ed-19bdfb35b35f";
-	private static final String ACCESS_SECRET = "vwuvz8saz/Iw4+dYrov1N+lmYgnJJurgYf9DDj0Fk0H5gdc4beRyOUiazElQaDdMYtUUpdX54B5y/QC5LUxYX0nsWewZLFgxo8tNtyqVJGM=";
+	private static final String ACCESS_TOKEN = "2807e4a2-ed65-43a9-8ba5-fefd8b22499b";
+	private static final String ACCESS_SECRET = "JWYMQ8o6LZsKgK43/xqFpX6I2TCW9uP6D6yu3lAy0XDjzjb8/bOOvDJhh8nBl80tW1ubPSyWMZoQ+Wn2A3t+W6Xru5/7xNucf1qsEdNjSaw=";
 	
 	private N0ticeApi api;
 
@@ -45,7 +45,7 @@ public class WriteApiFunctionalTest {
 	public void canUpdateUserDetails() throws Exception {
 		final String newDisplayName = createNewTestUsername().toUpperCase();
 		
-		final User updatedUser = api.updateUserDetails("tonytw1", "Test user", "Just a test user");
+		final User updatedUser = api.updateUserDetails("tonytw1", newDisplayName, "Just a test user");
 
 		assertEquals(newDisplayName, updatedUser.getDisplayName());		
 	}
