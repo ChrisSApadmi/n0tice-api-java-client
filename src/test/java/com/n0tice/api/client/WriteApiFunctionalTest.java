@@ -14,12 +14,12 @@ import com.n0tice.api.client.model.User;
 
 public class WriteApiFunctionalTest {
 	
-	private static final String API_URL = "http://localhost:8080/api-0.0.1-SNAPSHOT";
+	private static final String API_URL = "http://dev.n0ticeapis.com/1";
 	
 	private static final String CONSUMER_SECRET = "testsecret";
 	private static final String CONSUMER_KEY = "testkey";
-	private static final String ACCESS_TOKEN = "9f6be38d-835f-4824-ae94-b85220f76614";
-	private static final String ACCESS_SECRET = "oeL3AzzvWM1mPFkdOzSR6b0VypCGrrs8K6vpxMykJoW9kA2Qd8vDGZ7u27Qjb4OO1mc0KiN8yJPkokP7WG48PXMPhDApL65bIHFq1+QhZVQ=";
+	private static final String ACCESS_TOKEN = "115f412b-e6d1-41f0-94ed-19bdfb35b35f";
+	private static final String ACCESS_SECRET = "vwuvz8saz/Iw4+dYrov1N+lmYgnJJurgYf9DDj0Fk0H5gdc4beRyOUiazElQaDdMYtUUpdX54B5y/QC5LUxYX0nsWewZLFgxo8tNtyqVJGM=";
 	
 	private N0ticeApi api;
 
