@@ -31,7 +31,7 @@ public class WriteApiFunctionalTest {
 	
 	@Test
 	public void canCreateNewUser() throws Exception {		
-		final String username = "testuser" + DateTime.now().getSecondOfDay();
+		final String username = createNewTestUsername();
 		System.out.println("Creating user: " + username);
 		
 		final User newUser = api.createUser(username, "testpassword", username + "@localhost");
@@ -40,6 +40,21 @@ public class WriteApiFunctionalTest {
 		assertEquals(username, newUser.getUsername());
 		assertEquals(username, newUser.getDisplayName());
 	}
+	
+	@Test
+	public void canUpdateUserDetails() throws Exception {
+		final String newDisplayName = createNewTestUsername().toUpperCase();
+		
+		final User updatedUser = api.updateUserDetails("tonytw1", "Test user", "Just a test user");
+
+		assertEquals(newDisplayName, updatedUser.getDisplayName());		
+	}
+
+	private String createNewTestUsername() {
+		final String username = "testuser" + DateTime.now().getSecondOfDay();
+		return username;
+	}
+	
 	
 	@Test
 	public void canPostNewReport() throws Exception {		

@@ -160,5 +160,23 @@ public class N0ticeApi {
 		}
 		return null;
 	}
+
+	public User updateUserDetails(String username, String displayName, String bio) throws ParsingException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username);
+		request.addBodyParameter("displayName", displayName);
+		request.addBodyParameter("bio", bio);
+		service.signRequest(accessToken, request);
+
+		Response response = request.send();
+
+		final String repsonseBody = response.getBody();
+		System.out.println(repsonseBody);
+		
+		System.out.println(repsonseBody);
+		if (response.getCode() == 200) {
+			return new UserParser().parseCreateUserResults(repsonseBody);
+		}
+		return null;
+	}
 	
 }
