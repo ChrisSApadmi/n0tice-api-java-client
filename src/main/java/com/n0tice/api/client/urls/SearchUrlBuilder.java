@@ -19,6 +19,7 @@ public class SearchUrlBuilder {
 	private Integer page = null;
 	private Integer limit = null;
 	private List<String> tags = new ArrayList<String>();
+	private String type= null;
 	
 	public SearchUrlBuilder(String apiUrl) {
 		this.apiUrl = apiUrl;
@@ -47,6 +48,11 @@ public class SearchUrlBuilder {
 		return this;		
 	}
 	
+	public SearchUrlBuilder type(String type) {
+		this.type = type;
+		return this;		
+	}
+	
 	public String toUrl() {
 		StringBuilder url = new StringBuilder();
 		url.append(apiUrl);
@@ -56,6 +62,9 @@ public class SearchUrlBuilder {
 		}
 		if (limit != null) {
 			url.append("?limit=" + limit);
+		}
+		if (type != null) {
+			url.append("?type=" + type);
 		}
 		if (!tags.isEmpty()) {
 			url.append("?tags=" + COMMA_JOINER.join(tags));

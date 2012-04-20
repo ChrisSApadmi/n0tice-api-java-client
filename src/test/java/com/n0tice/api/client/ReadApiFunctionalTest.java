@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,7 +71,7 @@ public class ReadApiFunctionalTest {
 	
 	@Test
 	public void eventsSearchResultsShouldHaveStartDateFieldsSet() throws Exception {
-		for (Content content : api.type(EVENT).getContent()) {
+		for (Content content : api.search(new SearchQuery().type(EVENT)).getContent()) {
 			assertNotNull(content.getStartDate());
 			assertNotNull(content.getEndDate());
 		}
@@ -103,9 +105,9 @@ public class ReadApiFunctionalTest {
 	
 	@Test
 	public void canRestrictSearchResultByContentType() throws Exception {
-		ResultSet results = api.type(TYPE);
-		assertEquals(20, results.getContent().size());
-		for (Content result : results.getContent()) {
+		List<Content> results = api.search(new SearchQuery().type(TYPE)).getContent();
+		assertEquals(20, results.size());
+		for (Content result : results) {
 			assertEquals("Result of search restricted by content type contained an unexpected result: " + result.toString(), TYPE, result.getType());
 		}
 	}

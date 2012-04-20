@@ -71,10 +71,6 @@ public class N0ticeApi {
 	public ResultSet user(String userName) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.user(userName), UTF_8));
 	}
-
-	public ResultSet type(String type) throws HttpFetchException, ParsingException {
-		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.type(type), UTF_8));
-	}
 	
 	public ResultSet noticeboard(String noticeBoard) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.noticeboard(noticeBoard), UTF_8));
@@ -99,6 +95,9 @@ public class N0ticeApi {
 		if (!query.getTags().isEmpty()) {
 			searchUrlBuilder.tags(query.getTags());
 		}
+		if (query.getType() != null) {
+			searchUrlBuilder.type(query.getType());
+		}
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(), UTF_8));
 	}
 
@@ -121,7 +120,6 @@ public class N0ticeApi {
 			throw new AuthorisationException();
 		}
 
-		System.out.println(responseBody);
 		throw new RuntimeException();
 	}
 
@@ -138,7 +136,6 @@ public class N0ticeApi {
 		}
 	
 		if (response.getCode() == 401) {
-			System.out.println(responseBody);
 			throw new AuthorisationException();
 		}
 		
@@ -154,7 +151,6 @@ public class N0ticeApi {
 		Response response = request.send();
 
 		final String repsonseBody = response.getBody();
-		System.out.println(repsonseBody);
 		if (response.getCode() == 200) {
 			return new UserParser().parseCreateUserResults(repsonseBody);
 		}
@@ -170,7 +166,6 @@ public class N0ticeApi {
 		Response response = request.send();
 
 		final String repsonseBody = response.getBody();
-		System.out.println(repsonseBody);		
 		if (response.getCode() == 200) {
 			return new UserParser().parseCreateUserResults(repsonseBody);
 		}
@@ -182,8 +177,7 @@ public class N0ticeApi {
 		service.signRequest(accessToken, request);
 		
 		Response response = request.send();
-		final String repsonseBody = response.getBody();
-		System.out.println(repsonseBody);		
+		
 		if (response.getCode() == 200) {
 			return true;
 		}

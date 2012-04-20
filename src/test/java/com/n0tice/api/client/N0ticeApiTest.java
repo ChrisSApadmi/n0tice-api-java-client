@@ -25,10 +25,8 @@ public class N0ticeApiTest {
 	private static final String REPORT_API_URL = "http://n0ticeapi.../report/123";
 	private static final String LATEST_ITEMS_JSON = "{some json}";
 	private static final String REPORT_JSON = "{report json}";
-	private static final String CONTENT_TYPE = "offer";
 	private static final String NOTICE_BOARD = "streetart";
 	private static final String TAG = "reports/tag/hackney";
-	private static final String TYPE = "offer";
 	
 	@Mock UrlBuilder urlBuilder;
 	@Mock HttpFetcher httpFetcher;	
@@ -79,17 +77,6 @@ public class N0ticeApiTest {
 	}
 	
 	@Test
-	public void canFetchLatestItemsForContentType() throws Exception {		
-		when(urlBuilder.type(CONTENT_TYPE)).thenReturn(LATEST_ITEMS_URL);
-		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
-		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
-		
-		ResultSet returnedItems = api.type(CONTENT_TYPE);
-		
-		assertEquals(latestItems, returnedItems);	
-	}
-	
-	@Test
 	public void canRestrictSearchToSpecificNoticeboard() throws Exception {
 		when(urlBuilder.noticeboard(NOTICE_BOARD)).thenReturn(LATEST_ITEMS_URL);
 		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
@@ -107,17 +94,6 @@ public class N0ticeApiTest {
 		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
 		
 		ResultSet returnedItems = api.tag(TAG);
-		
-		assertEquals(latestItems, returnedItems);	
-	}
-	
-	@Test
-	public void canRestrictSearchToSpecificType() throws Exception {
-		when(urlBuilder.type(TYPE)).thenReturn(LATEST_ITEMS_URL);
-		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
-		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
-		
-		ResultSet returnedItems = api.type(TYPE);
 		
 		assertEquals(latestItems, returnedItems);	
 	}
