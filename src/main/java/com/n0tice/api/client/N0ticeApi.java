@@ -170,13 +170,24 @@ public class N0ticeApi {
 		Response response = request.send();
 
 		final String repsonseBody = response.getBody();
-		System.out.println(repsonseBody);
-		
-		System.out.println(repsonseBody);
+		System.out.println(repsonseBody);		
 		if (response.getCode() == 200) {
 			return new UserParser().parseCreateUserResults(repsonseBody);
 		}
 		return null;
+	}
+
+	public boolean deleteReport(String id) {
+		OAuthRequest request = new OAuthRequest(Verb.DELETE, apiUrl + "/" + id);	
+		service.signRequest(accessToken, request);
+		
+		Response response = request.send();
+		final String repsonseBody = response.getBody();
+		System.out.println(repsonseBody);		
+		if (response.getCode() == 200) {
+			return true;
+		}
+		return false;		
 	}
 	
 }

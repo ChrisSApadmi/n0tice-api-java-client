@@ -1,7 +1,8 @@
 package com.n0tice.api.client;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -76,6 +77,16 @@ public class WriteApiFunctionalTest {
 		
 		final Content reloadedReport = api.get(report.getId());
 		assertEquals("New headline", reloadedReport.getHeadline());
+	}
+	
+	@Test
+	public void canDeleteReport() throws Exception {
+		final Content report = api.postRepost("API test", 51.0, -0.3, "Blah blah");		
+		
+		final boolean result = api.deleteReport(report.getId());
+
+		assertTrue(result);		
+		assertNull(api.get(report.getId()));
 	}
 	
 	@Test(expected = AuthorisationException.class)
