@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.zip.GZIPInputStream;
 
+import javax.management.RuntimeErrorException;
+
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -37,7 +39,7 @@ public class HttpFetcher {
 	public HttpFetcher() {
 	}
 	
-	public String fetchContent(String url, String charEncoding) throws HttpFetchException {
+	public String fetchContent(String url, String charEncoding) throws HttpFetchException, NotFoundException {
 		InputStream inputStream = httpFetch(url);
 		try {
 			return readResponseBody(charEncoding, inputStream);		
@@ -48,9 +50,8 @@ public class HttpFetcher {
 		}
 	}
 	
-	private InputStream httpFetch(String uri) {
+	private InputStream httpFetch(String uri) throws NotFoundException, HttpFetchException {
 		try {
-			//log.info("Making http fetch of: " + uri);
 			HttpGet get = new HttpGet(uri);
 
 			get.addHeader(new BasicHeader("User-agent", "gzip"));
@@ -60,16 +61,17 @@ public class HttpFetcher {
 			final int statusCode = execute.getStatusLine().getStatusCode();
 			if (statusCode == 200) {
 				return execute.getEntity().getContent();
-			}			
+			}
 			if (statusCode == 404) {
 				throw new NotFoundException();
 			}
-			
 			throw new HttpFetchException();
-			
-		} catch (Exception e) {
+
+		} catch (IllegalStateException e) {
 			throw new RuntimeException(e);
-		}		
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	private HttpResponse executeRequest(HttpRequestBase request) throws IOException, ClientProtocolException {
