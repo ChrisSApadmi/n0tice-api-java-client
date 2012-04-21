@@ -60,10 +60,6 @@ public class N0ticeApi {
 		this.searchParser = searchParser;
 	}
 	
-	public ResultSet near(String locationName) throws HttpFetchException, ParsingException {
-		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.near(locationName), UTF_8));
-	}
-	
 	public ResultSet near(double latitude, double longitude) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.near(latitude, longitude), UTF_8));
 	}
@@ -97,6 +93,9 @@ public class N0ticeApi {
 		}
 		if (query.getType() != null) {
 			searchUrlBuilder.type(query.getType());
+		}
+		if (query.getLocation() != null) {
+			searchUrlBuilder.location(query.getLocation());
 		}
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(), UTF_8));
 	}

@@ -9,6 +9,7 @@ public class SearchQuery {
 	private Integer limit = null;
 	private List<String> tags = new ArrayList<String>();
 	private String type = null;
+	private String location = null;
 	
 	public SearchQuery limit(Integer limit) {
 		this.limit = limit;
@@ -44,6 +45,15 @@ public class SearchQuery {
 	
 	public String getType() {
 		return type;
+	}
+	
+	public SearchQuery location(String location) {
+		this.location = location;
+		return this;
+	}
+
+	public String getLocation() {
+		return location;
 	}
 	
 }

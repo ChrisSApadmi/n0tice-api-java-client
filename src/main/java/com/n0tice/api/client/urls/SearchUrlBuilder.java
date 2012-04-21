@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Joiner;
+import com.sun.org.apache.bcel.internal.generic.LCONST;
 
 public class SearchUrlBuilder {
 
@@ -20,6 +21,7 @@ public class SearchUrlBuilder {
 	private Integer limit = null;
 	private List<String> tags = new ArrayList<String>();
 	private String type= null;
+	private String location = null;
 	
 	public SearchUrlBuilder(String apiUrl) {
 		this.apiUrl = apiUrl;
@@ -53,7 +55,11 @@ public class SearchUrlBuilder {
 		return this;		
 	}
 	
-	public String toUrl() {
+	public void location(String location) {
+		this.location = location;		
+	}
+	
+	public String toUrl() {	// TODO won't build multi term queries correctly
 		StringBuilder url = new StringBuilder();
 		url.append(apiUrl);
 		url.append(SEARCH);
@@ -69,7 +75,11 @@ public class SearchUrlBuilder {
 		if (!tags.isEmpty()) {
 			url.append("?tags=" + COMMA_JOINER.join(tags));
 		}
+		if (location != null) {
+			url.append("?location =" + location);
+		}
 		return url.toString();
 	}
+
 	
 }

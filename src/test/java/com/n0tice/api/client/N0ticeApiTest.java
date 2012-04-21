@@ -19,7 +19,6 @@ import com.n0tice.api.client.util.HttpFetcher;
 public class N0ticeApiTest {
 	
 	private static final String REPORT_ID = "/report/123";
-	private static final String LOCATION_NAME = "London";
 	private static final String USER_NAME = "User";
 	private static final String LATEST_ITEMS_URL = "http://n0ticeapi.../search";
 	private static final String REPORT_API_URL = "http://n0ticeapi.../report/123";
@@ -52,17 +51,6 @@ public class N0ticeApiTest {
 		Content returnedReport = api.get(REPORT_ID);
 		
 		assertEquals(report, returnedReport);
-	}
-	
-	@Test
-	public void canFetchLatestItemsNearNamedLocation() throws Exception {		
-		when(urlBuilder.near(LOCATION_NAME)).thenReturn(LATEST_ITEMS_URL);
-		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
-		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
-		
-		ResultSet returnedItems = api.near(LOCATION_NAME);
-		
-		assertEquals(latestItems, returnedItems);		
 	}
 	
 	@Test
