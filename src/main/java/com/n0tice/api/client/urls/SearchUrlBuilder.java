@@ -76,7 +76,7 @@ public class SearchUrlBuilder {
 			url.append("?tags=" + COMMA_JOINER.join(tags));
 		}
 		if (location != null) {
-			url.append("?location =" + location);
+			url.append("?location=" + location);
 		}
 		return url.toString();
 	}
