@@ -26,7 +26,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HttpContext;
 
 import com.n0tice.api.client.exceptions.HttpFetchException;
-
+import com.n0tice.api.client.exceptions.NotFoundException;
 
 public class HttpFetcher {
 
@@ -39,19 +39,13 @@ public class HttpFetcher {
 	
 	public String fetchContent(String url, String charEncoding) throws HttpFetchException {
 		InputStream inputStream = httpFetch(url);
-		if (inputStream != null) {
-			try {
-				return readResponseBody(charEncoding, inputStream);
-			} catch (UnsupportedEncodingException e) {
-				//log.error(e);
-				e.printStackTrace();
-				throw new HttpFetchException();
-			} catch (IOException e) {
-				//log.error(e);
-				throw new HttpFetchException();
-			}			
+		try {
+			return readResponseBody(charEncoding, inputStream);		
+		} catch (UnsupportedEncodingException e) {
+			throw new HttpFetchException();
+		} catch (IOException e) {
+			throw new HttpFetchException();
 		}
-		return null;
 	}
 	
 	private InputStream httpFetch(String uri) {
@@ -66,15 +60,16 @@ public class HttpFetcher {
 			final int statusCode = execute.getStatusLine().getStatusCode();
 			if (statusCode == 200) {
 				return execute.getEntity().getContent();
+			}			
+			if (statusCode == 404) {
+				throw new NotFoundException();
 			}
-
-			//log.warn("Fetch of '" + uri + "' failed: " + statusCode);
-			return null;
-
+			
+			throw new HttpFetchException();
+			
 		} catch (Exception e) {
-			//log.error("Http exception: " + e.getMessage());
-		}
-		return null;
+			throw new RuntimeException(e);
+		}		
 	}
 	
 	private HttpResponse executeRequest(HttpRequestBase request) throws IOException, ClientProtocolException {
