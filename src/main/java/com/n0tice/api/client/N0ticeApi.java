@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
@@ -18,6 +19,7 @@ import com.n0tice.api.client.exceptions.AuthorisationException;
 import com.n0tice.api.client.exceptions.HttpFetchException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
+import com.n0tice.api.client.model.ImageFile;
 import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.SearchQuery;
 import com.n0tice.api.client.model.User;
@@ -107,14 +109,28 @@ public class N0ticeApi {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(), UTF_8));
 	}
 
-	public Content postRepost(String headline, double latitude, double longitude, String body) throws ParsingException, AuthorisationException {		
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");	
-		request.addBodyParameter("headline", headline);
-		request.addBodyParameter("latitude", Double.toString(latitude));
-		request.addBodyParameter("longitude", Double.toString(longitude));
-		request.addBodyParameter("body", body);
+	public Content postRepost(String headline, double latitude, double longitude, String body, String link, ImageFile image) throws ParsingException, AuthorisationException, IOException {		
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		if (headline != null) {
+			entity.addPart("headline", new StringBody(headline, Charset.forName("UTF-8")));
+		}
+		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName("UTF-8")));
+		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName("UTF-8")));
+		if (body != null) {
+			entity.addPart("body", new StringBody(body, Charset.forName("UTF-8")));
+		}
+		if (link != null) {
+			entity.addPart("link", new StringBody(link, Charset.forName("UTF-8")));
+		}
+		if (image != null) {
+			entity.addPart("image", new ByteArrayBody(image.getData(), image.getFilename()));
+		}
+		
+		request.addHeader("Content-Type", entity.getContentType().getValue());
+		request.addPayload(extractMultpartBytes(entity));
 		service.signRequest(accessToken, request);
-	    
+		
 		Response response = request.send();
 		
 		final String responseBody = response.getBody();
@@ -163,7 +179,7 @@ public class N0ticeApi {
 		return null;
 	}
 
-	public User updateUserDetails(String username, String displayName, String bio) throws ParsingException, IOException {
+	public User updateUserDetails(String username, String displayName, String bio, ImageFile image) throws ParsingException, IOException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username);		
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (displayName != null) {
@@ -172,7 +188,9 @@ public class N0ticeApi {
 		if (bio != null) {
 			entity.addPart("bio", new StringBody(bio, Charset.forName("UTF-8")));
 		}
-		
+		if (image != null) {
+			entity.addPart("image", new ByteArrayBody(image.getData(), image.getFilename()));
+		}
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
 		service.signRequest(accessToken, request);

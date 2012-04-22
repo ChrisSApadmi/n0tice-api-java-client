@@ -15,6 +15,7 @@ import com.n0tice.api.client.model.Image;
 import com.n0tice.api.client.model.Place;
 import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.Tag;
+import com.n0tice.api.client.model.Update;
 import com.n0tice.api.client.model.User;
 
 public class SearchParser {
@@ -24,6 +25,7 @@ public class SearchParser {
 	private static final String DISPLAY_NAME = "displayName";
 	private static final String BIO = "bio";
 	private static final String TAGS = "tags";
+	private static final String UPDATES = "updates";
 	private static final String USER = "user";
 	private static final String TYPE = "type";
 	private static final String WEB_URL = "webUrl";
@@ -96,11 +98,12 @@ public class SearchParser {
 				parseDate(contentItemJSON.getString("created")),
 				parseDate(contentItemJSON.getString("modified")),
 				parseTags(contentItemJSON),
+				parseUpdates(contentItemJSON),
 				startDate,
 				endDate
 				);
 	}
-
+	
 	private User jsonToUser(JSONObject userJSON) throws JSONException {
 		User user;
 		String displayName = null;
@@ -157,4 +160,23 @@ public class SearchParser {
 		return null;
 	}
 	
+	private List<Update> parseUpdates(JSONObject contentItemJSON) throws JSONException {	// TODO Test coverage
+		ArrayList<Update> updates = new ArrayList<Update>();
+		if (contentItemJSON.has(UPDATES)) {
+			JSONArray jsonUpdates = contentItemJSON.getJSONArray(UPDATES);
+			for (int i = 0; i < jsonUpdates.length(); i++) {
+				JSONObject jsonUpdate = jsonUpdates.getJSONObject(i);
+				final String body = jsonUpdate.has("body") ? jsonUpdate.getString("body") : null; 
+				final String link = jsonUpdate.has("link") ? jsonUpdate.getString("link") : null;
+				Image image = null;
+				if (jsonUpdate.has("image")) {
+					JSONObject imageJson = jsonUpdate.getJSONObject("image");
+					image = new Image(imageJson.getString(SMALL));
+				}
+				updates.add(new Update(body, link, image));
+			}			
+		}
+		return updates;
+	}
+
 }
