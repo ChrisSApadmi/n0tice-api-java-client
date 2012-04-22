@@ -22,6 +22,7 @@ public class SearchParser {
 	private static final String NAME = "name";
 	private static final String SMALL = "small";
 	private static final String DISPLAY_NAME = "displayName";
+	private static final String BIO = "bio";
 	private static final String TAGS = "tags";
 	private static final String USER = "user";
 	private static final String TYPE = "type";
@@ -103,16 +104,20 @@ public class SearchParser {
 	private User jsonToUser(JSONObject userJSON) throws JSONException {
 		User user;
 		String displayName = null;
+		String bio = null;
 		Image profileImage = null;
 		if (userJSON.has(DISPLAY_NAME)) {
 			displayName = userJSON.getString(DISPLAY_NAME);
+		}
+		if (userJSON.has(BIO)) {
+			bio = userJSON.getString(BIO);
 		}
 		if (userJSON.has(PROFILE_IMAGE)) {
 			JSONObject imageJSON = userJSON.getJSONObject(PROFILE_IMAGE);
 			profileImage = new Image(imageJSON.getString(SMALL));
 		}
 		
-		user = new User(userJSON.getString(USERNAME), displayName, profileImage);
+		user = new User(userJSON.getString(USERNAME), displayName, bio, profileImage);
 		return user;
 	}
 	

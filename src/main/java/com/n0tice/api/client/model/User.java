@@ -4,11 +4,13 @@ public class User {
 	
 	private final String username;
 	private String displayName;
+	private String bio;
 	private Image profileImage;
 	
-	public User(String username, String displayName, Image profileImage) {
+	public User(String username, String displayName, String bio, Image profileImage) {
 		this.username = username;
 		this.displayName = displayName;
+		this.bio = bio;
 		this.profileImage = profileImage;
 	}
 	
@@ -19,6 +21,10 @@ public class User {
 	public String getDisplayName() {
 		return displayName;
 	}
+	
+	public String getBio() {
+		return bio;
+	}
 
 	public Image getProfileImage() {
 		return profileImage;
@@ -26,8 +32,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [displayName=" + displayName + ", profileImage="
-				+ profileImage + ", username=" + username + "]";
+		return "User [username=" + username + ", displayName=" + displayName + ", bio=" + bio + ", profileImage=" + profileImage + "]";
 	}
 	
 }

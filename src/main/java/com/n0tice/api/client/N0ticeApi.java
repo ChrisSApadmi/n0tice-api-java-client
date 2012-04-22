@@ -1,5 +1,12 @@
 package com.n0tice.api.client;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.StringBody;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -156,21 +163,30 @@ public class N0ticeApi {
 		return null;
 	}
 
-	public User updateUserDetails(String username, String displayName, String bio) throws ParsingException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username);
-		request.addBodyParameter("displayName", displayName);
-		request.addBodyParameter("bio", bio);
+	public User updateUserDetails(String username, String displayName, String bio) throws ParsingException, IOException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username);		
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		if (displayName != null) {
+			entity.addPart("displayName", new StringBody(displayName, Charset.forName("UTF-8")));
+		}
+		if (bio != null) {
+			entity.addPart("bio", new StringBody(bio, Charset.forName("UTF-8")));
+		}
+		
+		request.addHeader("Content-Type", entity.getContentType().getValue());
+		request.addPayload(extractMultpartBytes(entity));
 		service.signRequest(accessToken, request);
-
+		
 		Response response = request.send();
 
 		final String repsonseBody = response.getBody();
 		if (response.getCode() == 200) {
 			return new UserParser().parseCreateUserResults(repsonseBody);
 		}
+			
 		return null;
 	}
-
+	
 	public boolean deleteReport(String id) {
 		OAuthRequest request = new OAuthRequest(Verb.DELETE, apiUrl + "/" + id);	
 		service.signRequest(accessToken, request);
@@ -181,6 +197,13 @@ public class N0ticeApi {
 			return true;
 		}
 		return false;		
+	}
+	
+	private byte[] extractMultpartBytes(MultipartEntity entity) throws IOException {
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		entity.writeTo(byteArrayOutputStream);			
+		byte[] byteArray = byteArrayOutputStream.toByteArray();
+		return byteArray;
 	}
 	
 }
