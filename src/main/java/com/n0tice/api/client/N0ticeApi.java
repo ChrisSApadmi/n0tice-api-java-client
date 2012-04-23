@@ -17,6 +17,7 @@ import org.scribe.oauth.OAuthService;
 
 import com.n0tice.api.client.exceptions.AuthorisationException;
 import com.n0tice.api.client.exceptions.HttpFetchException;
+import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.ImageFile;
@@ -144,7 +145,24 @@ public class N0ticeApi {
 
 		throw new RuntimeException();
 	}
-
+	
+	public boolean voteInteresting(String id) throws NotFoundException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/vote/interesting");	
+		service.signRequest(accessToken, request);
+		
+		Response response = request.send();
+		
+		if (response.getCode() == 200) {
+	    	return true;
+		}
+	
+		if (response.getCode() == 404) {
+			throw new NotFoundException();
+		}
+		
+		throw new RuntimeException();		
+	}
+	
 	public Content updateReport(String id, String headline, String body) throws ParsingException, AuthorisationException {	
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id);	
 		request.addBodyParameter("headline", headline);
