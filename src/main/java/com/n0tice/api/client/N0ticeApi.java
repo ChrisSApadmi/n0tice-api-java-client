@@ -146,7 +146,7 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public boolean voteInteresting(String id) throws NotFoundException {
+	public boolean voteInteresting(String id) throws NotFoundException, AuthorisationException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/vote/interesting");	
 		service.signRequest(accessToken, request);
 		
@@ -155,9 +155,13 @@ public class N0ticeApi {
 		if (response.getCode() == 200) {
 	    	return true;
 		}
-	
+			
 		if (response.getCode() == 404) {
 			throw new NotFoundException();
+		}
+		
+		if (response.getCode() == 401) {
+			throw new AuthorisationException();
 		}
 		
 		throw new RuntimeException();		
