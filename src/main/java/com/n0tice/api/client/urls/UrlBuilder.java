@@ -53,6 +53,10 @@ public class UrlBuilder {
 		return apiUrl + "/" + id;
 	}
 	
+	public String userProfile(String username) {
+		return apiUrl + "/user/" + username;
+	}
+	
 	private String urlEncode(String value) {
 		try {
 			return URLEncoder.encode(value, UTF_8);

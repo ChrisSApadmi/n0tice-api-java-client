@@ -109,7 +109,11 @@ public class N0ticeApi {
 		}
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(), UTF_8));
 	}
-
+	
+	public User userProfile(String username) throws NotFoundException, ParsingException, HttpFetchException {
+		return searchParser.parseUserResult(httpFetcher.fetchContent(urlBuilder.userProfile(username), UTF_8));
+	}
+	
 	public Content postRepost(String headline, double latitude, double longitude, String body, String link, ImageFile image) throws ParsingException, AuthorisationException, IOException {		
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -212,7 +216,7 @@ public class N0ticeApi {
 
 		final String repsonseBody = response.getBody();
 		if (response.getCode() == 200) {
-			return new UserParser().parseCreateUserResults(repsonseBody);
+			return new UserParser().parseUserProfile(repsonseBody);
 		}
 		return null;
 	}
@@ -237,7 +241,7 @@ public class N0ticeApi {
 
 		final String repsonseBody = response.getBody();
 		if (response.getCode() == 200) {
-			return new UserParser().parseCreateUserResults(repsonseBody);
+			return new UserParser().parseUserProfile(repsonseBody);
 		}
 			
 		return null;

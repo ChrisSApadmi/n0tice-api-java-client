@@ -15,7 +15,7 @@ public class UserParser {
 	private static final String PROFILE_IMAGE = "image";
 	private static final String SMALL = "small";
 
-	public User parseCreateUserResults(String json) throws ParsingException {
+	public User parseUserProfile(String json) throws ParsingException {
 		try {
 			JSONObject userJson = new JSONObject(json);
 			return jsonToUser(userJson);

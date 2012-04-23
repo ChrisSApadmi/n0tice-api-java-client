@@ -121,6 +121,10 @@ public class SearchParser {
 		}
 	}
 	
+	public User parseUserResult(String json) throws ParsingException {
+		return new UserParser().parseUserProfile(json);
+	}
+	
 	public int parseVotes(String json) throws ParsingException {
 		try {
 			JSONArray votesJson = new JSONArray(json);
@@ -174,5 +178,5 @@ public class SearchParser {
 		}
 		return updates;
 	}
-
+	
 }
