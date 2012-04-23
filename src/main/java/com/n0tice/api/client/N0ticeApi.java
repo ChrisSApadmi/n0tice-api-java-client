@@ -163,6 +163,22 @@ public class N0ticeApi {
 		throw new RuntimeException();		
 	}
 	
+	public int interestingVotes(String id) throws NotFoundException, ParsingException {
+		OAuthRequest request = new OAuthRequest(Verb.GET, apiUrl + "/" + id + "/votes/interesting");	
+			
+		Response response = request.send();
+		
+		if (response.getCode() == 200) {
+			return searchParser.parseVotes(response.getBody());
+		}
+		
+		if (response.getCode() == 404) {
+			throw new NotFoundException();
+		}
+		
+		throw new RuntimeException();
+	}
+	
 	public Content updateReport(String id, String headline, String body) throws ParsingException, AuthorisationException {	
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id);	
 		request.addBodyParameter("headline", headline);

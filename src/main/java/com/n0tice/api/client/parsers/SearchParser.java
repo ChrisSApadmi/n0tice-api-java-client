@@ -111,6 +111,16 @@ public class SearchParser {
 		}
 	}
 	
+	public int parseVotes(String json) throws ParsingException {
+		try {
+			JSONArray votesJson = new JSONArray(json);
+			return votesJson.length();
+			
+		} catch (JSONException e) {
+			throw new ParsingException();
+		}
+	}
+	
 	private String getNoticeBoardFromJSON(JSONObject contentItem) throws JSONException {
 		if (contentItem.has(NOTICEBOARD)) {
 			return contentItem.getString(NOTICEBOARD);
