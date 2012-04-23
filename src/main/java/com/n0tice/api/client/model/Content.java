@@ -19,10 +19,11 @@ public class Content {
 	private final List<Update> updates;
 	private final Date startDate;
 	private final Date endDate;
+	private final int interestingVotes;
 	
 	public Content(String id, String apiUrl, String webUrl, String type,
 			String headline, Place place, User user, String noticeBoard,
-			Date created, Date modified, List<Tag> tags, List<Update> updates, Date startDate, Date endDate) {
+			Date created, Date modified, List<Tag> tags, List<Update> updates, Date startDate, Date endDate, int interestingVotes) {
 		this.id = id;
 		this.apiUrl = apiUrl;
 		this.webUrl = webUrl;
@@ -37,6 +38,7 @@ public class Content {
 		this.updates = updates;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.interestingVotes = interestingVotes;
 	}
 
 	public String getId() {
@@ -93,6 +95,10 @@ public class Content {
 
 	public Date getEndDate() {
 		return endDate;
+	}
+	
+	public int getInterestingVotes() {
+		return interestingVotes;
 	}
 
 	@Override

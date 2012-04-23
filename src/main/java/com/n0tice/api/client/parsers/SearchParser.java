@@ -37,7 +37,9 @@ public class SearchParser {
 	private static final String NOTICEBOARD = "noticeboard";
 	private static final String START_DATE = "startDate";
 	private static final String END_DATE = "endDate";
-
+	private static final String INTERESTING = "interesting";
+	private static final String VOTES = "votes";
+	
 	public ResultSet parseSearchResults(String json) throws ParsingException {
 		try {
 			JSONObject searchResultsJSON = new JSONObject(json);
@@ -83,6 +85,13 @@ public class SearchParser {
 		if (contentItemJSON.has(END_DATE)) {
 			endDate = parseDate(contentItemJSON.getString(END_DATE));
 		}
+		int interestingVotes = 0;
+		if (contentItemJSON.has(VOTES)) {
+			JSONObject votesJson = contentItemJSON.getJSONObject(VOTES);
+			if (votesJson.has(INTERESTING)) {
+				interestingVotes = votesJson.getInt(INTERESTING);
+			}
+		}
 		return new Content(contentItemJSON.getString(ID), 
 				contentItemJSON.getString(API_URL), 
 				contentItemJSON.getString(WEB_URL), 
@@ -96,7 +105,8 @@ public class SearchParser {
 				parseTags(contentItemJSON),
 				parseUpdates(contentItemJSON),
 				startDate,
-				endDate
+				endDate,
+				interestingVotes
 				);
 	}
 	

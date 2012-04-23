@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Joiner;
-import com.sun.org.apache.bcel.internal.generic.LCONST;
 
 public class SearchUrlBuilder {
 
