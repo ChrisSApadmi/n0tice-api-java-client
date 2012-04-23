@@ -205,7 +205,49 @@ public class N0ticeApi {
 		
 		throw new RuntimeException();		
 	}
-
+	
+	public boolean followUser(String username) throws NotFoundException, AuthorisationException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username + "/follow");	
+		service.signRequest(accessToken, request);
+		
+		Response response = request.send();
+		
+		if (response.getCode() == 200) {
+	    	return true;
+		}
+		
+		if (response.getCode() == 404) {
+	    	throw new NotFoundException();
+		}
+		
+		if (response.getCode() == 401) {
+			throw new AuthorisationException();
+		}
+		
+		throw new RuntimeException();
+	}
+	
+	public boolean unfollowUser(String username) throws NotFoundException, AuthorisationException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username + "/unfollow");	
+		service.signRequest(accessToken, request);
+		
+		Response response = request.send();
+		
+		if (response.getCode() == 200) {
+	    	return true;
+		}
+		
+		if (response.getCode() == 404) {
+	    	throw new NotFoundException();
+		}
+		
+		if (response.getCode() == 401) {
+			throw new AuthorisationException();
+		}
+		
+		throw new RuntimeException();
+	}
+	
 	public User createUser(String username, String password, String email) throws ParsingException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/new");
 		request.addBodyParameter("username", username);		
