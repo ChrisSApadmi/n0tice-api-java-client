@@ -26,8 +26,7 @@ public class UserParser {
 		}		
 	}
 	
-	// TODO duplication
-	private User jsonToUser(JSONObject userJSON) throws JSONException {
+	public User jsonToUser(JSONObject userJSON) throws JSONException {
 		String displayName = null;
 		String bio = null;
 		Image profileImage = null;

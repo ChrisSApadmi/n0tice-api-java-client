@@ -22,8 +22,6 @@ public class SearchParser {
 
 	private static final String NAME = "name";
 	private static final String SMALL = "small";
-	private static final String DISPLAY_NAME = "displayName";
-	private static final String BIO = "bio";
 	private static final String TAGS = "tags";
 	private static final String UPDATES = "updates";
 	private static final String USER = "user";
@@ -37,8 +35,6 @@ public class SearchParser {
 	private static final String RESULTS = "results";
 	private static final String HEADLINE = "headline";
 	private static final String NOTICEBOARD = "noticeboard";
-	private static final String USERNAME = "username";
-	private static final String PROFILE_IMAGE = "image";
 	private static final String START_DATE = "startDate";
 	private static final String END_DATE = "endDate";
 
@@ -70,7 +66,7 @@ public class SearchParser {
 		User user = null;
 		if (contentItemJSON.has(USER)) {
 			JSONObject userJSON = contentItemJSON.getJSONObject(USER);			
-			user = jsonToUser(userJSON);
+			user = new UserParser().jsonToUser(userJSON);	// TODO Make into a field to avoid excessive GCing
 		}
 		
 		Place place = null;
@@ -102,26 +98,6 @@ public class SearchParser {
 				startDate,
 				endDate
 				);
-	}
-	
-	private User jsonToUser(JSONObject userJSON) throws JSONException {
-		User user;
-		String displayName = null;
-		String bio = null;
-		Image profileImage = null;
-		if (userJSON.has(DISPLAY_NAME)) {
-			displayName = userJSON.getString(DISPLAY_NAME);
-		}
-		if (userJSON.has(BIO)) {
-			bio = userJSON.getString(BIO);
-		}
-		if (userJSON.has(PROFILE_IMAGE)) {
-			JSONObject imageJSON = userJSON.getJSONObject(PROFILE_IMAGE);
-			profileImage = new Image(imageJSON.getString(SMALL));
-		}
-		
-		user = new User(userJSON.getString(USERNAME), displayName, bio, profileImage);
-		return user;
 	}
 	
 	public Content parseReport(String json) throws ParsingException {
