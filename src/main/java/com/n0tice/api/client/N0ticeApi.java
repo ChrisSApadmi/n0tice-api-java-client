@@ -17,6 +17,7 @@ import org.scribe.oauth.OAuthService;
 
 import com.n0tice.api.client.exceptions.AuthorisationException;
 import com.n0tice.api.client.exceptions.HttpFetchException;
+import com.n0tice.api.client.exceptions.NotAllowed;
 import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
@@ -150,7 +151,7 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public boolean voteInteresting(String id) throws NotFoundException, AuthorisationException {
+	public boolean voteInteresting(String id) throws NotFoundException, AuthorisationException, NotAllowed {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/vote/interesting");	
 		service.signRequest(accessToken, request);
 		
@@ -159,13 +160,17 @@ public class N0ticeApi {
 		if (response.getCode() == 200) {
 	    	return true;
 		}
-			
-		if (response.getCode() == 404) {
-			throw new NotFoundException();
-		}
 		
 		if (response.getCode() == 401) {
 			throw new AuthorisationException();
+		}
+		
+		if (response.getCode() == 403) {
+			throw new NotAllowed();
+		}
+		
+		if (response.getCode() == 404) {
+			throw new NotFoundException();
 		}
 		
 		throw new RuntimeException();		
