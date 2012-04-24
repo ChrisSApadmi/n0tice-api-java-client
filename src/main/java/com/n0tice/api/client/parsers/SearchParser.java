@@ -169,11 +169,15 @@ public class SearchParser {
 				final String body = jsonUpdate.has("body") ? jsonUpdate.getString("body") : null; 
 				final String link = jsonUpdate.has("link") ? jsonUpdate.getString("link") : null;
 				Image image = null;
+				User user = null;
 				if (jsonUpdate.has("image")) {
 					JSONObject imageJson = jsonUpdate.getJSONObject("image");
 					image = new Image(imageJson.getString(SMALL));
 				}
-				updates.add(new Update(body, link, image));
+				if (jsonUpdate.has(USER)) {
+					user = new UserParser().jsonToUser(jsonUpdate.getJSONObject(USER));
+				}				
+				updates.add(new Update(user, body, link, image));
 			}			
 		}
 		return updates;

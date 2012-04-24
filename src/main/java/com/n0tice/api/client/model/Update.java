@@ -5,13 +5,19 @@ public class Update {
 	private String body;
 	private String link;
 	private Image image;
+	private final User user;
 	
-	public Update(String body, String link, Image image) {
+	public Update(User user, String body, String link, Image image) {
+		this.user = user;
 		this.body = body;
 		this.link = link;
 		this.image = image;
 	}
-
+	
+	public User getUser() {
+		return user;
+	}
+	
 	public String getBody() {
 		return body;
 	}
@@ -26,7 +32,6 @@ public class Update {
 
 	@Override
 	public String toString() {
-		return "Update [body=" + body + ", link=" + link + ", image=" + image + "]";
+		return "Update [body=" + body + ", image=" + image + ", link=" + link + ", user=" + user + "]";
 	}
-	
 }
