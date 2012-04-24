@@ -2,6 +2,7 @@ package com.n0tice.api.client;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -123,15 +124,7 @@ public class N0ticeApi {
 		}
 		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName("UTF-8")));
 		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName("UTF-8")));
-		if (body != null) {
-			entity.addPart("body", new StringBody(body, Charset.forName("UTF-8")));
-		}
-		if (link != null) {
-			entity.addPart("link", new StringBody(link, Charset.forName("UTF-8")));
-		}
-		if (image != null) {
-			entity.addPart("image", new ByteArrayBody(image.getData(), image.getFilename()));
-		}
+		populateUpdateFields(body, link, image, entity);
 		
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
@@ -149,6 +142,32 @@ public class N0ticeApi {
 		}
 
 		throw new RuntimeException();
+	}
+	
+	public void postReportUpdate(String reportId, String body, String link, ImageFile image) throws IOException, AuthorisationException, NotFoundException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + reportId  + "/update/new");
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		populateUpdateFields(body, link, image, entity);
+
+		request.addHeader("Content-Type", entity.getContentType().getValue());
+		request.addPayload(extractMultpartBytes(entity));
+		service.signRequest(accessToken, request);
+		
+		Response response = request.send();
+		
+		final String responseBody = response.getBody();
+		System.out.println(responseBody);
+		if (response.getCode() == 200) {
+	    	return;
+		}
+
+		if (response.getCode() == 404) {
+			throw new NotFoundException();
+		}
+				
+		if (response.getCode() == 401) {
+			throw new AuthorisationException();
+		}		
 	}
 	
 	public boolean voteInteresting(String id) throws NotFoundException, AuthorisationException, NotAllowed {
@@ -304,6 +323,20 @@ public class N0ticeApi {
 			return true;
 		}
 		return false;		
+	}
+	
+	private void populateUpdateFields(String body, String link,
+			ImageFile image, MultipartEntity entity)
+			throws UnsupportedEncodingException {
+		if (body != null) {
+			entity.addPart("body", new StringBody(body, Charset.forName("UTF-8")));
+		}
+		if (link != null) {
+			entity.addPart("link", new StringBody(link, Charset.forName("UTF-8")));
+		}
+		if (image != null) {
+			entity.addPart("image", new ByteArrayBody(image.getData(), image.getFilename()));
+		}
 	}
 	
 	private byte[] extractMultpartBytes(MultipartEntity entity) throws IOException {
