@@ -18,7 +18,7 @@ import org.scribe.oauth.OAuthService;
 
 import com.n0tice.api.client.exceptions.AuthorisationException;
 import com.n0tice.api.client.exceptions.HttpFetchException;
-import com.n0tice.api.client.exceptions.NotAllowed;
+import com.n0tice.api.client.exceptions.NotAllowedException;
 import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
@@ -116,11 +116,14 @@ public class N0ticeApi {
 		return searchParser.parseUserResult(httpFetcher.fetchContent(urlBuilder.userProfile(username), UTF_8));
 	}
 	
-	public Content postRepost(String headline, double latitude, double longitude, String body, String link, ImageFile image) throws ParsingException, AuthorisationException, IOException {		
+	public Content postRepost(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard) throws ParsingException, AuthorisationException, IOException, NotAllowedException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (headline != null) {
 			entity.addPart("headline", new StringBody(headline, Charset.forName("UTF-8")));
+		}
+		if (noticeboard != null) {
+			entity.addPart("noticeboard", new StringBody(headline, Charset.forName("UTF-8")));
 		}
 		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName("UTF-8")));
 		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName("UTF-8")));
@@ -136,11 +139,12 @@ public class N0ticeApi {
 		if (response.getCode() == 200) {
 	    	return searchParser.parseReport(responseBody);
 		}
-	
+		if (response.getCode() == 403) {
+			throw new NotAllowedException();
+		}
 		if (response.getCode() == 401) {
 			throw new AuthorisationException();
 		}
-
 		throw new RuntimeException();
 	}
 	
@@ -170,7 +174,7 @@ public class N0ticeApi {
 		}		
 	}
 	
-	public boolean voteInteresting(String id) throws NotFoundException, AuthorisationException, NotAllowed {
+	public boolean voteInteresting(String id) throws NotFoundException, AuthorisationException, NotAllowedException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/vote/interesting");	
 		service.signRequest(accessToken, request);
 		
@@ -185,7 +189,7 @@ public class N0ticeApi {
 		}
 		
 		if (response.getCode() == 403) {
-			throw new NotAllowed();
+			throw new NotAllowedException();
 		}
 		
 		if (response.getCode() == 404) {
