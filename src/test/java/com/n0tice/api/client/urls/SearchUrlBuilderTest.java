@@ -37,4 +37,11 @@ public class SearchUrlBuilderTest {
 		assertEquals("http://api.local/search?tags=atag,anothertag", builder.toUrl());
 	}
 	
+	@Test
+	public void parametersAreCorrectlyEncoded() throws Exception {
+		SearchUrlBuilder builder = new SearchUrlBuilder(API_URL);		
+		builder.location("Eel Pie island");
+		assertEquals("http://api.local/search?location=Eel+Pie+island", builder.toUrl());
+	}
+	
 }

@@ -26,14 +26,6 @@ public class SearchUrlBuilder {
 		this.apiUrl = apiUrl;
 	}
 	
-	private String urlEncode(String value) {
-		try {
-			return URLEncoder.encode(value, UTF_8);
-		} catch (UnsupportedEncodingException e) {
-			return value;
-		}
-	}
-
 	public SearchUrlBuilder page(int page) {
 		this.page = page;
 		return this;
@@ -69,16 +61,23 @@ public class SearchUrlBuilder {
 			url.append("?limit=" + limit);
 		}
 		if (type != null) {
-			url.append("?type=" + type);
+			url.append("?type=" + urlEncode(type));
 		}
 		if (!tags.isEmpty()) {
-			url.append("?tags=" + COMMA_JOINER.join(tags));
+			url.append("?tags=" + COMMA_JOINER.join(tags));	// TODO how is this to be encoded
 		}
 		if (location != null) {
-			url.append("?location=" + location);
+			url.append("?location=" + urlEncode(location));
 		}
 		return url.toString();
 	}
-
+	
+	private String urlEncode(String value) {
+		try {
+			return URLEncoder.encode(value, UTF_8);
+		} catch (UnsupportedEncodingException e) {
+			return value;
+		}
+	}
 	
 }
