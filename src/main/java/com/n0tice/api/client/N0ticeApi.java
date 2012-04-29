@@ -116,7 +116,7 @@ public class N0ticeApi {
 		return searchParser.parseUserResult(httpFetcher.fetchContent(urlBuilder.userProfile(username), UTF_8));
 	}
 	
-	public Content postRepost(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard) throws ParsingException, AuthorisationException, IOException, NotAllowedException {
+	public Content postReport(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (headline != null) {
@@ -139,16 +139,12 @@ public class N0ticeApi {
 		if (response.getCode() == 200) {
 	    	return searchParser.parseReport(responseBody);
 		}
-		if (response.getCode() == 403) {
-			throw new NotAllowedException();
-		}
-		if (response.getCode() == 401) {
-			throw new AuthorisationException();
-		}
+		
+		handleExceptions(response);
 		throw new RuntimeException();
 	}
 	
-	public void postReportUpdate(String reportId, String body, String link, ImageFile image) throws IOException, AuthorisationException, NotFoundException {
+	public void postReportUpdate(String reportId, String body, String link, ImageFile image) throws IOException, AuthorisationException, NotFoundException, NotAllowedException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + reportId  + "/update/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		populateUpdateFields(body, link, image, entity);
@@ -157,65 +153,44 @@ public class N0ticeApi {
 		request.addPayload(extractMultpartBytes(entity));
 		service.signRequest(accessToken, request);
 		
-		Response response = request.send();
+		final Response response = request.send();
 		
-		final String responseBody = response.getBody();
-		System.out.println(responseBody);
 		if (response.getCode() == 200) {
 	    	return;
 		}
-
-		if (response.getCode() == 404) {
-			throw new NotFoundException();
-		}
-				
-		if (response.getCode() == 401) {
-			throw new AuthorisationException();
-		}		
+		
+		handleExceptions(response);
+		throw new RuntimeException();
 	}
 	
 	public boolean voteInteresting(String id) throws NotFoundException, AuthorisationException, NotAllowedException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/vote/interesting");	
 		service.signRequest(accessToken, request);
 		
-		Response response = request.send();
+		final Response response = request.send();
 		
 		if (response.getCode() == 200) {
 	    	return true;
 		}
-		
-		if (response.getCode() == 401) {
-			throw new AuthorisationException();
-		}
-		
-		if (response.getCode() == 403) {
-			throw new NotAllowedException();
-		}
-		
-		if (response.getCode() == 404) {
-			throw new NotFoundException();
-		}
-		
-		throw new RuntimeException();		
+
+		handleExceptions(response);
+		throw new RuntimeException();
 	}
 	
-	public int interestingVotes(String id) throws NotFoundException, ParsingException {
+	public int interestingVotes(String id) throws NotFoundException, ParsingException, NotAllowedException, AuthorisationException {
 		OAuthRequest request = new OAuthRequest(Verb.GET, apiUrl + "/" + id + "/votes/interesting");	
 			
-		Response response = request.send();
+		final Response response = request.send();
 		
 		if (response.getCode() == 200) {
 			return searchParser.parseVotes(response.getBody());
 		}
 		
-		if (response.getCode() == 404) {
-			throw new NotFoundException();
-		}
-		
+		handleExceptions(response);
 		throw new RuntimeException();
 	}
 	
-	public Content updateReport(String id, String headline, String body) throws ParsingException, AuthorisationException {	
+	public Content updateReport(String id, String headline, String body) throws ParsingException, AuthorisationException, NotFoundException, NotAllowedException {	
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id);	
 		request.addBodyParameter("headline", headline);
 		service.signRequest(accessToken, request);
@@ -227,71 +202,56 @@ public class N0ticeApi {
 	    	return searchParser.parseReport(responseBody);
 		}
 	
-		if (response.getCode() == 401) {
-			throw new AuthorisationException();
-		}
-		
+		handleExceptions(response);
 		throw new RuntimeException();		
 	}
 	
-	public boolean followUser(String username) throws NotFoundException, AuthorisationException {
+	public boolean followUser(String username) throws NotFoundException, AuthorisationException, NotAllowedException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username + "/follow");	
 		service.signRequest(accessToken, request);
 		
-		Response response = request.send();
+		final Response response = request.send();
 		
 		if (response.getCode() == 200) {
 	    	return true;
 		}
 		
-		if (response.getCode() == 404) {
-	    	throw new NotFoundException();
-		}
-		
-		if (response.getCode() == 401) {
-			throw new AuthorisationException();
-		}
-		
+		handleExceptions(response);
 		throw new RuntimeException();
 	}
 	
-	public boolean unfollowUser(String username) throws NotFoundException, AuthorisationException {
+	public boolean unfollowUser(String username) throws NotFoundException, AuthorisationException, NotAllowedException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username + "/unfollow");	
 		service.signRequest(accessToken, request);
 		
-		Response response = request.send();
+		final Response response = request.send();
 		
 		if (response.getCode() == 200) {
 	    	return true;
 		}
 		
-		if (response.getCode() == 404) {
-	    	throw new NotFoundException();
-		}
-		
-		if (response.getCode() == 401) {
-			throw new AuthorisationException();
-		}
-		
+		handleExceptions(response);
 		throw new RuntimeException();
 	}
 	
-	public User createUser(String username, String password, String email) throws ParsingException {
+	public User createUser(String username, String password, String email) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/new");
 		request.addBodyParameter("username", username);		
 		request.addBodyParameter("password", password);
 		request.addBodyParameter("email", password);
 		
-		Response response = request.send();
+		final Response response = request.send();
 
 		final String repsonseBody = response.getBody();
 		if (response.getCode() == 200) {
 			return new UserParser().parseUserProfile(repsonseBody);
 		}
-		return null;
+		
+		handleExceptions(response);
+		throw new RuntimeException();
 	}
 
-	public User updateUserDetails(String username, String displayName, String bio, ImageFile image) throws ParsingException, IOException {
+	public User updateUserDetails(String username, String displayName, String bio, ImageFile image) throws ParsingException, IOException, NotFoundException, NotAllowedException, AuthorisationException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username);		
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (displayName != null) {
@@ -313,20 +273,23 @@ public class N0ticeApi {
 		if (response.getCode() == 200) {
 			return new UserParser().parseUserProfile(repsonseBody);
 		}
-			
-		return null;
+		
+		handleExceptions(response);
+		throw new RuntimeException();
 	}
 	
-	public boolean deleteReport(String id) {
+	public boolean deleteReport(String id) throws NotFoundException, NotAllowedException, AuthorisationException {
 		OAuthRequest request = new OAuthRequest(Verb.DELETE, apiUrl + "/" + id);	
 		service.signRequest(accessToken, request);
 		
-		Response response = request.send();
+		final Response response = request.send();
 		
 		if (response.getCode() == 200) {
 			return true;
 		}
-		return false;		
+		
+		handleExceptions(response);
+		throw new RuntimeException();		
 	}
 	
 	private void populateUpdateFields(String body, String link,
@@ -348,6 +311,21 @@ public class N0ticeApi {
 		entity.writeTo(byteArrayOutputStream);			
 		byte[] byteArray = byteArrayOutputStream.toByteArray();
 		return byteArray;
+	}
+	
+	private void handleExceptions(Response response) throws NotFoundException, NotAllowedException, AuthorisationException {
+		if (response.getCode() == 404) {
+			throw new NotFoundException();
+		}
+		if (response.getCode() == 403) {
+			throw new NotAllowedException();
+		}		
+		if (response.getCode() == 401) {
+			throw new AuthorisationException();
+		}
+		
+		System.err.println(response.getCode() + ": " + response.getBody());
+		throw new RuntimeException();
 	}
 	
 }
