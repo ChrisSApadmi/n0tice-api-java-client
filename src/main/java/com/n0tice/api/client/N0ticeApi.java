@@ -117,7 +117,7 @@ public class N0ticeApi {
 	}
 	
 	public String noticeBoard(String noticeboard) throws NotFoundException, ParsingException, HttpFetchException {
-		return searchParser.parseNoticeboardResult((httpFetcher.fetchContent(urlBuilder.noticeboard(noticeboard), UTF_8)));
+		return searchParser.parseNoticeboardResult((httpFetcher.fetchContent(urlBuilder.noticeBoard(noticeboard), UTF_8)));
 	}
 	
 	public Content postReport(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException {

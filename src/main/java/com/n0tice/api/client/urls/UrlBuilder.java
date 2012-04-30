@@ -57,6 +57,10 @@ public class UrlBuilder {
 		return apiUrl + "/user/" + username;
 	}
 	
+	public String noticeBoard(String noticeboard) {
+		return apiUrl + "/noticeboard/" + noticeboard;
+	}
+	
 	private String urlEncode(String value) {
 		try {
 			return URLEncoder.encode(value, UTF_8);
