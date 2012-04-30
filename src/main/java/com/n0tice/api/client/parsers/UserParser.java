@@ -71,7 +71,7 @@ public class UserParser {
 				}
 			}
 		}
-		return new User(userJSON.getString(USERNAME), displayName, bio, profileImage, noticeboards, followedNoticeboards);
+		return new User(userJSON.getString(USERNAME), displayName, bio, profileImage, noticeboards, followedNoticeboards, follewedUsers);
 	}
 	
 	private void parseNoticeboards(List<String> noticeboards, JSONArray noticeboardsJSON) throws JSONException {

@@ -10,14 +10,16 @@ public class User {
 	private Image profileImage;
 	private final List<String> noticeboards;
 	private final List<String> followedNoticeboards;
+	private final List<User> followedUsers;
 	
-	public User(String username, String displayName, String bio, Image profileImage, List<String> noticeboards, List<String> followedNoticeboards) {
+	public User(String username, String displayName, String bio, Image profileImage, List<String> noticeboards, List<String> followedNoticeboards, List<User> followedUsers) {
 		this.username = username;
 		this.displayName = displayName;
 		this.bio = bio;
 		this.profileImage = profileImage;
 		this.noticeboards = noticeboards;
 		this.followedNoticeboards = followedNoticeboards;
+		this.followedUsers = followedUsers;
 	}
 	
 	public String getUsername() {
@@ -42,6 +44,10 @@ public class User {
 	
 	public List<String> getFollowedNoticeboards() {
 		return followedNoticeboards;
+	}
+	
+	public List<User> getFollowedUsers() {
+		return followedUsers;
 	}
 
 	@Override
