@@ -125,6 +125,15 @@ public class SearchParser {
 		return new UserParser().parseUserProfile(json);
 	}
 	
+	public String parseNoticeboardResult(String json) throws ParsingException {
+		try {
+			JSONObject jsonObject = new JSONObject(json);
+			return jsonObject.getString("domain");
+		} catch (JSONException e) {
+			throw new ParsingException();
+		}
+	}
+	
 	public int parseVotes(String json) throws ParsingException {
 		try {
 			JSONArray votesJson = new JSONArray(json);

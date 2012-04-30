@@ -116,6 +116,10 @@ public class N0ticeApi {
 		return searchParser.parseUserResult(httpFetcher.fetchContent(urlBuilder.userProfile(username), UTF_8));
 	}
 	
+	public String noticeBoard(String noticeboard) throws NotFoundException, ParsingException, HttpFetchException {
+		return searchParser.parseNoticeboardResult((httpFetcher.fetchContent(urlBuilder.noticeboard(noticeboard), UTF_8)));
+	}
+	
 	public Content postReport(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -222,6 +226,34 @@ public class N0ticeApi {
 	
 	public boolean unfollowUser(String username) throws NotFoundException, AuthorisationException, NotAllowedException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username + "/unfollow");	
+		service.signRequest(accessToken, request);
+		
+		final Response response = request.send();
+		
+		if (response.getCode() == 200) {
+	    	return true;
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
+	public boolean followNoticeboard(String noticeboard) throws NotFoundException, AuthorisationException, NotAllowedException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/noticeboard/" + noticeboard + "/follow");	
+		service.signRequest(accessToken, request);
+		
+		final Response response = request.send();
+		
+		if (response.getCode() == 200) {
+	    	return true;
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
+	public boolean unfollowNoticeboard(String noticeboard) throws NotFoundException, AuthorisationException, NotAllowedException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/noticeboard/" + noticeboard + "/unfollow");	
 		service.signRequest(accessToken, request);
 		
 		final Response response = request.send();
