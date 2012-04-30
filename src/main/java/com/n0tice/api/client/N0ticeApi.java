@@ -127,7 +127,7 @@ public class N0ticeApi {
 			entity.addPart("headline", new StringBody(headline, Charset.forName("UTF-8")));
 		}
 		if (noticeboard != null) {
-			entity.addPart("noticeboard", new StringBody(headline, Charset.forName("UTF-8")));
+			entity.addPart("noticeboard", new StringBody(noticeboard, Charset.forName("UTF-8")));
 		}
 		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName("UTF-8")));
 		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName("UTF-8")));
