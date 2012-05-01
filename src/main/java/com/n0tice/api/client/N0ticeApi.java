@@ -355,6 +355,9 @@ public class N0ticeApi {
 		if (response.getCode() == 401) {
 			throw new AuthorisationException();
 		}
+		if (response.getCode() == 400) {
+			throw new BadRequestException();
+		}
 		
 		System.err.println(response.getCode() + ": " + response.getBody());
 		throw new RuntimeException();
