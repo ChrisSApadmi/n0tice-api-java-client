@@ -20,6 +20,7 @@ import com.n0tice.api.client.model.User;
 
 public class SearchParser {
 
+	private static final String TIME_ZONE = "timeZone";
 	private static final String NAME = "name";
 	private static final String SMALL = "small";
 	private static final String TAGS = "tags";
@@ -74,7 +75,8 @@ public class SearchParser {
 		Place place = null;
 		if (contentItemJSON.has(PLACE)) {
 			JSONObject placeJson = contentItemJSON.getJSONObject(PLACE);
-			place = new Place(placeJson.getString(NAME), placeJson.getDouble(LATITUDE), placeJson.getDouble(LONGITUDE));
+			final String timezone = placeJson.has(TIME_ZONE) ? placeJson.getString(TIME_ZONE) : null;
+			place = new Place(placeJson.getString(NAME), placeJson.getDouble(LATITUDE), placeJson.getDouble(LONGITUDE), timezone);
 		}
 		
 		Date startDate = null;
