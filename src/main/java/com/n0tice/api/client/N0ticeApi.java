@@ -149,6 +149,37 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
+	public Content postEvent(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard, String startDate, String endDate) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/event/new");
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		if (headline != null) {
+			entity.addPart("headline", new StringBody(headline, Charset.forName("UTF-8")));
+		}
+		if (noticeboard != null) {
+			entity.addPart("noticeboard", new StringBody(noticeboard, Charset.forName("UTF-8")));
+		}
+		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName("UTF-8")));
+		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName("UTF-8")));
+		populateUpdateFields(body, link, image, entity);
+		
+		entity.addPart("startDate", new StringBody(startDate, Charset.forName("UTF-8")));
+		entity.addPart("endDate", new StringBody(endDate, Charset.forName("UTF-8")));
+
+		request.addHeader("Content-Type", entity.getContentType().getValue());
+		request.addPayload(extractMultpartBytes(entity));
+		service.signRequest(accessToken, request);
+		
+		Response response = request.send();
+		
+		final String responseBody = response.getBody();
+		if (response.getCode() == 200) {
+	    	return searchParser.parseReport(responseBody);
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
 	public void postReportUpdate(String reportId, String body, String link, ImageFile image) throws IOException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + reportId  + "/update/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
