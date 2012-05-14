@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONArray;
@@ -43,7 +42,7 @@ public class SearchParser {
 	private static final String INTERESTING = "interesting";
 	private static final String VOTES = "votes";
 	
-	private static DateTimeFormatter dateFormatter = ISODateTimeFormat.dateTimeNoMillis();
+	private static DateTimeFormatter dateFormatter = ISODateTimeFormat.dateTimeNoMillis().withOffsetParsed();
 	
 	public ResultSet parseSearchResults(String json) throws ParsingException {
 		try {
@@ -158,7 +157,7 @@ public class SearchParser {
 	}
 	
 	private DateTime parseDate(String dateString) {
-		return dateFormatter.withZone(DateTimeZone.UTC).parseDateTime(dateString);
+		return dateFormatter.parseDateTime(dateString);
 	}
 	
 	private List<Tag> parseTags(JSONObject contentItemJSON) throws JSONException {
