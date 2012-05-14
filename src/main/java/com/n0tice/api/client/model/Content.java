@@ -1,7 +1,8 @@
 package com.n0tice.api.client.model;
 
-import java.util.Date;
 import java.util.List;
+
+import org.joda.time.DateTime;
 
 public class Content {
 
@@ -13,17 +14,17 @@ public class Content {
 	final private Place place;
 	final private User user;
 	final private String noticeBoard;
-	final private Date created;
-	final private Date modified;
+	final private DateTime created;
+	final private DateTime modified;
 	final private List<Tag> tags;
 	private final List<Update> updates;
-	private final Date startDate;
-	private final Date endDate;
+	private final DateTime startDate;
+	private final DateTime endDate;
 	private final int interestingVotes;
 	
 	public Content(String id, String apiUrl, String webUrl, String type,
 			String headline, Place place, User user, String noticeBoard,
-			Date created, Date modified, List<Tag> tags, List<Update> updates, Date startDate, Date endDate, int interestingVotes) {
+			DateTime created, DateTime modified, List<Tag> tags, List<Update> updates, DateTime startDate, DateTime endDate, int interestingVotes) {
 		this.id = id;
 		this.apiUrl = apiUrl;
 		this.webUrl = webUrl;
@@ -73,11 +74,11 @@ public class Content {
 		return noticeBoard;
 	}
 	
-	public Date getCreated() {
+	public DateTime getCreated() {
 		return created;
 	}
 
-	public Date getModified() {
+	public DateTime getModified() {
 		return modified;
 	}
 
@@ -89,11 +90,11 @@ public class Content {
 		return updates;
 	}
 
-	public Date getStartDate() {
+	public DateTime getStartDate() {
 		return startDate;
 	}
 
-	public Date getEndDate() {
+	public DateTime getEndDate() {
 		return endDate;
 	}
 	

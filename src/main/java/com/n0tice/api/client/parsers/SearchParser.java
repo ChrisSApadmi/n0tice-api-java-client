@@ -1,10 +1,11 @@
 package com.n0tice.api.client.parsers;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +41,8 @@ public class SearchParser {
 	private static final String END_DATE = "endDate";
 	private static final String INTERESTING = "interesting";
 	private static final String VOTES = "votes";
+	
+	private static DateTimeFormatter dateFormatter = ISODateTimeFormat.dateTimeNoMillis();
 	
 	public ResultSet parseSearchResults(String json) throws ParsingException {
 		try {
@@ -79,11 +82,11 @@ public class SearchParser {
 			place = new Place(placeJson.getString(NAME), placeJson.getDouble(LATITUDE), placeJson.getDouble(LONGITUDE), timezone);
 		}
 		
-		Date startDate = null;
+		DateTime startDate = null;
 		if (contentItemJSON.has(START_DATE)) {
 			startDate = parseDate(contentItemJSON.getString(START_DATE));
 		}
-		Date endDate = null;
+		DateTime endDate = null;
 		if (contentItemJSON.has(END_DATE)) {
 			endDate = parseDate(contentItemJSON.getString(END_DATE));
 		}
@@ -153,8 +156,8 @@ public class SearchParser {
 		return null;
 	}
 	
-	private Date parseDate(String dateString) {
-		return DateTime.parse(dateString).toDate();
+	private DateTime parseDate(String dateString) {
+		return dateFormatter.parseDateTime(dateString);
 	}
 	
 	private List<Tag> parseTags(JSONObject contentItemJSON) throws JSONException {
