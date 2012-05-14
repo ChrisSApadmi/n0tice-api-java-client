@@ -3,6 +3,7 @@ package com.n0tice.api.client.parsers;
 import static org.junit.Assert.assertEquals;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,8 +36,8 @@ public class SearchParserTest {
 		assertEquals("n0tice", firstItem.getNoticeBoard());
 		assertEquals(51.375801, firstItem.getPlace().getLatitude(), 0);
 		assertEquals(-2.359904, firstItem.getPlace().getLongitude(), 0);		
-		assertEquals(new DateTime("2012-04-07T17:55:37Z"), new DateTime(firstItem.getCreated()));
-		assertEquals(new DateTime("2012-04-07T17:55:37Z"), new DateTime(firstItem.getModified()));
+		assertEquals(new DateTime("2012-04-07T17:55:37Z", DateTimeZone.UTC), new DateTime(firstItem.getCreated()));
+		assertEquals(new DateTime("2012-04-07T17:55:37Z", DateTimeZone.UTC), new DateTime(firstItem.getModified()));
 		assertEquals(3, firstItem.getTags().size());
 		assertEquals("report/tags/bath", firstItem.getTags().get(0).getId());
 	}
@@ -54,8 +55,8 @@ public class SearchParserTest {
 		assertEquals("Western Rd, Brighton and Hove, The City of Brighton and Hove BN1, UK", report.getPlace().getName());
 		assertEquals(50.825080, report.getPlace().getLatitude(), 0);
 		assertEquals(-0.154179, report.getPlace().getLongitude(), 0);
-		assertEquals(new DateTime("2012-01-16T14:49:08Z"), new DateTime(report.getCreated()));
-		assertEquals(new DateTime("2012-01-16T14:49:08Z"), new DateTime(report.getModified()));
+		assertEquals(new DateTime("2012-01-16T14:49:08Z", DateTimeZone.UTC), new DateTime(report.getCreated()));
+		assertEquals(new DateTime("2012-01-16T14:49:08Z", DateTimeZone.UTC), new DateTime(report.getModified()));
 	}
 	
 }
