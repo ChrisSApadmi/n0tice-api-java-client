@@ -41,6 +41,7 @@ public class SearchParser {
 	private static final String END_DATE = "endDate";
 	private static final String INTERESTING = "interesting";
 	private static final String VOTES = "votes";
+	private static final String REPOSTS = "reposts";
 	
 	private static DateTimeFormatter dateFormatter = ISODateTimeFormat.dateTimeNoMillis().withOffsetParsed();
 	
@@ -97,6 +98,12 @@ public class SearchParser {
 				interestingVotes = votesJson.getInt(INTERESTING);
 			}
 		}
+		
+		int reposts = 0;
+		if (contentItemJSON.has(REPOSTS)) {
+			reposts = contentItemJSON.getInt(REPOSTS);			
+		}
+		
 		return new Content(contentItemJSON.getString(ID), 
 				contentItemJSON.getString(API_URL), 
 				contentItemJSON.getString(WEB_URL), 
@@ -111,7 +118,8 @@ public class SearchParser {
 				parseUpdates(contentItemJSON),
 				startDate,
 				endDate,
-				interestingVotes
+				interestingVotes,
+				reposts
 				);
 	}
 	

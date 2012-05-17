@@ -209,8 +209,21 @@ public class N0ticeApi {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/vote/interesting");	
 		service.signRequest(accessToken, request);
 		
-		final Response response = request.send();
-		
+		final Response response = request.send();		
+		if (response.getCode() == 200) {
+	    	return true;
+		}
+
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
+	public boolean repost(String id, String noticeboard) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/repost");
+		request.addBodyParameter("noticeboard", noticeboard);
+		service.signRequest(accessToken, request);
+
+		final Response response = request.send();		
 		if (response.getCode() == 200) {
 	    	return true;
 		}

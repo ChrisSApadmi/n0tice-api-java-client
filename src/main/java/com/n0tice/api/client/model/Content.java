@@ -6,25 +6,26 @@ import org.joda.time.DateTime;
 
 public class Content {
 
-	final private String id;
-	final private String apiUrl;
-	final private String webUrl;
-	final private String type;
-	final private String headline;
-	final private Place place;
-	final private User user;
-	final private String noticeBoard;
-	final private DateTime created;
-	final private DateTime modified;
-	final private List<Tag> tags;
+	private final String id;
+	private final String apiUrl;
+	private final String webUrl;
+	private final String type;
+	private final String headline;
+	private final Place place;
+	private final User user;
+	private final String noticeBoard;
+	private final DateTime created;
+	private final DateTime modified;
+	private final List<Tag> tags;
 	private final List<Update> updates;
 	private final DateTime startDate;
 	private final DateTime endDate;
 	private final int interestingVotes;
+	private final int reposts;
 	
 	public Content(String id, String apiUrl, String webUrl, String type,
 			String headline, Place place, User user, String noticeBoard,
-			DateTime created, DateTime modified, List<Tag> tags, List<Update> updates, DateTime startDate, DateTime endDate, int interestingVotes) {
+			DateTime created, DateTime modified, List<Tag> tags, List<Update> updates, DateTime startDate, DateTime endDate, int interestingVotes, int reposts) {
 		this.id = id;
 		this.apiUrl = apiUrl;
 		this.webUrl = webUrl;
@@ -40,6 +41,7 @@ public class Content {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.interestingVotes = interestingVotes;
+		this.reposts = reposts;
 	}
 
 	public String getId() {
@@ -101,14 +103,21 @@ public class Content {
 	public int getInterestingVotes() {
 		return interestingVotes;
 	}
+	
+	public int getReposts() {
+		return reposts;
+	}
 
 	@Override
 	public String toString() {
-		return "Content [apiUrl=" + apiUrl + ", created=" + created
-				+ ", headline=" + headline + ", id=" + id + ", modified="
-				+ modified + ", noticeBoard=" + noticeBoard + ", place="
-				+ place + ", type=" + type + ", user=" + user + ", webUrl="
-				+ webUrl + "]";
+		return "Content [id=" + id + ", apiUrl=" + apiUrl + ", webUrl="
+				+ webUrl + ", type=" + type + ", headline=" + headline
+				+ ", place=" + place + ", user=" + user + ", noticeBoard="
+				+ noticeBoard + ", created=" + created + ", modified="
+				+ modified + ", tags=" + tags + ", updates=" + updates
+				+ ", startDate=" + startDate + ", endDate=" + endDate
+				+ ", interestingVotes=" + interestingVotes + ", reposts="
+				+ reposts + "]";
 	}
 	
 }
