@@ -95,7 +95,7 @@ public class N0ticeApi {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.tag(tag), UTF_8));
 	}
 	
-	public Content get(String id) throws HttpFetchException, ParsingException {
+	public Content get(String id) throws HttpFetchException, NotFoundException, ParsingException {
 		return searchParser.parseReport(httpFetcher.fetchContent(urlBuilder.get(id), UTF_8));
 	}
 	
