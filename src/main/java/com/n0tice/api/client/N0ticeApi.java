@@ -27,6 +27,7 @@ import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.ImageFile;
+import com.n0tice.api.client.model.NewUserResponse;
 import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.SearchQuery;
 import com.n0tice.api.client.model.User;
@@ -317,8 +318,9 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public User createUser(String username, String password, String email) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
+	public NewUserResponse createUser(String consumerKey, String username, String password, String email) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/new");
+		request.addBodyParameter("consumerkey", consumerKey);		
 		request.addBodyParameter("username", username);		
 		request.addBodyParameter("password", password);
 		request.addBodyParameter("email", password);
@@ -326,8 +328,8 @@ public class N0ticeApi {
 		final Response response = request.send();
 
 		final String repsonseBody = response.getBody();
-		if (response.getCode() == 200) {
-			return new UserParser().parseUserProfile(repsonseBody);
+		if (response.getCode() == 200) {		
+			return new UserParser().parseNewUserResponse(repsonseBody);
 		}
 		
 		handleExceptions(response);
