@@ -5,7 +5,7 @@
 	<artifactId>n0tice-api</artifactId>
 	<packaging>jar</packaging>
 	<name>n0tice API Java client</name>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<description>A client implementation and domain model for the n0tice API</description>
 	<build>
 		<plugins>
