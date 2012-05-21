@@ -220,6 +220,7 @@ public class N0ticeApi {
 		HttpPost post = new HttpPost(apiUrl + "/" + id + "/repost");		
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		entity.addPart("noticeboard", new StringBody(noticeboard, Charset.forName("UTF-8")));
+		post.setEntity(entity);
 		authenticateRequest(post);
 
 		HttpResponse response = client.execute(post);
@@ -248,6 +249,7 @@ public class N0ticeApi {
 		HttpPost post = new HttpPost(apiUrl + "/" + id);	
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		entity.addPart("headline", new StringBody(headline, Charset.forName("UTF-8")));
+		post.setEntity(entity);
 		authenticateRequest(post);
 
 		HttpResponse response = client.execute(post);
