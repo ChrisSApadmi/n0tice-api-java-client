@@ -1,23 +1,29 @@
 package com.n0tice.api.client;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthenticationException;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.oauth.OAuthService;
 
 import com.n0tice.api.client.exceptions.AuthorisationException;
 import com.n0tice.api.client.exceptions.BadRequestException;
@@ -30,7 +36,6 @@ import com.n0tice.api.client.model.ImageFile;
 import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.SearchQuery;
 import com.n0tice.api.client.model.User;
-import com.n0tice.api.client.oauth.N0ticeOauthApi;
 import com.n0tice.api.client.parsers.SearchParser;
 import com.n0tice.api.client.parsers.UserParser;
 import com.n0tice.api.client.urls.SearchUrlBuilder;
@@ -45,31 +50,27 @@ public class N0ticeApi {
 	private static DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(YYYY_MM_DD_HH_MM);
 	
 	private final String apiUrl;	
-	private Token accessToken;
 	private final UrlBuilder urlBuilder;
 	private final HttpFetcher httpFetcher;
 	private final SearchParser searchParser;
-
-	private OAuthService service;
-		
+	private final HttpClient client;
+	
 	public N0ticeApi(String apiUrl) {
 		this.apiUrl = apiUrl;
-		this.accessToken = null;
 		this.urlBuilder = new UrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
 		this.searchParser = new SearchParser();
+		client = new DefaultHttpClient();
+
 	}
 	
-	public N0ticeApi(String apiUrl, String consumerKey, String consumerSecret, Token accessToken) {
+	public N0ticeApi(String apiUrl, String username, String password) {
 		this.apiUrl = apiUrl;
-		this.accessToken = accessToken;
 		this.urlBuilder = new UrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
 		this.searchParser = new SearchParser();
-		service = new ServiceBuilder().provider(new N0ticeOauthApi(apiUrl))
-			.apiKey(consumerKey)
-			.apiSecret(consumerSecret)
-			.build();		
+		
+		client = new DefaultHttpClient();
 	}
 	
 	public N0ticeApi(String apiUrl, UrlBuilder urlBuilder, HttpFetcher httpFetcher, SearchParser searchParser) {
@@ -77,6 +78,7 @@ public class N0ticeApi {
 		this.urlBuilder = urlBuilder;
 		this.httpFetcher = httpFetcher;
 		this.searchParser = searchParser;
+		client = new DefaultHttpClient();
 	}
 	
 	public ResultSet near(double latitude, double longitude) throws HttpFetchException, ParsingException {
@@ -127,8 +129,9 @@ public class N0ticeApi {
 		return searchParser.parseNoticeboardResult((httpFetcher.fetchContent(urlBuilder.noticeBoard(noticeboard), UTF_8)));
 	}
 	
-	public Content postReport(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");
+	public Content postReport(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException, AuthenticationException {
+		HttpPost post = new HttpPost(apiUrl + "/report/new");
+		
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (headline != null) {
 			entity.addPart("headline", new StringBody(headline, Charset.forName("UTF-8")));
@@ -139,15 +142,12 @@ public class N0ticeApi {
 		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName("UTF-8")));
 		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName("UTF-8")));
 		populateUpdateFields(body, link, image, entity);
-		
-		request.addHeader("Content-Type", entity.getContentType().getValue());
-		request.addPayload(extractMultpartBytes(entity));
-		service.signRequest(accessToken, request);
-		
-		Response response = request.send();
-		
-		final String responseBody = response.getBody();
-		if (response.getCode() == 200) {
+		post.setEntity(entity);		
+		authenticateRequest(post);
+				
+		HttpResponse response = client.execute(post);		
+		if (response.getStatusLine().getStatusCode() == 200) {
+			final String responseBody = IOUtils.toString(response.getEntity().getContent());
 	    	return searchParser.parseReport(responseBody);
 		}
 		
@@ -155,8 +155,9 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public Content postEvent(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard, LocalDateTime startDate, LocalDateTime endDate) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/event/new");
+	public Content postEvent(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard, LocalDateTime startDate, LocalDateTime endDate) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException, AuthenticationException {
+		HttpPost post = new HttpPost(apiUrl + "/event/new");
+		
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (headline != null) {
 			entity.addPart("headline", new StringBody(headline, Charset.forName("UTF-8")));
@@ -171,14 +172,12 @@ public class N0ticeApi {
 		entity.addPart("startDate", new StringBody(startDate.toString(dateFormatter), Charset.forName("UTF-8")));
 		entity.addPart("endDate", new StringBody(endDate.toString(dateFormatter), Charset.forName("UTF-8")));
 
-		request.addHeader("Content-Type", entity.getContentType().getValue());
-		request.addPayload(extractMultpartBytes(entity));
-		service.signRequest(accessToken, request);
-		
-		Response response = request.send();
-		
-		final String responseBody = response.getBody();
-		if (response.getCode() == 200) {
+		post.setEntity(entity);
+		authenticateRequest(post);
+
+		HttpResponse response = client.execute(post);		
+		if (response.getStatusLine().getStatusCode() == 200) {
+			final String responseBody = IOUtils.toString(response.getEntity().getContent());
 	    	return searchParser.parseReport(responseBody);
 		}
 		
@@ -187,17 +186,14 @@ public class N0ticeApi {
 	}
 	
 	public void postReportUpdate(String reportId, String body, String link, ImageFile image) throws IOException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + reportId  + "/update/new");
+		HttpPost post = new HttpPost(apiUrl + "/" + reportId  + "/update/new");
+		
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		populateUpdateFields(body, link, image, entity);
-
-		request.addHeader("Content-Type", entity.getContentType().getValue());
-		request.addPayload(extractMultpartBytes(entity));
-		service.signRequest(accessToken, request);
+		post.setEntity(entity);
 		
-		final Response response = request.send();
-		
-		if (response.getCode() == 200) {
+		HttpResponse response = client.execute(post);		
+		if (response.getStatusLine().getStatusCode() == 200) {
 	    	return;
 		}
 		
@@ -205,12 +201,12 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public boolean voteInteresting(String id) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/vote/interesting");	
-		service.signRequest(accessToken, request);
-		
-		final Response response = request.send();		
-		if (response.getCode() == 200) {
+	public boolean voteInteresting(String id) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException, ClientProtocolException, IOException, AuthenticationException {		
+		HttpPost post = new HttpPost(apiUrl + "/" + id + "/vote/interesting");		
+		authenticateRequest(post);
+
+		HttpResponse response = client.execute(post);	
+		if (response.getStatusLine().getStatusCode() == 200) {
 	    	return true;
 		}
 
@@ -218,13 +214,14 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public boolean repost(String id, String noticeboard) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/repost");
-		request.addBodyParameter("noticeboard", noticeboard);
-		service.signRequest(accessToken, request);
+	public boolean repost(String id, String noticeboard) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, ClientProtocolException, IOException, AuthenticationException {
+		HttpPost post = new HttpPost(apiUrl + "/" + id + "/repost");		
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		entity.addPart("noticeboard", new StringBody(noticeboard, Charset.forName("UTF-8")));
+		authenticateRequest(post);
 
-		final Response response = request.send();		
-		if (response.getCode() == 200) {
+		HttpResponse response = client.execute(post);
+		if (response.getStatusLine().getStatusCode() == 200) {
 	    	return true;
 		}
 
@@ -232,42 +229,39 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public int interestingVotes(String id) throws NotFoundException, ParsingException, NotAllowedException, AuthorisationException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.GET, apiUrl + "/" + id + "/votes/interesting");	
-			
-		final Response response = request.send();
+	public int interestingVotes(String id) throws NotFoundException, ParsingException, NotAllowedException, AuthorisationException, BadRequestException, IllegalStateException, IOException {
+		HttpGet get = new HttpGet(apiUrl + "/" + id + "/votes/interesting");
 		
-		if (response.getCode() == 200) {
-			return searchParser.parseVotes(response.getBody());
+		HttpResponse response = client.execute(get);		
+		if (response.getStatusLine().getStatusCode() == 200) {
+			return searchParser.parseVotes(IOUtils.toString(response.getEntity().getContent()));
 		}
 		
 		handleExceptions(response);
 		throw new RuntimeException();
 	}
 	
-	public Content updateReport(String id, String headline, String body) throws ParsingException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException {	
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id);	
-		request.addBodyParameter("headline", headline);
-		service.signRequest(accessToken, request);
-		
-		Response response = request.send();
-		
-		final String responseBody = response.getBody();
-		if (response.getCode() == 200) {
-	    	return searchParser.parseReport(responseBody);
+	public Content updateReport(String id, String headline, String body) throws ParsingException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException, IllegalStateException, IOException, AuthenticationException {	
+		HttpPost post = new HttpPost(apiUrl + apiUrl + "/" + id);	
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		entity.addPart("headline", new StringBody(headline, Charset.forName("UTF-8")));
+		authenticateRequest(post);
+
+		HttpResponse response = client.execute(post);
+		if (response.getStatusLine().getStatusCode() == 200) {
+			return searchParser.parseReport(IOUtils.toString(response.getEntity().getContent()));
 		}
-	
+		
 		handleExceptions(response);
 		throw new RuntimeException();		
 	}
 	
-	public boolean followUser(String username) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username + "/follow");	
-		service.signRequest(accessToken, request);
+	public boolean followUser(String username) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException, ClientProtocolException, IOException {
+		HttpPost post = new HttpPost(apiUrl + "/user/" + username + "/follow");	
 		
-		final Response response = request.send();
-		
-		if (response.getCode() == 200) {
+		HttpResponse response = client.execute(post);
+		if (response.getStatusLine().getStatusCode() == 200) {
+			response.getEntity().consumeContent();
 	    	return true;
 		}
 		
@@ -275,67 +269,69 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public boolean unfollowUser(String username) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username + "/unfollow");	
-		service.signRequest(accessToken, request);
-		
-		final Response response = request.send();
-		
-		if (response.getCode() == 200) {
-	    	return true;
-		}
-		
-		handleExceptions(response);
-		throw new RuntimeException();
-	}
-	
-	public boolean followNoticeboard(String noticeboard) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/noticeboard/" + noticeboard + "/follow");	
-		service.signRequest(accessToken, request);
-		
-		final Response response = request.send();
-		
-		if (response.getCode() == 200) {
-	    	return true;
-		}
-		
-		handleExceptions(response);
-		throw new RuntimeException();
-	}
-	
-	public boolean unfollowNoticeboard(String noticeboard) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/noticeboard/" + noticeboard + "/unfollow");	
-		service.signRequest(accessToken, request);
-		
-		final Response response = request.send();
-		
-		if (response.getCode() == 200) {
-	    	return true;
-		}
-		
-		handleExceptions(response);
-		throw new RuntimeException();
-	}
-	
-	public User createUser(String username, String password, String email) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/new");
-		request.addBodyParameter("username", username);		
-		request.addBodyParameter("password", password);
-		request.addBodyParameter("email", password);
-		
-		final Response response = request.send();
+	public boolean unfollowUser(String username) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException, ClientProtocolException, IOException, AuthenticationException {
+		HttpPost post = new HttpPost(apiUrl + "/user/" + username + "/unfollow");	
+		authenticateRequest(post);
 
-		final String repsonseBody = response.getBody();
-		if (response.getCode() == 200) {
-			return new UserParser().parseUserProfile(repsonseBody);
+		HttpResponse response = client.execute(post);
+		if (response.getStatusLine().getStatusCode() == 200) {
+			response.getEntity().consumeContent();
+	    	return true;
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
+	public boolean followNoticeboard(String noticeboard) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException, ClientProtocolException, IOException, AuthenticationException {
+		HttpPost post = new HttpPost(apiUrl + "/noticeboard/" + noticeboard + "/follow");	
+		authenticateRequest(post);
+
+		HttpResponse response = client.execute(post);
+		if (response.getStatusLine().getStatusCode() == 200) {
+			response.getEntity().consumeContent();
+	    	return true;
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
+	public boolean unfollowNoticeboard(String noticeboard) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException, ClientProtocolException, IOException, AuthenticationException {
+		HttpPost post = new HttpPost(apiUrl + "/noticeboard/" + noticeboard + "/unfollow");	
+		authenticateRequest(post);
+
+		HttpResponse response = client.execute(post);
+		if (response.getStatusLine().getStatusCode() == 200) {
+			response.getEntity().consumeContent();
+	    	return true;
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
+	public User createUser(String username, String password, String email) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, IllegalStateException, IOException, AuthenticationException {		
+		HttpPost post = new HttpPost(apiUrl + "/user/new");	
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		entity.addPart("username", new StringBody(username, Charset.forName("UTF-8")));
+		entity.addPart("password", new StringBody(password, Charset.forName("UTF-8")));
+		entity.addPart("email", new StringBody(email, Charset.forName("UTF-8")));
+		authenticateRequest(post);
+
+		HttpResponse response = client.execute(post);
+		if (response.getStatusLine().getStatusCode() == 200) {
+			final String responseBody = IOUtils.toString(response.getEntity().getContent());
+			return new UserParser().parseUserProfile(responseBody);
 		}
 		
 		handleExceptions(response);
 		throw new RuntimeException();
 	}
 
-	public User updateUserDetails(String username, String displayName, String bio, ImageFile image) throws ParsingException, IOException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username);		
+	public User updateUserDetails(String username, String displayName, String bio, ImageFile image) throws ParsingException, IOException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, AuthenticationException {		
+		HttpPost post = new HttpPost( apiUrl + "/user/" + username);	
+		
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (displayName != null) {
 			entity.addPart("displayName", new StringBody(displayName, Charset.forName("UTF-8")));
@@ -346,29 +342,27 @@ public class N0ticeApi {
 		if (image != null) {
 			entity.addPart("image", new ByteArrayBody(image.getData(), image.getFilename()));
 		}
-		request.addHeader("Content-Type", entity.getContentType().getValue());
-		request.addPayload(extractMultpartBytes(entity));
-		service.signRequest(accessToken, request);
-		
-		Response response = request.send();
+		post.setEntity(entity);
+		authenticateRequest(post);
 
-		final String repsonseBody = response.getBody();
-		if (response.getCode() == 200) {
-			return new UserParser().parseUserProfile(repsonseBody);
+		HttpResponse response = client.execute(post);
+
+		if (response.getStatusLine().getStatusCode() == 200) {
+			final String responseBody = IOUtils.toString(response.getEntity().getContent());
+			return new UserParser().parseUserProfile(responseBody);
 		}
 		
 		handleExceptions(response);
 		throw new RuntimeException();
 	}
 	
-	public boolean deleteReport(String id) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.DELETE, apiUrl + "/" + id);	
-		service.signRequest(accessToken, request);
-		
-		final Response response = request.send();
-		
-		if (response.getCode() == 200) {
-			return true;
+	public boolean deleteReport(String id) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, ClientProtocolException, IOException, AuthenticationException {		
+		HttpDelete delete = new HttpDelete(apiUrl + "/" + id);	
+		authenticateRequest(delete);
+
+		HttpResponse response = client.execute(delete);
+		if (response.getStatusLine().getStatusCode() == 200) {
+	    	return true;
 		}
 		
 		handleExceptions(response);
@@ -389,29 +383,38 @@ public class N0ticeApi {
 		}
 	}
 	
-	private byte[] extractMultpartBytes(MultipartEntity entity) throws IOException {
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		entity.writeTo(byteArrayOutputStream);			
-		byte[] byteArray = byteArrayOutputStream.toByteArray();
-		return byteArray;
-	}
-	
-	private void handleExceptions(Response response) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
-		if (response.getCode() == 404) {
+	private void handleExceptions(HttpResponse response) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
+		final int statusCode = response.getStatusLine().getStatusCode();
+		if (statusCode == 404) {
 			throw new NotFoundException();
 		}
-		if (response.getCode() == 403) {
+		if (statusCode == 403) {
 			throw new NotAllowedException();
 		}		
-		if (response.getCode() == 401) {
+		if (statusCode == 401) {
 			throw new AuthorisationException();
 		}
-		if (response.getCode() == 400) {
+		if (statusCode == 400) {
 			throw new BadRequestException();
 		}
 		
-		System.err.println(response.getCode() + ": " + response.getBody());
+		try {
+			System.err.println(statusCode + ": " + IOUtils.toString(response.getEntity().getContent()));
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		throw new RuntimeException();
+	}
+	
+	private void authenticateRequest(HttpRequestBase request) throws AuthenticationException {
+		BasicScheme scheme = new BasicScheme();
+		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("tonytw1", "testpassword");		
+		Header authenticate = scheme.authenticate(credentials, request);
+		request.addHeader(authenticate);
 	}
 	
 }
