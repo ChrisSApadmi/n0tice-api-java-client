@@ -242,7 +242,7 @@ public class N0ticeApi {
 	}
 	
 	public Content updateReport(String id, String headline, String body) throws ParsingException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException, IllegalStateException, IOException, AuthenticationException {	
-		HttpPost post = new HttpPost(apiUrl + apiUrl + "/" + id);	
+		HttpPost post = new HttpPost(apiUrl + "/" + id);	
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		entity.addPart("headline", new StringBody(headline, Charset.forName("UTF-8")));
 		authenticateRequest(post);
@@ -256,9 +256,10 @@ public class N0ticeApi {
 		throw new RuntimeException();		
 	}
 	
-	public boolean followUser(String username) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException, ClientProtocolException, IOException {
+	public boolean followUser(String username) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException, ClientProtocolException, IOException, AuthenticationException {
 		HttpPost post = new HttpPost(apiUrl + "/user/" + username + "/follow");	
-		
+		authenticateRequest(post);
+
 		HttpResponse response = client.execute(post);
 		if (response.getStatusLine().getStatusCode() == 200) {
 			response.getEntity().consumeContent();
