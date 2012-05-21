@@ -194,6 +194,7 @@ public class N0ticeApi {
 		
 		HttpResponse response = client.execute(post);		
 		if (response.getStatusLine().getStatusCode() == 200) {
+			response.getEntity().consumeContent();
 	    	return;
 		}
 		
@@ -207,6 +208,7 @@ public class N0ticeApi {
 
 		HttpResponse response = client.execute(post);	
 		if (response.getStatusLine().getStatusCode() == 200) {
+			response.getEntity().consumeContent();
 	    	return true;
 		}
 
@@ -222,6 +224,7 @@ public class N0ticeApi {
 
 		HttpResponse response = client.execute(post);
 		if (response.getStatusLine().getStatusCode() == 200) {
+			response.getEntity().consumeContent();
 	    	return true;
 		}
 
@@ -318,8 +321,8 @@ public class N0ticeApi {
 		entity.addPart("username", new StringBody(username, Charset.forName("UTF-8")));
 		entity.addPart("password", new StringBody(password, Charset.forName("UTF-8")));
 		entity.addPart("email", new StringBody(email, Charset.forName("UTF-8")));
-		authenticateRequest(post);
-
+		post.setEntity(entity);
+		
 		HttpResponse response = client.execute(post);
 		if (response.getStatusLine().getStatusCode() == 200) {
 			final String responseBody = IOUtils.toString(response.getEntity().getContent());
