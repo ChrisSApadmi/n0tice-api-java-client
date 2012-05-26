@@ -13,6 +13,7 @@ import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.parsers.SearchParser;
+import com.n0tice.api.client.parsers.UserParser;
 import com.n0tice.api.client.urls.UrlBuilder;
 import com.n0tice.api.client.util.HttpFetcher;
 
@@ -30,6 +31,7 @@ public class N0ticeApiTest {
 	@Mock UrlBuilder urlBuilder;
 	@Mock HttpFetcher httpFetcher;	
 	@Mock SearchParser searchParser;
+	@Mock UserParser userParser;
 	
 	@Mock ResultSet latestItems;
 	@Mock Content report;
@@ -39,7 +41,7 @@ public class N0ticeApiTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		api = new N0ticeApi("http://n0ticeapi...", urlBuilder, httpFetcher, searchParser);
+		api = new N0ticeApi("http://n0ticeapi...", urlBuilder, httpFetcher, searchParser, userParser);
 	}
 	
 	@Test

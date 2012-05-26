@@ -61,6 +61,7 @@ public class N0ticeApi {
 		this.urlBuilder = new UrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
 		this.searchParser = new SearchParser();
+		this.userParser = new UserParser();
 	}
 	
 	public N0ticeApi(String apiUrl, String consumerKey, String consumerSecret, Token accessToken) {
@@ -76,11 +77,12 @@ public class N0ticeApi {
 			.build();		
 	}
 	
-	public N0ticeApi(String apiUrl, UrlBuilder urlBuilder, HttpFetcher httpFetcher, SearchParser searchParser) {
+	public N0ticeApi(String apiUrl, UrlBuilder urlBuilder, HttpFetcher httpFetcher, SearchParser searchParser, UserParser userParser) {
 		this.apiUrl = apiUrl;
 		this.urlBuilder = urlBuilder;
 		this.httpFetcher = httpFetcher;
 		this.searchParser = searchParser;
+		this.userParser = userParser;
 	}
 	
 	public ResultSet near(double latitude, double longitude) throws HttpFetchException, ParsingException {
