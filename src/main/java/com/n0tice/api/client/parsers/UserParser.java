@@ -66,29 +66,20 @@ public class UserParser {
 			profileImage = new Image(imageJSON.getString(SMALL));
 		}
 		
-		List<String> noticeboards = new ArrayList<String>();
+		
+		Integer noticeboards = null;
 		if (userJSON.has(NOTICEBOARDS)) {
-			JSONArray noticeboardsJSON = userJSON.getJSONArray(NOTICEBOARDS);
-			parseNoticeboards(noticeboards, noticeboardsJSON);			
+			noticeboards = userJSON.getInt(NOTICEBOARDS);
 		}
 		
-		List<String> followedNoticeboards = new ArrayList<String>();
-		List<User> follewedUsers = new ArrayList<User>();
+		Integer followedNoticeboards = null;
+		Integer followedUsers = null;
 		if (userJSON.has(FOLLOWING)) {
 			JSONObject followsJSON = userJSON.getJSONObject(FOLLOWING);
-			if (followsJSON.has(NOTICEBOARDS)) {
-				JSONArray noticeboardsJSON = followsJSON.getJSONArray(NOTICEBOARDS);
-				parseNoticeboards(followedNoticeboards, noticeboardsJSON);			
-			}
-			if (followsJSON.has(USERS)) {
-				JSONArray usersJSON = followsJSON.getJSONArray(USERS);
-				for (int i = 0; i < usersJSON.length(); i++) {
-					JSONObject jsonUser = usersJSON.getJSONObject(i);
-					follewedUsers.add(jsonToUser(jsonUser));
-				}
-			}
+			followedNoticeboards = followsJSON.getInt(NOTICEBOARDS);		
+			followedUsers = followsJSON.getInt(USERS);
 		}
-		return new User(userJSON.getString(USERNAME), displayName, bio, profileImage, noticeboards, followedNoticeboards, follewedUsers);
+		return new User(userJSON.getString(USERNAME), displayName, bio, profileImage, noticeboards, followedNoticeboards, followedUsers);
 	}
 	
 	private void parseNoticeboards(List<String> noticeboards, JSONArray noticeboardsJSON) throws JSONException {

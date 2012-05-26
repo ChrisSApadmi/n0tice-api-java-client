@@ -1,6 +1,5 @@
 package com.n0tice.api.client.model;
 
-import java.util.List;
 
 public class User {
 	
@@ -8,15 +7,15 @@ public class User {
 	private String displayName;
 	private String bio;
 	private Image profileImage;
-	private List<String> noticeboards;
-	private List<String> followedNoticeboards;
-	private List<User> followedUsers;
+	private Integer noticeboards;
+	private Integer followedNoticeboards;
+	private Integer followedUsers;
 	
 	public User(String username) {
 		this.username = username;
 	}
 
-	public User(String username, String displayName, String bio, Image profileImage, List<String> noticeboards, List<String> followedNoticeboards, List<User> followedUsers) {
+	public User(String username, String displayName, String bio, Image profileImage, Integer noticeboards, Integer followedNoticeboards, Integer followedUsers) {
 		this.username = username;
 		this.displayName = displayName;
 		this.bio = bio;
@@ -42,15 +41,15 @@ public class User {
 		return profileImage;
 	}
 	
-	public List<String> getNoticeboards() {
+	public Integer getNoticeboards() {
 		return noticeboards;
 	}
 	
-	public List<String> getFollowedNoticeboards() {
+	public Integer getFollowedNoticeboards() {
 		return followedNoticeboards;
 	}
 	
-	public List<User> getFollowedUsers() {
+	public Integer getFollowedUsers() {
 		return followedUsers;
 	}
 	
