@@ -134,10 +134,6 @@ public class SearchParser {
 		}
 	}
 	
-	public User parseUserResult(String json) throws ParsingException {
-		return new UserParser().parseUserProfile(json);
-	}
-	
 	public String parseNoticeboardResult(String json) throws ParsingException {
 		try {
 			JSONObject jsonObject = new JSONObject(json);

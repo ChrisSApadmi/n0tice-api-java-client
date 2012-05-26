@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.List;
 
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -50,6 +51,7 @@ public class N0ticeApi {
 	private final UrlBuilder urlBuilder;
 	private final HttpFetcher httpFetcher;
 	private final SearchParser searchParser;
+	private UserParser userParser;
 
 	private OAuthService service;
 		
@@ -67,6 +69,7 @@ public class N0ticeApi {
 		this.urlBuilder = new UrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
 		this.searchParser = new SearchParser();
+		this.userParser = new UserParser();
 		service = new ServiceBuilder().provider(new N0ticeOauthApi(apiUrl))
 			.apiKey(consumerKey)
 			.apiSecret(consumerSecret)
@@ -121,7 +124,15 @@ public class N0ticeApi {
 	}
 	
 	public User userProfile(String username) throws NotFoundException, ParsingException, HttpFetchException {
-		return searchParser.parseUserResult(httpFetcher.fetchContent(urlBuilder.userProfile(username), UTF_8));
+		return userParser.parseUserProfile(httpFetcher.fetchContent(urlBuilder.userProfile(username), UTF_8));
+	}
+	
+	public List<User> followedUsers(String username) throws NotFoundException, ParsingException, HttpFetchException {
+		return userParser.parseUserProfiles(httpFetcher.fetchContent(urlBuilder.userFollowedUsers(username), UTF_8));
+	}
+	
+	public List<String> followedNoticeboards(String username) throws NotFoundException, ParsingException, HttpFetchException {
+		return userParser.parseNoticeboards(httpFetcher.fetchContent(urlBuilder.userFollowedNoticeboards(username), UTF_8));
 	}
 	
 	public String noticeBoard(String noticeboard) throws NotFoundException, ParsingException, HttpFetchException {

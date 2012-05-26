@@ -73,5 +73,13 @@ public class UrlBuilder {
 		this.page = page;
 		return this;
 	}
+
+	public String userFollowedUsers(String username) {
+		return userProfile(username) + "/following/users";
+	}
+	
+	public String userFollowedNoticeboards(String username) {
+		return userProfile(username) + "/following/noticeboards";
+	}
 	
 }

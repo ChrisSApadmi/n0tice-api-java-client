@@ -35,6 +35,21 @@ public class UserParser {
 		}		
 	}
 	
+	public List<User> parseUserProfiles(String json) throws ParsingException {
+		List<User> users = new ArrayList<User>();
+		JSONArray usersJSON;
+		try {
+			usersJSON = new JSONArray(json);
+			for (int i = 0; i < usersJSON.length(); i++) {
+				users.add(jsonToUser(usersJSON.getJSONObject(i)));
+			}
+			return users;
+		} catch (JSONException e) {			
+			e.printStackTrace();
+			throw new ParsingException();
+		}
+	}
+	
 	public NewUserResponse parseNewUserResponse(String repsonseBody) throws ParsingException {
 		try {
 			final JSONObject response = new JSONObject(repsonseBody);
@@ -66,7 +81,6 @@ public class UserParser {
 			profileImage = new Image(imageJSON.getString(SMALL));
 		}
 		
-		
 		Integer noticeboards = null;
 		if (userJSON.has(NOTICEBOARDS)) {
 			noticeboards = userJSON.getInt(NOTICEBOARDS);
@@ -82,11 +96,21 @@ public class UserParser {
 		return new User(userJSON.getString(USERNAME), displayName, bio, profileImage, noticeboards, followedNoticeboards, followedUsers);
 	}
 	
-	private void parseNoticeboards(List<String> noticeboards, JSONArray noticeboardsJSON) throws JSONException {
-		for (int i = 0; i < noticeboardsJSON.length(); i++) {
-			JSONObject jsonNoticeboard = noticeboardsJSON.getJSONObject(i);
-			noticeboards.add(jsonNoticeboard.getString(DOMAIN));
+	public List<String> parseNoticeboards(String json) throws ParsingException {
+		List<String> noticeboards = new ArrayList<String>();
+		JSONArray noticeboardsJSON;
+		try {
+			noticeboardsJSON = new JSONArray(json);
+
+			for (int i = 0; i < noticeboardsJSON.length(); i++) {
+				JSONObject jsonNoticeboard = noticeboardsJSON.getJSONObject(i);
+				noticeboards.add(jsonNoticeboard.getString(DOMAIN));
+			}
+			return noticeboards;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			throw new ParsingException();
 		}
 	}
-	
+
 }
