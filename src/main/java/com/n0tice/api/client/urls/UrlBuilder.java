@@ -57,6 +57,10 @@ public class UrlBuilder {
 		return apiUrl + "/user/" + username;
 	}
 	
+	public String userNotifications(String username) {
+		return userProfile(username) + "/notifications";
+	}
+	
 	public String noticeBoard(String noticeboard) {
 		return apiUrl + "/noticeboard/" + noticeboard;
 	}

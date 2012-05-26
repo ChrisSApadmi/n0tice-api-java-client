@@ -21,6 +21,7 @@ import com.n0tice.api.client.model.User;
 
 public class SearchParser {
 
+	private static final String MESSAGE = "message";
 	private static final String TIME_ZONE = "timeZone";
 	private static final String NAME = "name";
 	private static final String SMALL = "small";
@@ -141,6 +142,20 @@ public class SearchParser {
 		} catch (JSONException e) {
 			throw new ParsingException();
 		}
+	}
+	
+	public List<String> parseNotifications(String json) throws ParsingException {
+		ArrayList<String> notifications = new ArrayList<String>();
+		try {
+			JSONArray jsonNotifications = new JSONArray(json);
+			for (int i = 0; i < jsonNotifications.length(); i++) {
+				JSONObject notification = jsonNotifications.getJSONObject(i);		
+				notifications.add(notification.getString(MESSAGE));
+			}
+			return notifications;
+		} catch (JSONException e) {
+			throw new ParsingException();
+		}	
 	}
 	
 	public int parseVotes(String json) throws ParsingException {

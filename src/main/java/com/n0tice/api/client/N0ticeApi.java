@@ -259,6 +259,21 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
+	public List<String> notifications(String username) throws NotFoundException, ParsingException, NotAllowedException, AuthorisationException, BadRequestException {		
+		OAuthRequest request = new OAuthRequest(Verb.GET, urlBuilder.userNotifications(username));
+		service.signRequest(accessToken, request);
+		
+		final Response response = request.send();
+		
+		if (response.getCode() == 200) {
+			System.out.println(response.getBody());
+			return searchParser.parseNotifications(response.getBody());
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
 	public Content updateReport(String id, String headline, String body) throws ParsingException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException {	
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id);	
 		request.addBodyParameter("headline", headline);
