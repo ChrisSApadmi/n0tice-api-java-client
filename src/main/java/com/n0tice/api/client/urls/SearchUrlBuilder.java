@@ -61,7 +61,7 @@ public class SearchUrlBuilder {
 		url.append(apiUrl);
 		url.append(SEARCH);
 		if (q != null) {
-			url.append("?q=" + q);
+			url.append("?q=" + urlEncode(q));
 		}
 		if (page != null) {
 			url.append("?page=" + page);

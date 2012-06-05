@@ -44,4 +44,12 @@ public class SearchUrlBuilderTest {
 		assertEquals("http://api.local/search?location=Eel+Pie+island", builder.toUrl());
 	}
 	
+	
+	@Test
+	public void hashTagsInSearchQueriesAreCorrectlyEncoded() throws Exception {
+		SearchUrlBuilder builder = new SearchUrlBuilder(API_URL);		
+		builder.q("#litloc");
+		assertEquals("http://api.local/search?q=%23litloc", builder.toUrl());
+	}
+	
 }
