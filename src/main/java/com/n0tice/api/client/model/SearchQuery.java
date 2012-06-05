@@ -5,17 +5,27 @@ import java.util.List;
 
 public class SearchQuery {
 
+	private String q = null;
 	private Integer page = null;
 	private Integer limit = null;
 	private List<String> tags = new ArrayList<String>();
 	private String type = null;
 	private String location = null;
 	
+	public SearchQuery q(String q) {
+		this.q = q;
+		return this;
+	}
+	
 	public SearchQuery limit(Integer limit) {
 		this.limit = limit;
 		return this;
 	}
 	
+	public String getQ() {
+		return q;
+	}
+
 	public Integer getPage() {
 		return page;
 	}

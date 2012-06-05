@@ -16,6 +16,7 @@ public class SearchUrlBuilder {
    
 	final private String apiUrl;
 
+	private String q = null;
 	private Integer page = null;
 	private Integer limit = null;
 	private List<String> tags = new ArrayList<String>();
@@ -24,6 +25,11 @@ public class SearchUrlBuilder {
 	
 	public SearchUrlBuilder(String apiUrl) {
 		this.apiUrl = apiUrl;
+	}
+	
+	public SearchUrlBuilder q(String q) {
+		this.q = q;
+		return this;		
 	}
 	
 	public SearchUrlBuilder page(int page) {
@@ -54,6 +60,9 @@ public class SearchUrlBuilder {
 		StringBuilder url = new StringBuilder();
 		url.append(apiUrl);
 		url.append(SEARCH);
+		if (q != null) {
+			url.append("?q=" + q);
+		}
 		if (page != null) {
 			url.append("?page=" + page);
 		}
