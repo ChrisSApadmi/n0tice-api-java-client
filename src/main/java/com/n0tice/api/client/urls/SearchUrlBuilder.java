@@ -21,6 +21,7 @@ public class SearchUrlBuilder {
 	private List<String> tags = new ArrayList<String>();
 	private String type= null;
 	private String location = null;
+	private String noticeBoard;
 	
 	public SearchUrlBuilder(String apiUrl) {
 		this.apiUrl = apiUrl;
@@ -46,6 +47,11 @@ public class SearchUrlBuilder {
 		return this;		
 	}
 	
+	public SearchUrlBuilder noticeBoard(String noticeBoard) {
+		this.noticeBoard = noticeBoard;
+		return this;		
+	}
+	
 	public void location(String location) {
 		this.location = location;		
 	}
@@ -54,20 +60,37 @@ public class SearchUrlBuilder {
 		StringBuilder url = new StringBuilder();
 		url.append(apiUrl);
 		url.append(SEARCH);
+		
+		String joiner = "?";
 		if (page != null) {
-			url.append("?page=" + page);
+			url.append(joiner);
+			url.append("page=" + page);
+			joiner = "&";
 		}
 		if (limit != null) {
-			url.append("?limit=" + limit);
+			url.append(joiner);
+			url.append("limit=" + limit);
+			joiner = "&";
 		}
 		if (type != null) {
-			url.append("?type=" + urlEncode(type));
+			url.append(joiner);
+			url.append("type=" + urlEncode(type));
+			joiner = "&";
+		}
+		if (noticeBoard != null) {
+			url.append(joiner);
+			url.append("noticeboard=" + urlEncode(noticeBoard));
+			joiner = "&";
 		}
 		if (!tags.isEmpty()) {
-			url.append("?tags=" + COMMA_JOINER.join(tags));	// TODO how is this to be encoded
+			url.append(joiner);
+			url.append("tags=" + COMMA_JOINER.join(tags));	// TODO how is this to be encoded
+			joiner = "&";
 		}
 		if (location != null) {
-			url.append("?location=" + urlEncode(location));
+			url.append(joiner);
+			url.append("location=" + urlEncode(location));
+			joiner = "&";
 		}
 		return url.toString();
 	}
