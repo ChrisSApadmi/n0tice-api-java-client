@@ -38,6 +38,13 @@ public class SearchUrlBuilderTest {
 	}
 	
 	@Test
+	public void canBuildMultifieldQueries() throws Exception {
+		SearchUrlBuilder builder = new SearchUrlBuilder(API_URL);		
+		builder.type("event").noticeBoard("formby");
+		assertEquals("http://api.local/search?type=event&noticeboard=formby", builder.toUrl());
+	}
+	
+	@Test
 	public void parametersAreCorrectlyEncoded() throws Exception {
 		SearchUrlBuilder builder = new SearchUrlBuilder(API_URL);		
 		builder.location("Eel Pie island");

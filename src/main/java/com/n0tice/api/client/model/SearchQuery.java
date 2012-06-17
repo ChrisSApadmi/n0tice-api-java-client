@@ -10,6 +10,7 @@ public class SearchQuery {
 	private Integer limit = null;
 	private List<String> tags = new ArrayList<String>();
 	private String type = null;
+	private String noticeBoard = null;
 	private String location = null;
 	
 	public SearchQuery q(String q) {
@@ -52,9 +53,18 @@ public class SearchQuery {
 		this.type = type;
 		return this;
 	}
-	
+		
 	public String getType() {
 		return type;
+	}
+	
+	public SearchQuery noticeBoard(String noticeBoard) {
+		this.noticeBoard = noticeBoard;
+		return this;
+	}
+	
+	public String getNoticeBoard() {
+		return noticeBoard;
 	}
 	
 	public SearchQuery location(String location) {

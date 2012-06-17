@@ -123,6 +123,9 @@ public class N0ticeApi {
 		if (query.getType() != null) {
 			searchUrlBuilder.type(query.getType());
 		}
+		if (query.getNoticeBoard() != null) {
+			searchUrlBuilder.noticeBoard(query.getNoticeBoard());
+		}
 		if (query.getLocation() != null) {
 			searchUrlBuilder.location(query.getLocation());
 		}
