@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.n0tice.api</groupId>
-	<artifactId>n0tice-api</artifactId>
+	<artifactId>n0tice-client</artifactId>
 	<packaging>jar</packaging>
 	<name>n0tice API Java client</name>
 	<version>2.0.1-SNAPSHOT</version>
