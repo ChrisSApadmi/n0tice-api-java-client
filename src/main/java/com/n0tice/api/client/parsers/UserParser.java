@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.n0tice.api.client.exceptions.ParsingException;
+import com.n0tice.api.client.model.AccessToken;
 import com.n0tice.api.client.model.Image;
 import com.n0tice.api.client.model.NewUserResponse;
 import com.n0tice.api.client.model.User;
@@ -58,7 +59,21 @@ public class UserParser {
 			
 			final String token = accessTokenJson.getString("token");
 			final String secret = accessTokenJson.getString("secret");			
-			return new NewUserResponse(user, token, secret);
+			return new NewUserResponse(user, new AccessToken(token, secret));
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+			throw new ParsingException();
+		}
+	}
+		
+	public AccessToken parseAuthUserResponse(String repsonseBody) throws ParsingException {
+		try {
+			final JSONObject response = new JSONObject(repsonseBody);
+			final JSONObject accessTokenJson = response.getJSONObject("accessToken");
+			final String token = accessTokenJson.getString("token");
+			final String secret = accessTokenJson.getString("secret");			
+			return new AccessToken(token, secret);
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -112,5 +127,5 @@ public class UserParser {
 			throw new ParsingException();
 		}
 	}
-
+	
 }

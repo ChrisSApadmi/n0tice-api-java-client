@@ -3,25 +3,19 @@ package com.n0tice.api.client.model;
 public class NewUserResponse {
 
 	private final User user;
-	private final String token;
-	private final String secret;
+	private final AccessToken accessToken;
 
-	public NewUserResponse(User user, String token, String secret) {
-		this.user = user;		
-		this.token = token;
-		this.secret = secret;
+	public NewUserResponse(User user, AccessToken accessToken) {
+		this.user = user;
+		this.accessToken = accessToken;
 	}
-
+	
 	public User getUser() {
 		return user;
 	}
 
-	public String getToken() {
-		return token;
-	}
-
-	public String getSecret() {
-		return secret;
+	public AccessToken getAccessToken() {
+		return accessToken;
 	}
 	
 }

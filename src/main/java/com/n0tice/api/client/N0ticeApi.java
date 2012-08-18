@@ -26,6 +26,7 @@ import com.n0tice.api.client.exceptions.HttpFetchException;
 import com.n0tice.api.client.exceptions.NotAllowedException;
 import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
+import com.n0tice.api.client.model.AccessToken;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.ImageFile;
 import com.n0tice.api.client.model.NewUserResponse;
@@ -358,7 +359,7 @@ public class N0ticeApi {
 		request.addBodyParameter("consumerkey", consumerKey);		
 		request.addBodyParameter("username", username);		
 		request.addBodyParameter("password", password);
-		request.addBodyParameter("email", password);
+		request.addBodyParameter("email", email);
 		
 		final Response response = request.send();
 
@@ -370,7 +371,24 @@ public class N0ticeApi {
 		handleExceptions(response);
 		throw new RuntimeException();
 	}
+	
+	public AccessToken authUser(String consumerKey, String username, String password) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/auth");
+		request.addBodyParameter("consumerkey", consumerKey);		
+		request.addBodyParameter("username", username);		
+		request.addBodyParameter("password", password);
+		
+		final Response response = request.send();
 
+		final String repsonseBody = response.getBody();
+		if (response.getCode() == 200) {		
+			return new UserParser().parseAuthUserResponse(repsonseBody);
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
 	public User updateUserDetails(String username, String displayName, String bio, ImageFile image) throws ParsingException, IOException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username);		
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
