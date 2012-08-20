@@ -148,6 +148,22 @@ public class N0ticeApi {
 	public String noticeBoard(String noticeboard) throws NotFoundException, ParsingException, HttpFetchException {
 		return searchParser.parseNoticeboardResult((httpFetcher.fetchContent(urlBuilder.noticeBoard(noticeboard), UTF_8)));
 	}
+		
+	public User verify() throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
+		OAuthRequest request = new OAuthRequest(Verb.GET, apiUrl + "/verify");		
+		service.signRequest(accessToken, request);
+		
+		Response response = request.send();
+		
+		final String responseBody = response.getBody();
+		System.out.println(responseBody);
+		if (response.getCode() == 200) {
+	    	return userParser.parseUserProfile(responseBody);
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
 	
 	public Content postReport(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");
