@@ -156,7 +156,6 @@ public class N0ticeApi {
 		Response response = request.send();
 		
 		final String responseBody = response.getBody();
-		System.out.println(responseBody);
 		if (response.getCode() == 200) {
 	    	return userParser.parseUserProfile(responseBody);
 		}
