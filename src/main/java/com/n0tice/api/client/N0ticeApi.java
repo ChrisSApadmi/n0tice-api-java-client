@@ -10,9 +10,11 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -43,9 +45,9 @@ import com.n0tice.api.client.util.HttpFetcher;
 public class N0ticeApi {
 	
 	private static final String UTF_8 = "UTF-8";
-	private static final String YYYY_MM_DD_HH_MM = "yyyy-MM-dd HH:mm";
 	
-	private static DateTimeFormatter dateFormatter = DateTimeFormat.forPattern(YYYY_MM_DD_HH_MM);
+	private static DateTimeFormatter LOCAL_DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+	private static DateTimeFormatter ZULE_TIME_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 	
 	private final String apiUrl;	
 	private Token accessToken;
@@ -165,6 +167,10 @@ public class N0ticeApi {
 	}
 	
 	public Content postReport(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
+		return postReport(headline, latitude, longitude, body, link, image, noticeboard, null);
+	}
+	
+	public Content postReport(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard, DateTime date) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (headline != null) {
@@ -176,6 +182,10 @@ public class N0ticeApi {
 		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName("UTF-8")));
 		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName("UTF-8")));
 		populateUpdateFields(body, link, image, entity);
+		
+		if (date != null) {
+			entity.addPart("date", new StringBody(date.toString(ZULE_TIME_FORMAT), Charset.forName("UTF-8")));
+		}
 		
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
@@ -205,8 +215,8 @@ public class N0ticeApi {
 		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName("UTF-8")));
 		populateUpdateFields(body, link, image, entity);
 		
-		entity.addPart("startDate", new StringBody(startDate.toString(dateFormatter), Charset.forName("UTF-8")));
-		entity.addPart("endDate", new StringBody(endDate.toString(dateFormatter), Charset.forName("UTF-8")));
+		entity.addPart("startDate", new StringBody(startDate.toString(LOCAL_DATE_TIME_FORMAT), Charset.forName("UTF-8")));
+		entity.addPart("endDate", new StringBody(endDate.toString(LOCAL_DATE_TIME_FORMAT), Charset.forName("UTF-8")));
 
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
