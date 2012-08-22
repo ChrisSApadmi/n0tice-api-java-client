@@ -32,6 +32,7 @@ import com.n0tice.api.client.model.AccessToken;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.ImageFile;
 import com.n0tice.api.client.model.NewUserResponse;
+import com.n0tice.api.client.model.Noticeboard;
 import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.SearchQuery;
 import com.n0tice.api.client.model.User;
@@ -143,11 +144,15 @@ public class N0ticeApi {
 		return userParser.parseUserProfiles(httpFetcher.fetchContent(urlBuilder.userFollowedUsers(username), UTF_8));
 	}
 	
-	public List<String> followedNoticeboards(String username) throws NotFoundException, ParsingException, HttpFetchException {
+	public List<Noticeboard> followedNoticeboards(String username) throws NotFoundException, ParsingException, HttpFetchException {
 		return userParser.parseNoticeboards(httpFetcher.fetchContent(urlBuilder.userFollowedNoticeboards(username), UTF_8));
 	}
 	
-	public String noticeBoard(String noticeboard) throws NotFoundException, ParsingException, HttpFetchException {
+	public List<Noticeboard> noticeboards(String username) throws NotFoundException, ParsingException, HttpFetchException {
+		return userParser.parseNoticeboards(httpFetcher.fetchContent(urlBuilder.userNoticeboards(username), UTF_8));
+	}
+	
+	public Noticeboard noticeBoard(String noticeboard) throws NotFoundException, ParsingException, HttpFetchException {
 		return searchParser.parseNoticeboardResult((httpFetcher.fetchContent(urlBuilder.noticeBoard(noticeboard), UTF_8)));
 	}
 		

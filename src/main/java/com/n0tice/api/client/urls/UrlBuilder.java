@@ -85,5 +85,9 @@ public class UrlBuilder {
 	public String userFollowedNoticeboards(String username) {
 		return userProfile(username) + "/following/noticeboards";
 	}
+
+	public String userNoticeboards(String username) {
+		return userProfile(username) + "/noticeboards";
+	}
 	
 }

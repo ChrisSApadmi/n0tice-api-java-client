@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.Image;
+import com.n0tice.api.client.model.Noticeboard;
 import com.n0tice.api.client.model.Place;
 import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.Tag;
@@ -112,7 +113,7 @@ public class SearchParser {
 				contentItemJSON.getString(HEADLINE), 
 				place, 
 				user, 
-				getNoticeBoardFromJSON(contentItemJSON),
+				getNoticeboardNameFromJSON(contentItemJSON),
 				parseDate(contentItemJSON.getString("created")),
 				parseDate(contentItemJSON.getString("modified")),
 				parseTags(contentItemJSON),
@@ -135,10 +136,10 @@ public class SearchParser {
 		}
 	}
 	
-	public String parseNoticeboardResult(String json) throws ParsingException {
+	public Noticeboard parseNoticeboardResult(String json) throws ParsingException {
 		try {
 			JSONObject jsonObject = new JSONObject(json);
-			return jsonObject.getString("domain");
+			return new Noticeboard(jsonObject.getString("domain"), jsonObject.getString("name"), jsonObject.getString("description"));
 		} catch (JSONException e) {
 			throw new ParsingException();
 		}
@@ -168,7 +169,7 @@ public class SearchParser {
 		}
 	}
 	
-	private String getNoticeBoardFromJSON(JSONObject contentItem) throws JSONException {
+	private String getNoticeboardNameFromJSON(JSONObject contentItem) throws JSONException {
 		if (contentItem.has(NOTICEBOARD)) {
 			return contentItem.getString(NOTICEBOARD);
 		}
