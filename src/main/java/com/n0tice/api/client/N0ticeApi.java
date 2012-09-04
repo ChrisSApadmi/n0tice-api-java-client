@@ -178,17 +178,17 @@ public class N0ticeApi {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (headline != null) {
-			entity.addPart("headline", new StringBody(headline, Charset.forName("UTF-8")));
+			entity.addPart("headline", new StringBody(headline, Charset.forName(UTF_8)));
 		}
 		if (noticeboard != null) {
-			entity.addPart("noticeboard", new StringBody(noticeboard, Charset.forName("UTF-8")));
+			entity.addPart("noticeboard", new StringBody(noticeboard, Charset.forName(UTF_8)));
 		}
-		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName("UTF-8")));
-		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName("UTF-8")));
+		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName(UTF_8)));
+		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName(UTF_8)));
 		populateUpdateFields(body, link, image, entity);
 		
 		if (date != null) {
-			entity.addPart("date", new StringBody(date.toString(ZULE_TIME_FORMAT), Charset.forName("UTF-8")));
+			entity.addPart("date", new StringBody(date.toString(ZULE_TIME_FORMAT), Charset.forName(UTF_8)));
 		}
 		
 		request.addHeader("Content-Type", entity.getContentType().getValue());
@@ -210,17 +210,17 @@ public class N0ticeApi {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/event/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (headline != null) {
-			entity.addPart("headline", new StringBody(headline, Charset.forName("UTF-8")));
+			entity.addPart("headline", new StringBody(headline, Charset.forName(UTF_8)));
 		}
 		if (noticeboard != null) {
-			entity.addPart("noticeboard", new StringBody(noticeboard, Charset.forName("UTF-8")));
+			entity.addPart("noticeboard", new StringBody(noticeboard, Charset.forName(UTF_8)));
 		}
-		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName("UTF-8")));
-		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName("UTF-8")));
+		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName(UTF_8)));
+		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName(UTF_8)));
 		populateUpdateFields(body, link, image, entity);
 		
-		entity.addPart("startDate", new StringBody(startDate.toString(LOCAL_DATE_TIME_FORMAT), Charset.forName("UTF-8")));
-		entity.addPart("endDate", new StringBody(endDate.toString(LOCAL_DATE_TIME_FORMAT), Charset.forName("UTF-8")));
+		entity.addPart("startDate", new StringBody(startDate.toString(LOCAL_DATE_TIME_FORMAT), Charset.forName(UTF_8)));
+		entity.addPart("endDate", new StringBody(endDate.toString(LOCAL_DATE_TIME_FORMAT), Charset.forName(UTF_8)));
 
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
@@ -422,10 +422,10 @@ public class N0ticeApi {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username);		
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (displayName != null) {
-			entity.addPart("displayName", new StringBody(displayName, Charset.forName("UTF-8")));
+			entity.addPart("displayName", new StringBody(displayName, Charset.forName(UTF_8)));
 		}
 		if (bio != null) {
-			entity.addPart("bio", new StringBody(bio, Charset.forName("UTF-8")));
+			entity.addPart("bio", new StringBody(bio, Charset.forName(UTF_8)));
 		}
 		if (image != null) {
 			entity.addPart("image", new ByteArrayBody(image.getData(), image.getFilename()));
@@ -463,10 +463,10 @@ public class N0ticeApi {
 			ImageFile image, MultipartEntity entity)
 			throws UnsupportedEncodingException {
 		if (body != null) {
-			entity.addPart("body", new StringBody(body, Charset.forName("UTF-8")));
+			entity.addPart("body", new StringBody(body, Charset.forName(UTF_8)));
 		}
 		if (link != null) {
-			entity.addPart("link", new StringBody(link, Charset.forName("UTF-8")));
+			entity.addPart("link", new StringBody(link, Charset.forName(UTF_8)));
 		}
 		if (image != null) {
 			entity.addPart("image", new ByteArrayBody(image.getData(), image.getFilename()));
