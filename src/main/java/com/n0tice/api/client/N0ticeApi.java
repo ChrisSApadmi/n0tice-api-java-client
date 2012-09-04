@@ -271,7 +271,7 @@ public class N0ticeApi {
 	
 	public boolean repost(String id, String noticeboard) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/repost");
-		request.addBodyParameter("noticeboard", noticeboard);
+		addBodyParameter(request, "noticeboard", noticeboard);
 		service.signRequest(scribeAccessToken, request);
 
 		final Response response = request.send();		
@@ -313,7 +313,7 @@ public class N0ticeApi {
 	
 	public Content updateReport(String id, String headline, String body) throws ParsingException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException {	
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id);	
-		request.addBodyParameter("headline", headline);
+		addBodyParameter(request, "headline", headline);
 		service.signRequest(scribeAccessToken, request);
 		
 		Response response = request.send();
@@ -384,11 +384,11 @@ public class N0ticeApi {
 	}
 	
 	public NewUserResponse createUser(String consumerKey, String username, String password, String email) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/new");
-		request.addBodyParameter("consumerkey", consumerKey);		
-		request.addBodyParameter("username", username);		
-		request.addBodyParameter("password", password);
-		request.addBodyParameter("email", email);
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/new");		
+		addBodyParameter(request, "consumerkey", consumerKey);
+		addBodyParameter(request, "username", username);
+		addBodyParameter(request, "password", password);
+		addBodyParameter(request, "email", email);
 		
 		final Response response = request.send();
 
@@ -400,12 +400,12 @@ public class N0ticeApi {
 		handleExceptions(response);
 		throw new RuntimeException();
 	}
-	
+
 	public AccessToken authUser(String consumerKey, String username, String password) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/auth");
-		request.addBodyParameter("consumerkey", consumerKey);		
-		request.addBodyParameter("username", username);		
-		request.addBodyParameter("password", password);
+		addBodyParameter(request, "consumerkey", consumerKey);
+		addBodyParameter(request, "username", username);
+		addBodyParameter(request, "password", password);
 		
 		final Response response = request.send();
 
@@ -496,6 +496,12 @@ public class N0ticeApi {
 		
 		System.err.println(response.getCode() + ": " + response.getBody());
 		throw new RuntimeException();
+	}
+	
+	private void addBodyParameter(OAuthRequest request, String parameter, String value) {
+		if (value != null) {
+			request.addBodyParameter(parameter, value);
+		}
 	}
 	
 }
