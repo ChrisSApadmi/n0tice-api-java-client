@@ -54,7 +54,7 @@ public class N0ticeApi {
 	private final UrlBuilder urlBuilder;
 	private final HttpFetcher httpFetcher;
 	private final SearchParser searchParser;
-	private UserParser userParser;
+	private final UserParser userParser;
 
 	private OAuthService service;
 	private Token scribeAccessToken;
