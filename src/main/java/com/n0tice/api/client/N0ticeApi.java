@@ -55,6 +55,9 @@ public class N0ticeApi {
 	private final SearchParser searchParser;
 	private final HttpClient client;
 	
+	private String username;
+	private String password;
+	
 	public N0ticeApi(String apiUrl) {
 		this.apiUrl = apiUrl;
 		this.urlBuilder = new UrlBuilder(apiUrl);
@@ -69,6 +72,9 @@ public class N0ticeApi {
 		this.urlBuilder = new UrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
 		this.searchParser = new SearchParser();
+		
+		this.username = username;
+		this.password = password;
 		
 		client = new DefaultHttpClient();
 	}
@@ -421,7 +427,7 @@ public class N0ticeApi {
 	
 	private void authenticateRequest(HttpRequestBase request) throws AuthenticationException {
 		BasicScheme scheme = new BasicScheme();
-		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("tonytw1", "testpassword");		
+		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(username, password);		
 		Header authenticate = scheme.authenticate(credentials, request);
 		request.addHeader(authenticate);
 	}
