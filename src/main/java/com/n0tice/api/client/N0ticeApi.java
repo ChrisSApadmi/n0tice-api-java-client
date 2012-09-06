@@ -4,13 +4,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -401,11 +408,20 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 
-	public AccessToken authUser(String consumerKey, String username, String password) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
+	public AccessToken authUser(String consumerKey, String username, String password, String consumerSecret) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/auth");
 		addBodyParameter(request, "consumerkey", consumerKey);
 		addBodyParameter(request, "username", username);
 		addBodyParameter(request, "password", password);
+		
+		addBodyParameter(request, "oauth_signature_method", "HMAC-SHA1");
+		addBodyParameter(request, "oauth_version", "1.0");
+		addBodyParameter(request, "oauth_timestamp", Long.toString(DateTimeUtils.currentTimeMillis()));
+
+		final String effectiveUrl = request.getCompleteUrl() + "?" + request.getBodyContents();		
+		addBodyParameter(request, "oauth_signature", sign(effectiveUrl, consumerSecret));
+		
+		System.out.println(request.getBodyContents());
 		
 		final Response response = request.send();
 
@@ -416,6 +432,14 @@ public class N0ticeApi {
 		
 		handleExceptions(response);
 		throw new RuntimeException();
+	}
+
+	private String sign(String effectiveUrl, String secret) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+		    SecretKeySpec key = new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA1");
+		    Mac mac = Mac.getInstance("HmacSHA1");
+		    mac.init(key);
+		    byte[] bytes = mac.doFinal(effectiveUrl.getBytes("UTF-8"));
+		    return new String(Base64.encodeBase64(bytes)).replace("\r\n", "");		  
 	}
 	
 	public User updateUserDetails(String username, String displayName, String bio, ImageFile image) throws ParsingException, IOException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
