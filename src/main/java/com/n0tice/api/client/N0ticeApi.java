@@ -53,7 +53,6 @@ import com.n0tice.api.client.util.HttpFetcher;
 public class N0ticeApi {
 	
 	private static final String UTF_8 = "UTF-8";
-	
 	private static DateTimeFormatter LOCAL_DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 	private static DateTimeFormatter ZULE_TIME_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 	
@@ -413,18 +412,15 @@ public class N0ticeApi {
 		addBodyParameter(request, "consumerkey", consumerKey);
 		addBodyParameter(request, "username", username);
 		addBodyParameter(request, "password", password);
-		
+
+		// Manually sign this request using the consumer secret rather than the access key/access secret.
 		addBodyParameter(request, "oauth_signature_method", "HMAC-SHA1");
 		addBodyParameter(request, "oauth_version", "1.0");
 		addBodyParameter(request, "oauth_timestamp", Long.toString(DateTimeUtils.currentTimeMillis()));
-
-		final String effectiveUrl = request.getCompleteUrl() + "?" + request.getBodyContents();		
+		final String effectiveUrl = request.getCompleteUrl() + "?" + request.getBodyContents();
 		addBodyParameter(request, "oauth_signature", sign(effectiveUrl, consumerSecret));
 		
-		System.out.println(request.getBodyContents());
-		
 		final Response response = request.send();
-
 		final String repsonseBody = response.getBody();
 		if (response.getCode() == 200) {		
 			return new UserParser().parseAuthUserResponse(repsonseBody);
@@ -432,14 +428,6 @@ public class N0ticeApi {
 		
 		handleExceptions(response);
 		throw new RuntimeException();
-	}
-
-	private String sign(String effectiveUrl, String secret) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
-		    SecretKeySpec key = new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA1");
-		    Mac mac = Mac.getInstance("HmacSHA1");
-		    mac.init(key);
-		    byte[] bytes = mac.doFinal(effectiveUrl.getBytes("UTF-8"));
-		    return new String(Base64.encodeBase64(bytes)).replace("\r\n", "");		  
 	}
 	
 	public User updateUserDetails(String username, String displayName, String bio, ImageFile image) throws ParsingException, IOException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
@@ -526,6 +514,14 @@ public class N0ticeApi {
 		if (value != null) {
 			request.addBodyParameter(parameter, value);
 		}
+	}
+	
+	private String sign(String effectiveUrl, String secret) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+	    SecretKeySpec key = new SecretKeySpec(secret.getBytes(UTF_8), "HmacSHA1");
+	    Mac mac = Mac.getInstance("HmacSHA1");
+	    mac.init(key);
+	    byte[] bytes = mac.doFinal(effectiveUrl.getBytes(UTF_8));
+	    return new String(Base64.encodeBase64(bytes)).replace("\r\n", "");		  
 	}
 	
 }
