@@ -23,6 +23,7 @@ public class SearchUrlBuilder {
 	private String type= null;
 	private String location = null;
 	private String noticeBoard;
+	private String user;
 	
 	public SearchUrlBuilder(String apiUrl) {
 		this.apiUrl = apiUrl;
@@ -50,6 +51,11 @@ public class SearchUrlBuilder {
 	
 	public SearchUrlBuilder type(String type) {
 		this.type = type;
+		return this;		
+	}
+	
+	public SearchUrlBuilder user(String user) {
+		this.user = user;
 		return this;		
 	}
 	
@@ -93,6 +99,11 @@ public class SearchUrlBuilder {
 			url.append("noticeboard=" + urlEncode(noticeBoard));
 			joiner = "&";
 		}
+		if (user != null) {
+			url.append(joiner);
+			url.append("user=" + urlEncode(user));
+			joiner = "&";
+		}		
 		if (!tags.isEmpty()) {
 			url.append(joiner);
 			url.append("tags=" + COMMA_JOINER.join(tags));	// TODO how is this to be encoded

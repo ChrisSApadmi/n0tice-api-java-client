@@ -136,6 +136,9 @@ public class N0ticeApi {
 		if (query.getNoticeBoard() != null) {
 			searchUrlBuilder.noticeBoard(query.getNoticeBoard());
 		}
+		if (query.getUser() != null) {
+			searchUrlBuilder.user(query.getUser());
+		}		
 		if (query.getLocation() != null) {
 			searchUrlBuilder.location(query.getLocation());
 		}
