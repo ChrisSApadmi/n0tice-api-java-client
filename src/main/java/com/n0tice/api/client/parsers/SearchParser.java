@@ -15,6 +15,7 @@ import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.Image;
 import com.n0tice.api.client.model.Noticeboard;
 import com.n0tice.api.client.model.Place;
+import com.n0tice.api.client.model.Reoccurence;
 import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.Tag;
 import com.n0tice.api.client.model.Update;
@@ -22,6 +23,8 @@ import com.n0tice.api.client.model.User;
 
 public class SearchParser {
 
+	private static final String REOCCURS_TO = "reoccursTo";
+	private static final String REOCCURS = "reoccurs";
 	private static final String MESSAGE = "message";
 	private static final String TIME_ZONE = "timeZone";
 	private static final String NAME = "name";
@@ -93,6 +96,15 @@ public class SearchParser {
 		if (contentItemJSON.has(END_DATE)) {
 			endDate = parseDate(contentItemJSON.getString(END_DATE));
 		}
+		Reoccurence reoccurs = null;
+		if (contentItemJSON.has(REOCCURS)) {
+			reoccurs = Reoccurence.valueOf(contentItemJSON.getString(REOCCURS));
+		}
+		DateTime reoccursTo = null;
+		if (contentItemJSON.has(REOCCURS_TO)) {
+			reoccursTo = parseDate(contentItemJSON.getString(REOCCURS_TO));
+		}
+		
 		int interestingVotes = 0;
 		if (contentItemJSON.has(VOTES)) {
 			JSONObject votesJson = contentItemJSON.getJSONObject(VOTES);
@@ -120,8 +132,8 @@ public class SearchParser {
 				parseUpdates(contentItemJSON),
 				startDate,
 				endDate,
-				null,	// TODO parse back from json
-				null,
+				reoccurs,
+				reoccursTo,
 				interestingVotes,
 				reposts
 				);
