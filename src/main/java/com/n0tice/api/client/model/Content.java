@@ -1,5 +1,6 @@
 package com.n0tice.api.client.model;
 
+import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -18,14 +19,18 @@ public class Content {
 	private final DateTime modified;
 	private final List<Tag> tags;
 	private final List<Update> updates;
+	
 	private final DateTime startDate;
 	private final DateTime endDate;
+	private final Reoccurence reoccurence;
+	private final DateTime reoccursTo;	
 	private final int interestingVotes;
 	private final int reposts;
 	
 	public Content(String id, String apiUrl, String webUrl, String type,
 			String headline, Place place, User user, String noticeBoard,
-			DateTime created, DateTime modified, List<Tag> tags, List<Update> updates, DateTime startDate, DateTime endDate, int interestingVotes, int reposts) {
+			DateTime created, DateTime modified, List<Tag> tags, List<Update> updates, DateTime startDate, DateTime endDate, 
+			Reoccurence reoccurence, DateTime reoccursTo, int interestingVotes, int reposts) {
 		this.id = id;
 		this.apiUrl = apiUrl;
 		this.webUrl = webUrl;
@@ -40,6 +45,8 @@ public class Content {
 		this.updates = updates;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.reoccurence = reoccurence;
+		this.reoccursTo = reoccursTo;
 		this.interestingVotes = interestingVotes;
 		this.reposts = reposts;
 	}
@@ -100,6 +107,14 @@ public class Content {
 		return endDate;
 	}
 	
+	public Reoccurence getReoccurence() {
+		return reoccurence;
+	}
+
+	public DateTime getReoccursTo() {
+		return reoccursTo;
+	}
+
 	public int getInterestingVotes() {
 		return interestingVotes;
 	}
@@ -116,6 +131,7 @@ public class Content {
 				+ noticeBoard + ", created=" + created + ", modified="
 				+ modified + ", tags=" + tags + ", updates=" + updates
 				+ ", startDate=" + startDate + ", endDate=" + endDate
+				+ ", reoccurence=" + reoccurence + ", reoccursTo=" + reoccursTo
 				+ ", interestingVotes=" + interestingVotes + ", reposts="
 				+ reposts + "]";
 	}

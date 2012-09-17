@@ -120,6 +120,8 @@ public class SearchParser {
 				parseUpdates(contentItemJSON),
 				startDate,
 				endDate,
+				null,	// TODO parse back from json
+				null,
 				interestingVotes,
 				reposts
 				);

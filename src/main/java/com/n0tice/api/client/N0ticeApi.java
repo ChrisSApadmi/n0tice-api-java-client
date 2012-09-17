@@ -40,6 +40,7 @@ import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.ImageFile;
 import com.n0tice.api.client.model.NewUserResponse;
 import com.n0tice.api.client.model.Noticeboard;
+import com.n0tice.api.client.model.Reoccurence;
 import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.SearchQuery;
 import com.n0tice.api.client.model.User;
@@ -212,22 +213,27 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public Content postEvent(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard, LocalDateTime startDate, LocalDateTime endDate) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/event/new");
-		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-		if (headline != null) {
-			entity.addPart("headline", new StringBody(headline, Charset.forName(UTF_8)));
-		}
-		if (noticeboard != null) {
-			entity.addPart("noticeboard", new StringBody(noticeboard, Charset.forName(UTF_8)));
-		}
-		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName(UTF_8)));
-		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName(UTF_8)));
+	public Content postEvent(String headline, double latitude,
+			double longitude, String body, String link, ImageFile image,
+			String noticeboard, LocalDateTime startDate, LocalDateTime endDate, Reoccurence reoccurence, LocalDateTime reoccursTo)
+			throws ParsingException, AuthorisationException, IOException,
+			NotAllowedException, NotFoundException, BadRequestException {		
+		final OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/event/new");
+
+		final MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		addEntityPartParameter(entity, "headline", headline);
+		addEntityPartParameter(entity, "noticeboard", noticeboard);
+		addEntityPartParameter(entity, "latitude", Double.toString(latitude));
+		addEntityPartParameter(entity, "longitude", Double.toString(longitude));
 		populateUpdateFields(body, link, image, entity);
 		
-		entity.addPart("startDate", new StringBody(startDate.toString(LOCAL_DATE_TIME_FORMAT), Charset.forName(UTF_8)));
-		entity.addPart("endDate", new StringBody(endDate.toString(LOCAL_DATE_TIME_FORMAT), Charset.forName(UTF_8)));
-
+		addEntityPartParameter(entity, "startDate", startDate.toString(LOCAL_DATE_TIME_FORMAT));
+		addEntityPartParameter(entity, "endDate", endDate.toString(LOCAL_DATE_TIME_FORMAT));
+		if (reoccurence != null && reoccursTo != null) {
+			addEntityPartParameter(entity, "reoccurence", reoccurence.toString());
+			addEntityPartParameter(entity, "reoccursTo", reoccursTo.toString(LOCAL_DATE_TIME_FORMAT));
+		}
+		
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
 		service.signRequest(scribeAccessToken, request);
@@ -513,6 +519,16 @@ public class N0ticeApi {
 	private void addBodyParameter(OAuthRequest request, String parameter, String value) {
 		if (value != null) {
 			request.addBodyParameter(parameter, value);
+		}
+	}
+	
+	private void addEntityPartParameter(MultipartEntity entity, String parameter, String value) {
+		if (value != null) {
+			try {
+				entity.addPart(parameter, new StringBody(value, Charset.forName(UTF_8)));
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 	

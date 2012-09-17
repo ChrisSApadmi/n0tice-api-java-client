@@ -12,6 +12,7 @@ public class SearchQuery {
 	private String type = null;
 	private String noticeBoard = null;
 	private String location = null;
+	private String user = null;
 	
 	public SearchQuery q(String q) {
 		this.q = q;
@@ -53,7 +54,12 @@ public class SearchQuery {
 		this.type = type;
 		return this;
 	}
-		
+	
+	public SearchQuery user(String user) {
+		this.user = user;
+		return this;
+	}
+	
 	public String getType() {
 		return type;
 	}
@@ -74,6 +80,10 @@ public class SearchQuery {
 
 	public String getLocation() {
 		return location;
+	}
+
+	public String getUser() {
+		return user;
 	}
 	
 }
