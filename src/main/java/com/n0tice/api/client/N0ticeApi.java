@@ -233,7 +233,7 @@ public class N0ticeApi {
 		addEntityPartParameter(entity, "startDate", startDate.toString(LOCAL_DATE_TIME_FORMAT));
 		addEntityPartParameter(entity, "endDate", endDate.toString(LOCAL_DATE_TIME_FORMAT));
 		if (reoccurence != null && reoccursTo != null) {
-			addEntityPartParameter(entity, "reoccurence", reoccurence.toString());
+			addEntityPartParameter(entity, "reoccurs", reoccurence.toString());
 			addEntityPartParameter(entity, "reoccursTo", reoccursTo.toString(LOCAL_DATE_TIME_FORMAT));
 		}
 		
