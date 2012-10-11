@@ -95,18 +95,22 @@ public class N0ticeApi {
 		this.userParser = userParser;
 	}
 	
+	@Deprecated
 	public ResultSet near(double latitude, double longitude) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.near(latitude, longitude), UTF_8));
 	}
 	
+	@Deprecated
 	public ResultSet user(String userName) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.user(userName), UTF_8));
 	}
 	
+	@Deprecated
 	public ResultSet noticeboard(String noticeBoard) throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.noticeboard(noticeBoard), UTF_8));
 	}
 	
+	@Deprecated
 	public ResultSet tag(String tag)  throws HttpFetchException, ParsingException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.tag(tag), UTF_8));
 	}

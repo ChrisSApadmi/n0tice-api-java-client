@@ -28,7 +28,7 @@ import org.apache.http.protocol.HttpContext;
 import com.n0tice.api.client.exceptions.HttpFetchException;
 import com.n0tice.api.client.exceptions.NotFoundException;
 
-public class HttpFetcher {
+public class HttpFetcher {	// TODO should be be visible by apps using this jar
 
 	//private final Logger log = Logger.getLogger(HttpFetcher.class);
 
