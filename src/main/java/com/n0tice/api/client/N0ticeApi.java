@@ -59,16 +59,18 @@ public class N0ticeApi {
 	
 	private final String apiUrl;	
 	private final UrlBuilder urlBuilder;
+	private final SearchUrlBuilder searchUrlBuilder;
 	private final HttpFetcher httpFetcher;
 	private final SearchParser searchParser;
 	private final UserParser userParser;
 
 	private OAuthService service;
 	private Token scribeAccessToken;
-		
+	
 	public N0ticeApi(String apiUrl) {
 		this.apiUrl = apiUrl;
 		this.urlBuilder = new UrlBuilder(apiUrl);
+		this.searchUrlBuilder = new SearchUrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
 		this.searchParser = new SearchParser();
 		this.userParser = new UserParser();
@@ -77,6 +79,7 @@ public class N0ticeApi {
 	public N0ticeApi(String apiUrl, String consumerKey, String consumerSecret, AccessToken accessToken) {
 		this.apiUrl = apiUrl;
 		this.urlBuilder = new UrlBuilder(apiUrl);
+		this.searchUrlBuilder = new SearchUrlBuilder(apiUrl);
 		this.httpFetcher = new HttpFetcher();
 		this.searchParser = new SearchParser();
 		this.userParser = new UserParser();
@@ -87,66 +90,32 @@ public class N0ticeApi {
 		scribeAccessToken = new Token(accessToken.getToken(), accessToken.getSecret());
 	}
 	
-	public N0ticeApi(String apiUrl, UrlBuilder urlBuilder, HttpFetcher httpFetcher, SearchParser searchParser, UserParser userParser) {
-		this.apiUrl = apiUrl;
-		this.urlBuilder = urlBuilder;
-		this.httpFetcher = httpFetcher;
-		this.searchParser = searchParser;
-		this.userParser = userParser;
-	}
-	
-	@Deprecated
-	public ResultSet near(double latitude, double longitude) throws HttpFetchException, ParsingException {
-		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.near(latitude, longitude), UTF_8));
-	}
-	
-	@Deprecated
-	public ResultSet user(String userName) throws HttpFetchException, ParsingException {
-		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.user(userName), UTF_8));
-	}
-	
-	@Deprecated
-	public ResultSet noticeboard(String noticeBoard) throws HttpFetchException, ParsingException {
-		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.noticeboard(noticeBoard), UTF_8));
-	}
-	
-	@Deprecated
-	public ResultSet tag(String tag)  throws HttpFetchException, ParsingException {
-		return searchParser.parseSearchResults(httpFetcher.fetchContent(urlBuilder.tag(tag), UTF_8));
-	}
-	
 	public Content get(String id) throws HttpFetchException, NotFoundException, ParsingException {
 		return searchParser.parseReport(httpFetcher.fetchContent(urlBuilder.get(id), UTF_8));
 	}
 	
-	public ResultSet search(SearchQuery query) throws ParsingException, HttpFetchException {
-		SearchUrlBuilder searchUrlBuilder = new SearchUrlBuilder(apiUrl);
-		if (query.getQ() != null) {
-			searchUrlBuilder.q(query.getQ());
-		}
-		
-		if (query.getPage() != null) {
-			searchUrlBuilder.page(query.getPage());
-		}
-		if (query.getLimit() != null) {
-			searchUrlBuilder.limit(query.getLimit());
-		}
-		if (!query.getTags().isEmpty()) {
-			searchUrlBuilder.tags(query.getTags());
-		}
-		if (query.getType() != null) {
-			searchUrlBuilder.type(query.getType());
-		}
-		if (query.getNoticeBoard() != null) {
-			searchUrlBuilder.noticeBoard(query.getNoticeBoard());
-		}
-		if (query.getUser() != null) {
-			searchUrlBuilder.user(query.getUser());
-		}		
-		if (query.getLocation() != null) {
-			searchUrlBuilder.location(query.getLocation());
-		}
-		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(), UTF_8));
+	public ResultSet search(SearchQuery searchQuery) throws ParsingException, HttpFetchException {
+		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(searchQuery), UTF_8));
+	}
+	
+	@Deprecated
+	public ResultSet near(double latitude, double longitude) throws HttpFetchException, ParsingException {
+		return search(new SearchQuery().latitude(latitude).longitude(longitude));
+	}
+	
+	@Deprecated
+	public ResultSet user(String userName) throws HttpFetchException, ParsingException {
+		return search(new SearchQuery().user(userName));
+	}
+	
+	@Deprecated
+	public ResultSet noticeboard(String noticeBoard) throws HttpFetchException, ParsingException {
+		return search(new SearchQuery().noticeBoard(noticeBoard));
+	}
+	
+	@Deprecated
+	public ResultSet tag(String tag)  throws HttpFetchException, ParsingException {
+		return search(new SearchQuery().tag(tag));
 	}
 	
 	public User userProfile(String username) throws NotFoundException, ParsingException, HttpFetchException {

@@ -13,6 +13,9 @@ public class SearchQuery {
 	private String noticeBoard = null;
 	private String location = null;
 	private String user = null;
+	private Double latitude;
+	private Double longitude;
+
 	
 	public SearchQuery q(String q) {
 		this.q = q;
@@ -60,6 +63,16 @@ public class SearchQuery {
 		return this;
 	}
 	
+	public SearchQuery latitude(double latitude) {
+		this.latitude = latitude;
+		return this;
+	}
+	
+	public SearchQuery longitude(double longitude) {
+		this.longitude = longitude;
+		return this;
+	}
+		
 	public String getType() {
 		return type;
 	}
@@ -84,6 +97,22 @@ public class SearchQuery {
 
 	public String getUser() {
 		return user;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
 	}
 	
 }

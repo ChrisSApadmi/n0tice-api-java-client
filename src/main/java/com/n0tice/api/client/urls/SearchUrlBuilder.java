@@ -2,10 +2,9 @@ package com.n0tice.api.client.urls;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.google.common.base.Joiner;
+import com.n0tice.api.client.model.SearchQuery;
 
 public class SearchUrlBuilder {
 
@@ -15,103 +14,65 @@ public class SearchUrlBuilder {
 	private static Joiner COMMA_JOINER = Joiner.on(",");
    
 	final private String apiUrl;
-
-	private String q = null;
-	private Integer page = null;
-	private Integer limit = null;
-	private List<String> tags = new ArrayList<String>();
-	private String type= null;
-	private String location = null;
-	private String noticeBoard;
-	private String user;
 	
 	public SearchUrlBuilder(String apiUrl) {
 		this.apiUrl = apiUrl;
 	}
 	
-	public SearchUrlBuilder q(String q) {
-		this.q = q;
-		return this;		
-	}
-	
-	public SearchUrlBuilder page(int page) {
-		this.page = page;
-		return this;
-	}
-
-	public SearchUrlBuilder limit(int limit) {
-		this.limit = limit;
-		return this;
-	}
-	
-	public SearchUrlBuilder tags(List<String> tags) {
-		this.tags = tags;
-		return this;		
-	}
-	
-	public SearchUrlBuilder type(String type) {
-		this.type = type;
-		return this;		
-	}
-	
-	public SearchUrlBuilder user(String user) {
-		this.user = user;
-		return this;		
-	}
-	
-	public SearchUrlBuilder noticeBoard(String noticeBoard) {
-		this.noticeBoard = noticeBoard;
-		return this;		
-	}
-	
-	public void location(String location) {
-		this.location = location;		
-	}
-	
-	public String toUrl() {	// TODO won't build multi term queries correctly
-		StringBuilder url = new StringBuilder();
+	public String toUrl(SearchQuery searchQuery) {
+		final StringBuilder url = new StringBuilder();
 		url.append(apiUrl);
 		url.append(SEARCH);
 
 		String joiner = "?";
-		if (q != null) {
+		if (searchQuery.getQ() != null) {
 			url.append(joiner);
-			url.append("q=" + urlEncode(q));
+			url.append("q=" + urlEncode(searchQuery.getQ()));
 			joiner = "&";
 		}		
-		if (page != null) {
+		if (searchQuery.getPage() != null) {
 			url.append(joiner);
-			url.append("page=" + page);
+			url.append("page=" + searchQuery.getPage());
 			joiner = "&";
 		}
-		if (limit != null) {
+		if (searchQuery.getLimit() != null) {
 			url.append(joiner);
-			url.append("limit=" + limit);
+			url.append("limit=" + searchQuery.getLimit());
 			joiner = "&";
 		}
-		if (type != null) {
+		if (searchQuery.getType() != null) {
 			url.append(joiner);
-			url.append("type=" + urlEncode(type));
+			url.append("type=" + urlEncode(searchQuery.getType()));
 			joiner = "&";
 		}
-		if (noticeBoard != null) {
+		if (searchQuery.getNoticeBoard() != null) {
 			url.append(joiner);
-			url.append("noticeboard=" + urlEncode(noticeBoard));
+			url.append("noticeboard=" + urlEncode(searchQuery.getNoticeBoard()));
 			joiner = "&";
 		}
-		if (user != null) {
+		if (searchQuery.getUser() != null) {
 			url.append(joiner);
-			url.append("user=" + urlEncode(user));
+			url.append("user=" + urlEncode(searchQuery.getUser()));
 			joiner = "&";
 		}		
-		if (!tags.isEmpty()) {
+		if (!searchQuery.getTags().isEmpty()) {
 			url.append(joiner);
-			url.append("tags=" + COMMA_JOINER.join(tags));	// TODO how is this to be encoded
+			url.append("tags=" + urlEncode(COMMA_JOINER.join(searchQuery.getTags())));	// TODO how is this to be encoded
 			joiner = "&";
 		}
-		if (location != null) {
+		if (searchQuery.getLocation() != null) {
 			url.append(joiner);
-			url.append("location=" + urlEncode(location));
+			url.append("location=" + urlEncode(searchQuery.getLocation()));
+			joiner = "&";
+		}
+		if (searchQuery.getLatitude() != null) {
+			url.append(joiner);
+			url.append("latitude=" + searchQuery.getLatitude());
+			joiner = "&";
+		}
+		if (searchQuery.getLongitude() != null) {
+			url.append(joiner);
+			url.append("longitude=" + searchQuery.getLongitude());
 			joiner = "&";
 		}
 		return url.toString();

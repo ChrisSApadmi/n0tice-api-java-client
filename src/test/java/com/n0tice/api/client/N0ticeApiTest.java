@@ -7,41 +7,61 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.n0tice.api.client.exceptions.HttpFetchException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.ResultSet;
+import com.n0tice.api.client.model.SearchQuery;
 import com.n0tice.api.client.parsers.SearchParser;
 import com.n0tice.api.client.parsers.UserParser;
+import com.n0tice.api.client.urls.SearchUrlBuilder;
 import com.n0tice.api.client.urls.UrlBuilder;
 import com.n0tice.api.client.util.HttpFetcher;
 
 public class N0ticeApiTest {
 	
 	private static final String REPORT_ID = "/report/123";
-	private static final String USER_NAME = "User";
-	private static final String LATEST_ITEMS_URL = "http://n0ticeapi.../search";
 	private static final String REPORT_API_URL = "http://n0ticeapi.../report/123";
-	private static final String LATEST_ITEMS_JSON = "{some json}";
 	private static final String REPORT_JSON = "{report json}";
-	private static final String NOTICE_BOARD = "streetart";
-	private static final String TAG = "reports/tag/hackney";
+	
+	private static final String SEARCH_URL = "http://n0ticeapi.../search";
+	private static final String SEARCH_RESULTS_JSON = "{some json}";
 	
 	@Mock UrlBuilder urlBuilder;
+	@Mock SearchUrlBuilder searchUrlBuilder;
 	@Mock HttpFetcher httpFetcher;	
 	@Mock SearchParser searchParser;
 	@Mock UserParser userParser;
 	
-	@Mock ResultSet latestItems;
+	@Mock private SearchQuery searchQuery;
+	@Mock ResultSet content;
 	@Mock Content report;
 	
 	private N0ticeApi api;
 	
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		api = new N0ticeApi("http://n0ticeapi...", urlBuilder, httpFetcher, searchParser, userParser);
+		api = new N0ticeApi("http://n0ticeapi...");
+		
+		ReflectionTestUtils.setField(api, "urlBuilder", urlBuilder, UrlBuilder.class);
+		ReflectionTestUtils.setField(api, "searchUrlBuilder", searchUrlBuilder, SearchUrlBuilder.class);
+		ReflectionTestUtils.setField(api, "httpFetcher", httpFetcher, HttpFetcher.class);
+		ReflectionTestUtils.setField(api, "searchParser", searchParser, SearchParser.class);
+		ReflectionTestUtils.setField(api, "userParser", userParser, UserParser.class);		 
+	}
+	
+	@Test
+	public void canSearchForContent() throws Exception {		
+		when(searchUrlBuilder.toUrl(searchQuery)).thenReturn(SEARCH_URL);
+		when(httpFetcher.fetchContent(SEARCH_URL, "UTF-8")).thenReturn(SEARCH_RESULTS_JSON);
+		when(searchParser.parseSearchResults(SEARCH_RESULTS_JSON)).thenReturn(content);
+		
+		final ResultSet returnedItems = api.search(searchQuery);
+		
+		assertEquals(content, returnedItems);		
 	}
 	
 	@Test
@@ -53,39 +73,6 @@ public class N0ticeApiTest {
 		Content returnedReport = api.get(REPORT_ID);
 		
 		assertEquals(report, returnedReport);
-	}
-	
-	@Test
-	public void canFetchLatestItemsForUser() throws Exception {		
-		when(urlBuilder.user(USER_NAME)).thenReturn(LATEST_ITEMS_URL);
-		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
-		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
-		
-		ResultSet returnedItems = api.user(USER_NAME);
-		
-		assertEquals(latestItems, returnedItems);		
-	}
-	
-	@Test
-	public void canRestrictSearchToSpecificNoticeboard() throws Exception {
-		when(urlBuilder.noticeboard(NOTICE_BOARD)).thenReturn(LATEST_ITEMS_URL);
-		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
-		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
-		
-		ResultSet returnedItems = api.noticeboard(NOTICE_BOARD);
-		
-		assertEquals(latestItems, returnedItems);	
-	}
-	
-	@Test
-	public void canRestrictSearchToSpecificTag() throws Exception {
-		when(urlBuilder.tag(TAG)).thenReturn(LATEST_ITEMS_URL);
-		when(httpFetcher.fetchContent(LATEST_ITEMS_URL, "UTF-8")).thenReturn(LATEST_ITEMS_JSON);
-		when(searchParser.parseSearchResults(LATEST_ITEMS_JSON)).thenReturn(latestItems);
-		
-		ResultSet returnedItems = api.tag(TAG);
-		
-		assertEquals(latestItems, returnedItems);	
 	}
 	
 	@Test(expected = HttpFetchException.class)
