@@ -136,7 +136,10 @@ public class UserParser {
 	
 	// TODO duplication
 	private Image parseImage(JSONObject imageJson) throws JSONException {
-		return new Image(imageJson.getString(SMALL), imageJson.getString(MEDIUM), imageJson.getString(LARGE));
+		return new Image(
+				imageJson.has(SMALL) ? imageJson.getString(SMALL) : null,
+				imageJson.has(MEDIUM) ? imageJson.getString(MEDIUM) : null,
+				imageJson.has(LARGE) ? imageJson.getString(LARGE) : null);
 	}
 	
 }
