@@ -1,5 +1,6 @@
 package com.n0tice.api.client.parsers;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import org.joda.time.DateTime;
@@ -8,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.n0tice.api.client.model.Content;
+import com.n0tice.api.client.model.Noticeboard;
 import com.n0tice.api.client.model.ResultSet;
 
 public class SearchParserTest {
@@ -57,6 +59,17 @@ public class SearchParserTest {
 		assertEquals(-0.154179, report.getPlace().getLongitude(), 0);
 		assertEquals(new DateTime("2012-01-16T14:49:08Z", DateTimeZone.UTC), new DateTime(report.getCreated()));
 		assertEquals(new DateTime("2012-01-16T14:49:08Z", DateTimeZone.UTC), new DateTime(report.getModified()));
+	}
+	
+	@Test
+	public void canParseDetailsFromNoticeboard() throws Exception {
+		final Noticeboard noticeboard = searchParser.parseNoticeboardResult(ContentLoader.loadContent("noticeboard.json"));
+
+		assertEquals("Street Art", noticeboard.getName());
+		assertEquals("streetart", noticeboard.getDomain());
+		assertEquals("spotting #streetart around the world", noticeboard.getDescription());
+		
+		assertNotNull(noticeboard.getBackground());
 	}
 	
 }

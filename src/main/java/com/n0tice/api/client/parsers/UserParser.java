@@ -24,8 +24,12 @@ public class UserParser {
 	private static final String DISPLAY_NAME = "displayName";
 	private static final String BIO = "bio";
 	private static final String PROFILE_IMAGE = "image";
+	private static final String BACKGROUND = "background";
+	private static final String COVER = "cover";
 	private static final String SMALL = "small";
-
+	private static final String MEDIUM = "medium";
+	private static final String LARGE = "large";
+	
 	public User parseUserProfile(String json) throws ParsingException {
 		try {
 			JSONObject userJson = new JSONObject(json);
@@ -93,8 +97,8 @@ public class UserParser {
 			bio = userJSON.getString(BIO);
 		}
 		if (userJSON.has(PROFILE_IMAGE)) {
-			JSONObject imageJSON = userJSON.getJSONObject(PROFILE_IMAGE);
-			profileImage = new Image(imageJSON.getString(SMALL));
+			final JSONObject imageJSON = userJSON.getJSONObject(PROFILE_IMAGE);
+			profileImage = parseImage(imageJSON);
 		}
 		
 		Integer noticeboards = null;
@@ -115,16 +119,24 @@ public class UserParser {
 	public List<Noticeboard> parseNoticeboards(String json) throws ParsingException {
 		List<Noticeboard> noticeboards = new ArrayList<Noticeboard>();		
 		try {
+			// TODO duplication
 			final JSONArray noticeboardsJSON = new JSONArray(json);
 			for (int i = 0; i < noticeboardsJSON.length(); i++) {
 				JSONObject jsonNoticeboard = noticeboardsJSON.getJSONObject(i);
-				noticeboards.add(new Noticeboard(jsonNoticeboard.getString(DOMAIN), jsonNoticeboard.getString("name"), jsonNoticeboard.getString("description")));
+				final Image background = jsonNoticeboard.has(BACKGROUND) ? parseImage(jsonNoticeboard.getJSONObject(BACKGROUND)) : null;
+				final Image cover =  jsonNoticeboard.has(COVER) ? parseImage(jsonNoticeboard.getJSONObject(COVER)) : null;
+				noticeboards.add(new Noticeboard(jsonNoticeboard.getString(DOMAIN), jsonNoticeboard.getString("name"), jsonNoticeboard.getString("description"), background, cover));
 			}
 			return noticeboards;
 		} catch (JSONException e) {
 			e.printStackTrace();
 			throw new ParsingException();
 		}
+	}
+	
+	// TODO duplication
+	private Image parseImage(JSONObject imageJson) throws JSONException {
+		return new Image(imageJson.getString(SMALL), imageJson.getString(MEDIUM), imageJson.getString(LARGE));
 	}
 	
 }

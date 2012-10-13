@@ -5,11 +5,15 @@ public class Noticeboard {
 	private final String domain;
 	private final String name;
 	private final String description;
+	private final Image background;
+	private final Image cover;
 
-	public Noticeboard(String domain, String name, String description) {
+	public Noticeboard(String domain, String name, String description, Image background, Image cover) {
 		this.domain = domain;
 		this.name = name;
 		this.description = description;
+		this.background = background;
+		this.cover = cover;
 	}
 
 	public String getDomain() {
@@ -22,6 +26,14 @@ public class Noticeboard {
 
 	public String getDescription() {
 		return description;
+	}
+	
+	public Image getBackground() {
+		return background;
+	}
+
+	public Image getCover() {
+		return cover;
 	}
 
 	@Override

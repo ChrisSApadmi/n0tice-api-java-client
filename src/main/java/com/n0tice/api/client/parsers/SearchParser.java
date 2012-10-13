@@ -28,7 +28,6 @@ public class SearchParser {
 	private static final String MESSAGE = "message";
 	private static final String TIME_ZONE = "timeZone";
 	private static final String NAME = "name";
-	private static final String SMALL = "small";
 	private static final String TAGS = "tags";
 	private static final String UPDATES = "updates";
 	private static final String USER = "user";
@@ -47,6 +46,11 @@ public class SearchParser {
 	private static final String INTERESTING = "interesting";
 	private static final String VOTES = "votes";
 	private static final String REPOSTS = "reposts";
+	private static final String BACKGROUND = "background";
+	private static final String COVER = "cover";
+	private static final String SMALL = "small";
+	private static final String MEDIUM = "medium";
+	private static final String LARGE = "large";
 	
 	private static DateTimeFormatter dateFormatter = ISODateTimeFormat.dateTimeNoMillis().withOffsetParsed();
 	
@@ -152,8 +156,10 @@ public class SearchParser {
 	
 	public Noticeboard parseNoticeboardResult(String json) throws ParsingException {
 		try {
-			JSONObject jsonObject = new JSONObject(json);
-			return new Noticeboard(jsonObject.getString("domain"), jsonObject.getString("name"), jsonObject.getString("description"));
+			final JSONObject jsonObject = new JSONObject(json);
+			final Image background = jsonObject.has(BACKGROUND) ? parseImage(jsonObject.getJSONObject(BACKGROUND)) : null;
+			final Image cover =  jsonObject.has(COVER) ? parseImage(jsonObject.getJSONObject(COVER)) : null;
+			return new Noticeboard(jsonObject.getString("domain"), jsonObject.getString("name"), jsonObject.getString("description"), background, cover);
 		} catch (JSONException e) {
 			throw new ParsingException();
 		}
@@ -219,8 +225,7 @@ public class SearchParser {
 				Image image = null;
 				User user = null;
 				if (jsonUpdate.has("image")) {
-					JSONObject imageJson = jsonUpdate.getJSONObject("image");
-					image = new Image(imageJson.getString(SMALL));
+					image = parseImage(jsonUpdate.getJSONObject("image"));
 				}
 				if (jsonUpdate.has(USER)) {
 					user = new UserParser().jsonToUser(jsonUpdate.getJSONObject(USER));
@@ -229,6 +234,10 @@ public class SearchParser {
 			}			
 		}
 		return updates;
+	}
+
+	private Image parseImage(JSONObject imageJson) throws JSONException {
+		return new Image(imageJson.getString(SMALL), imageJson.getString(MEDIUM), imageJson.getString(LARGE));
 	}
 	
 }
