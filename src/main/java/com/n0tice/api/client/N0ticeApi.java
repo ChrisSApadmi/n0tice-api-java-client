@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -177,6 +178,12 @@ public class N0ticeApi {
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
 		service.signRequest(scribeAccessToken, request);
+		
+		System.out.println(request.getUrl());
+		final Map<String, String> oauthParameters = request.getOauthParameters();
+		for (String parameter : oauthParameters.keySet()) {
+			System.out.println(parameter + ": " + oauthParameters.get(parameter));
+		}
 		
 		Response response = request.send();
 		
