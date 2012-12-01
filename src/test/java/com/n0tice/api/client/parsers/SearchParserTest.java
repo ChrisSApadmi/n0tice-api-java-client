@@ -35,7 +35,7 @@ public class SearchParserTest {
 		assertEquals("DisassemBlog - After Bella: Taking Things Apart http://afterbella.blogspot.co.uk/2012/04/taking-things-apart.html", firstItem.getHeadline());
 		assertEquals("Bath, Bath and North East Somerset, UK", firstItem.getPlace().getName());
 		assertEquals("marcuslynch", firstItem.getUser().getUsername());
-		assertEquals("n0tice", firstItem.getNoticeBoard());
+		assertEquals("n0tice", firstItem.getNoticeboard());
 		assertEquals(51.375801, firstItem.getPlace().getLatitude(), 0);
 		assertEquals(-2.359904, firstItem.getPlace().getLongitude(), 0);		
 		assertEquals(new DateTime("2012-04-07T17:55:37Z", DateTimeZone.UTC), new DateTime(firstItem.getCreated()));

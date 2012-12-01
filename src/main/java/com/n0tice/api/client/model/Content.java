@@ -13,7 +13,7 @@ public class Content {
 	private final String headline;
 	private final Place place;
 	private final User user;
-	private final String noticeBoard;
+	private final String noticeboard;
 	private final DateTime created;
 	private final DateTime modified;
 	private final List<Tag> tags;
@@ -27,7 +27,7 @@ public class Content {
 	private final int reposts;
 	
 	public Content(String id, String apiUrl, String webUrl, String type,
-			String headline, Place place, User user, String noticeBoard,
+			String headline, Place place, User user, String noticeboard,
 			DateTime created, DateTime modified, List<Tag> tags, List<Update> updates, DateTime startDate, DateTime endDate, 
 			Reoccurence reoccurence, DateTime reoccursTo, int interestingVotes, int reposts) {
 		this.id = id;
@@ -37,7 +37,7 @@ public class Content {
 		this.headline = headline;
 		this.place = place;
 		this.user = user;
-		this.noticeBoard = noticeBoard;
+		this.noticeboard = noticeboard;
 		this.created = created;
 		this.modified = modified;
 		this.tags = tags;
@@ -78,8 +78,8 @@ public class Content {
 		return user;
 	}
 	
-	public String getNoticeBoard() {
-		return noticeBoard;
+	public String getNoticeboard() {
+		return noticeboard;
 	}
 	
 	public DateTime getCreated() {
@@ -126,8 +126,8 @@ public class Content {
 	public String toString() {
 		return "Content [id=" + id + ", apiUrl=" + apiUrl + ", webUrl="
 				+ webUrl + ", type=" + type + ", headline=" + headline
-				+ ", place=" + place + ", user=" + user + ", noticeBoard="
-				+ noticeBoard + ", created=" + created + ", modified="
+				+ ", place=" + place + ", user=" + user + ", noticeboard="
+				+ noticeboard + ", created=" + created + ", modified="
 				+ modified + ", tags=" + tags + ", updates=" + updates
 				+ ", startDate=" + startDate + ", endDate=" + endDate
 				+ ", reoccurence=" + reoccurence + ", reoccursTo=" + reoccursTo
