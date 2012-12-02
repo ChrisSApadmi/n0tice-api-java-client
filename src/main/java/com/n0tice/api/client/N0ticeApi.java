@@ -17,6 +17,7 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.joda.time.LocalDateTime;
@@ -53,6 +54,8 @@ import com.n0tice.api.client.urls.UrlBuilder;
 import com.n0tice.api.client.util.HttpFetcher;
 
 public class N0ticeApi {
+	
+	private static Logger log = Logger.getLogger(N0ticeApi.class);
 	
 	private static final String UTF_8 = "UTF-8";
 	private static DateTimeFormatter LOCAL_DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
@@ -397,6 +400,7 @@ public class N0ticeApi {
 	}
 
 	public AccessToken authUser(String consumerKey, String username, String password, String consumerSecret) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException {
+		log.info("Attempting to auth user: " + consumerKey + ", " + username + ", " + password + ", " + consumerSecret);
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/auth");
 		addBodyParameter(request, "consumerkey", consumerKey);
 		addBodyParameter(request, "username", username);
@@ -482,7 +486,7 @@ public class N0ticeApi {
 	}
 	
 	private void handleExceptions(Response response) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
-		System.out.println(response.getCode() + ": " + response.getBody());
+		log.error("Exception during n0tice api call: " + response.getCode() + ", " + response.getBody());
 		if (response.getCode() == 404) {
 			throw new NotFoundException();
 		}
