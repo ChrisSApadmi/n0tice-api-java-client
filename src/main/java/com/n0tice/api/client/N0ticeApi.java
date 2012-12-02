@@ -410,9 +410,9 @@ public class N0ticeApi {
 		addBodyParameter(request, "oauth_signature", sign(effectiveUrl, consumerSecret));
 		
 		final Response response = request.send();
-		final String repsonseBody = response.getBody();
+		final String responseBody = response.getBody();
 		if (response.getCode() == 200) {		
-			return new UserParser().parseAuthUserResponse(repsonseBody);
+			return new UserParser().parseAuthUserResponse(responseBody);
 		}
 		
 		handleExceptions(response);
@@ -482,6 +482,7 @@ public class N0ticeApi {
 	}
 	
 	private void handleExceptions(Response response) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
+		System.out.println(response.getCode() + ": " + response.getBody());
 		if (response.getCode() == 404) {
 			throw new NotFoundException();
 		}
