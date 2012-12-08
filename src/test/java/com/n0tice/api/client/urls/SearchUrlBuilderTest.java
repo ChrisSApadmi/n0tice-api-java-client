@@ -69,6 +69,12 @@ public class SearchUrlBuilderTest {
 	}
 	
 	@Test
+	public void canSpecifyRadiusOfLocationSearch() {
+		assertEquals("http://api.local/search?latitude=51.4472&longitude=-0.3298&radius=2.5",
+				builder.toUrl(new SearchQuery().latitude(51.4472).longitude(-0.3298).radius(2.5)));
+	}
+
+	@Test
 	public void hashTagsInSearchQueriesAreCorrectlyEncoded() throws Exception {
 		assertEquals("http://api.local/search?q=%23litloc", builder.toUrl(new SearchQuery().q("#litloc")));
 	}

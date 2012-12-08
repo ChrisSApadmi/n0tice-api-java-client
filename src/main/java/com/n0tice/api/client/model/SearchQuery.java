@@ -15,7 +15,7 @@ public class SearchQuery {
 	private String user = null;
 	private Double latitude;
 	private Double longitude;
-
+	private Double radius;
 	
 	public SearchQuery q(String q) {
 		this.q = q;
@@ -72,7 +72,11 @@ public class SearchQuery {
 		this.longitude = longitude;
 		return this;
 	}
-		
+	
+	public SearchQuery radius(double radius) {
+		this.radius = radius;
+		return this;
+	}
 	public String getType() {
 		return type;
 	}
@@ -102,17 +106,22 @@ public class SearchQuery {
 	public Double getLatitude() {
 		return latitude;
 	}
-
-	public void setLatitude(Double latitude) {
-		this.latitude = latitude;
-	}
-
+	
 	public Double getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(Double longitude) {
-		this.longitude = longitude;
+	public Double getRadius() {
+		return radius;
+	}
+
+	@Override
+	public String toString() {
+		return "SearchQuery [latitude=" + latitude + ", limit=" + limit
+				+ ", location=" + location + ", longitude=" + longitude
+				+ ", noticeBoard=" + noticeBoard + ", page=" + page + ", q="
+				+ q + ", radius=" + radius + ", tags=" + tags + ", type="
+				+ type + ", user=" + user + "]";
 	}
 	
 }

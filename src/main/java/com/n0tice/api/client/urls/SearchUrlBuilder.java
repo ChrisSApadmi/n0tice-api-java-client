@@ -75,6 +75,12 @@ public class SearchUrlBuilder {
 			url.append("longitude=" + searchQuery.getLongitude());
 			joiner = "&";
 		}
+		if (searchQuery.getRadius() != null) {
+			url.append(joiner);
+			url.append("radius=" + searchQuery.getRadius());
+			joiner = "&";
+		}
+		
 		return url.toString();
 	}
 	
