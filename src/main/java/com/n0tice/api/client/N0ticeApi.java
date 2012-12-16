@@ -161,6 +161,28 @@ public class N0ticeApi {
 		return postReport(headline, latitude, longitude, body, link, image, noticeboard, null);
 	}
 	
+	public Noticeboard createNoticeboard(String domain, String name, String description) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, ParsingException, IOException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/noticeboards/new");
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		addEntityPartParameter(entity, "domain", domain);
+		addEntityPartParameter(entity, "name", name);
+		addEntityPartParameter(entity, "description", description);
+		
+		request.addHeader("Content-Type", entity.getContentType().getValue());
+		request.addPayload(extractMultpartBytes(entity));
+		service.signRequest(scribeAccessToken, request);
+		
+		Response response = request.send();
+		
+		final String responseBody = response.getBody();
+		if (response.getCode() == 200) {
+	    	return searchParser.parseNoticeboardResult(responseBody);
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
 	public Content postReport(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard, DateTime date) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -181,12 +203,6 @@ public class N0ticeApi {
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
 		service.signRequest(scribeAccessToken, request);
-		
-		System.out.println(request.getUrl());
-		final Map<String, String> oauthParameters = request.getOauthParameters();
-		for (String parameter : oauthParameters.keySet()) {
-			System.out.println(parameter + ": " + oauthParameters.get(parameter));
-		}
 		
 		Response response = request.send();
 		
