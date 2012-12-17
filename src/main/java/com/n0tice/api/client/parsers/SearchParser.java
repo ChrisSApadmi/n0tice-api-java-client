@@ -149,7 +149,6 @@ public class SearchParser {
 			return jsonToContentItem(reportJSON);
 			
 		} catch (JSONException e) {
-			e.printStackTrace();
 			throw new ParsingException();
 		}
 	}
@@ -159,7 +158,9 @@ public class SearchParser {
 			final JSONObject jsonObject = new JSONObject(json);
 			final Image background = jsonObject.has(BACKGROUND) ? parseImage(jsonObject.getJSONObject(BACKGROUND)) : null;
 			final Image cover =  jsonObject.has(COVER) ? parseImage(jsonObject.getJSONObject(COVER)) : null;
-			return new Noticeboard(jsonObject.getString("domain"), jsonObject.getString("name"), jsonObject.getString("description"), background, cover);
+			final String description = jsonObject.has("description") ? jsonObject.getString("description") : null;
+			return new Noticeboard(jsonObject.getString("domain"), jsonObject.getString("name"), description, background, cover);
+		
 		} catch (JSONException e) {
 			throw new ParsingException();
 		}
