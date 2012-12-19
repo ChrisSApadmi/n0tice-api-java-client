@@ -446,7 +446,7 @@ public class N0ticeApi {
 		System.out.println(url);
 		OAuthRequest request = new OAuthRequest(Verb.POST, url);
 		addBodyParameter(request, "consumerkey", consumerKey);
-		addBodyParameter(request, "token", token);
+		addBodyParameter(request, "guardianToken", token);
 
 		// Manually sign this request using the consumer secret rather than the access key/access secret.
 		addBodyParameter(request, "oauth_signature_method", "HMAC-SHA1");
