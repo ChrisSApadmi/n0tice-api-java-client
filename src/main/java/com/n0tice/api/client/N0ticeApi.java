@@ -442,7 +442,7 @@ public class N0ticeApi {
 	
 	public AccessToken authGuardianUser(String consumerKey, String token, String consumerSecret) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException {
 		log.info("Attempting to auth guardian user: " + consumerKey + ", " + token);
-		String url = apiUrl + "/user/authguardian";
+		String url = apiUrl + "/user/auth";
 		System.out.println(url);
 		OAuthRequest request = new OAuthRequest(Verb.POST, url);
 		addBodyParameter(request, "consumerkey", consumerKey);
