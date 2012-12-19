@@ -440,6 +440,31 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
+	public AccessToken authGuardianUser(String consumerKey, String token, String consumerSecret) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException {
+		log.info("Attempting to auth guardian user: " + consumerKey + ", " + token);
+		String url = apiUrl + "/user/authguardian";
+		System.out.println(url);
+		OAuthRequest request = new OAuthRequest(Verb.POST, url);
+		addBodyParameter(request, "consumerkey", consumerKey);
+		addBodyParameter(request, "token", token);
+
+		// Manually sign this request using the consumer secret rather than the access key/access secret.
+		addBodyParameter(request, "oauth_signature_method", "HMAC-SHA1");
+		addBodyParameter(request, "oauth_version", "1.0");
+		addBodyParameter(request, "oauth_timestamp", Long.toString(DateTimeUtils.currentTimeMillis()));
+		final String effectiveUrl = request.getCompleteUrl() + "?" + request.getBodyContents();
+		addBodyParameter(request, "oauth_signature", sign(effectiveUrl, consumerSecret));
+		
+		final Response response = request.send();
+		final String responseBody = response.getBody();
+		if (response.getCode() == 200) {		
+			return new UserParser().parseAuthUserResponse(responseBody);
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
 	public User updateUserDetails(String username, String displayName, String bio, ImageFile image) throws ParsingException, IOException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username);		
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
