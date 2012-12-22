@@ -79,4 +79,14 @@ public class SearchUrlBuilderTest {
 		assertEquals("http://api.local/search?q=%23litloc", builder.toUrl(new SearchQuery().q("#litloc")));
 	}
 	
+	@Test
+	public void canConstructUrlForCountrySearch() throws Exception {
+		assertEquals("http://api.local/search?country=New+Zealand", builder.toUrl(new SearchQuery().country("New Zealand")));
+	}
+	
+	@Test
+	public void canConstructUrlForViaSearch() throws Exception {
+		assertEquals("http://api.local/search?via=myApplication", builder.toUrl(new SearchQuery().via("myApplication")));
+	}
+	
 }

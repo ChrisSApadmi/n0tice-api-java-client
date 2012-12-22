@@ -7,7 +7,6 @@ import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -102,22 +101,22 @@ public class N0ticeApi {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(searchQuery), UTF_8));
 	}
 	
-	@Deprecated
+	@Deprecated		// Use search
 	public ResultSet near(double latitude, double longitude) throws HttpFetchException, ParsingException {
 		return search(new SearchQuery().latitude(latitude).longitude(longitude));
 	}
 	
-	@Deprecated
+	@Deprecated 	// Use search
 	public ResultSet user(String userName) throws HttpFetchException, ParsingException {
 		return search(new SearchQuery().user(userName));
 	}
 	
-	@Deprecated
+	@Deprecated		// Use search
 	public ResultSet noticeboard(String noticeBoard) throws HttpFetchException, ParsingException {
 		return search(new SearchQuery().noticeBoard(noticeBoard));
 	}
 	
-	@Deprecated
+	@Deprecated		// Use search
 	public ResultSet tag(String tag)  throws HttpFetchException, ParsingException {
 		return search(new SearchQuery().tag(tag));
 	}
@@ -318,7 +317,6 @@ public class N0ticeApi {
 		final Response response = request.send();
 		
 		if (response.getCode() == 200) {
-			System.out.println(response.getBody());
 			return searchParser.parseNotifications(response.getBody());
 		}
 		
@@ -442,9 +440,7 @@ public class N0ticeApi {
 	
 	public AccessToken authGuardianUser(String consumerKey, String token, String consumerSecret) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException {
 		log.info("Attempting to auth guardian user: " + consumerKey + ", " + token);
-		String url = apiUrl + "/user/auth";
-		System.out.println(url);
-		OAuthRequest request = new OAuthRequest(Verb.POST, url);
+		final OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/auth");
 		addBodyParameter(request, "consumerkey", consumerKey);
 		addBodyParameter(request, "guardianToken", token);
 

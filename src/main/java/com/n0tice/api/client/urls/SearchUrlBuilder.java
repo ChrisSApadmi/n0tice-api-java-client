@@ -1,14 +1,10 @@
 package com.n0tice.api.client.urls;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import com.google.common.base.Joiner;
 import com.n0tice.api.client.model.SearchQuery;
 
 public class SearchUrlBuilder {
 
-	private static final String UTF_8 = "UTF-8";	
 	private static final String SEARCH = "/search";
    
 	private static Joiner COMMA_JOINER = Joiner.on(",");
@@ -20,76 +16,52 @@ public class SearchUrlBuilder {
 	}
 	
 	public String toUrl(SearchQuery searchQuery) {
-		final StringBuilder url = new StringBuilder();
+		final UrlStringBuilder url = new UrlStringBuilder();
 		url.append(apiUrl);
 		url.append(SEARCH);
-
-		String joiner = "?";
+		
 		if (searchQuery.getQ() != null) {
-			url.append(joiner);
-			url.append("q=" + urlEncode(searchQuery.getQ()));
-			joiner = "&";
+			url.appendParameter("q", searchQuery.getQ());		
 		}		
-		if (searchQuery.getPage() != null) {
-			url.append(joiner);
-			url.append("page=" + searchQuery.getPage());
-			joiner = "&";
+		if (searchQuery.getPage() != null) {		
+			url.appendParameter("page", Integer.toString(searchQuery.getPage()));
 		}
-		if (searchQuery.getLimit() != null) {
-			url.append(joiner);
-			url.append("limit=" + searchQuery.getLimit());
-			joiner = "&";
+		if (searchQuery.getLimit() != null) {		
+			url.appendParameter("limit", Integer.toString(searchQuery.getLimit()));
 		}
 		if (searchQuery.getType() != null) {
-			url.append(joiner);
-			url.append("type=" + urlEncode(searchQuery.getType()));
-			joiner = "&";
+			url.appendParameter("type", searchQuery.getType());		
+
 		}
 		if (searchQuery.getNoticeBoard() != null) {
-			url.append(joiner);
-			url.append("noticeboard=" + urlEncode(searchQuery.getNoticeBoard()));
-			joiner = "&";
+			url.appendParameter("noticeboard", searchQuery.getNoticeBoard());
 		}
 		if (searchQuery.getUser() != null) {
-			url.append(joiner);
-			url.append("user=" + urlEncode(searchQuery.getUser()));
-			joiner = "&";
+			url.appendParameter("user", searchQuery.getUser());
 		}		
 		if (!searchQuery.getTags().isEmpty()) {
-			url.append(joiner);
-			url.append("tags=" + urlEncode(COMMA_JOINER.join(searchQuery.getTags())));	// TODO how is this to be encoded
-			joiner = "&";
+			url.appendParameter("tags", COMMA_JOINER.join(searchQuery.getTags()));
 		}
 		if (searchQuery.getLocation() != null) {
-			url.append(joiner);
-			url.append("location=" + urlEncode(searchQuery.getLocation()));
-			joiner = "&";
+			url.appendParameter("location", searchQuery.getLocation());
 		}
 		if (searchQuery.getLatitude() != null) {
-			url.append(joiner);
-			url.append("latitude=" + searchQuery.getLatitude());
-			joiner = "&";
+			url.appendParameter("latitude", Double.toString(searchQuery.getLatitude()));
+
 		}
 		if (searchQuery.getLongitude() != null) {
-			url.append(joiner);
-			url.append("longitude=" + searchQuery.getLongitude());
-			joiner = "&";
+			url.appendParameter("longitude", Double.toString(searchQuery.getLongitude()));
 		}
 		if (searchQuery.getRadius() != null) {
-			url.append(joiner);
-			url.append("radius=" + searchQuery.getRadius());
-			joiner = "&";
+			url.appendParameter("radius", Double.toString(searchQuery.getRadius()));
 		}
-		
+		if (searchQuery.getCountry() != null) {
+			url.appendParameter("country", searchQuery.getCountry());
+		}
+		if (searchQuery.getVia() != null) {
+			url.appendParameter("via", searchQuery.getVia());
+		}
 		return url.toString();
-	}
-	
-	private String urlEncode(String value) {
-		try {
-			return URLEncoder.encode(value, UTF_8);
-		} catch (UnsupportedEncodingException e) {
-			return value;
-		}
 	}
 	
 }
