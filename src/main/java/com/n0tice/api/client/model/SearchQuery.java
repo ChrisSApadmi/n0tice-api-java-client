@@ -18,6 +18,7 @@ public class SearchQuery {
 	private Double radius;
 	private String country;
 	private String via;
+	private Integer maximumFlags;
 	
 	public SearchQuery q(String q) {
 		this.q = q;
@@ -90,6 +91,11 @@ public class SearchQuery {
 		return this;
 	}
 	
+	public SearchQuery maximumFlags(int maximumFlags) {
+		this.maximumFlags = maximumFlags;
+		return this;
+	}
+	
 	public String getType() {
 		return type;
 	}
@@ -135,15 +141,19 @@ public class SearchQuery {
 	public String getVia() {
 		return via;
 	}
+	
+	public Integer getMaximumFlags() {
+		return maximumFlags;
+	}
 
 	@Override
 	public String toString() {
-		return "SearchQuery [q=" + q + ", page=" + page + ", limit=" + limit
-				+ ", tags=" + tags + ", type=" + type + ", noticeBoard="
-				+ noticeBoard + ", location=" + location + ", user=" + user
-				+ ", latitude=" + latitude + ", longitude=" + longitude
-				+ ", radius=" + radius + ", country=" + country + ", via="
-				+ via + "]";
+		return "SearchQuery [country=" + country + ", latitude=" + latitude
+				+ ", limit=" + limit + ", location=" + location
+				+ ", longitude=" + longitude + ", maximumFlags=" + maximumFlags
+				+ ", noticeBoard=" + noticeBoard + ", page=" + page + ", q="
+				+ q + ", radius=" + radius + ", tags=" + tags + ", type="
+				+ type + ", user=" + user + ", via=" + via + "]";
 	}
 	
 }

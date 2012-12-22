@@ -89,4 +89,9 @@ public class SearchUrlBuilderTest {
 		assertEquals("http://api.local/search?via=myApplication", builder.toUrl(new SearchQuery().via("myApplication")));
 	}
 	
+	@Test
+	public void canSpecifyMaximumFlags() throws Exception {
+		assertEquals("http://api.local/search?maximumFlags=2", builder.toUrl(new SearchQuery().maximumFlags(2)));
+	}
+	
 }

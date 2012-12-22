@@ -283,6 +283,19 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
+	public boolean flagAsInappropriate(String id) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/flag");	
+		service.signRequest(scribeAccessToken, request);
+		
+		final Response response = request.send();		
+		if (response.getCode() == 200) {
+	    	return true;
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
 	public boolean repost(String id, String noticeboard) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/repost");
 		addBodyParameter(request, "noticeboard", noticeboard);

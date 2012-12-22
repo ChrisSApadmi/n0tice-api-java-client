@@ -61,6 +61,9 @@ public class SearchUrlBuilder {
 		if (searchQuery.getVia() != null) {
 			url.appendParameter("via", searchQuery.getVia());
 		}
+		if (searchQuery.getMaximumFlags() != null) {
+			url.appendParameter("maximumFlags", Integer.toString(searchQuery.getMaximumFlags()));
+		}
 		return url.toString();
 	}
 	
