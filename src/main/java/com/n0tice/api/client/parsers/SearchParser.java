@@ -51,6 +51,8 @@ public class SearchParser {
 	private static final String SMALL = "small";
 	private static final String MEDIUM = "medium";
 	private static final String LARGE = "large";
+	private static final String COUNTRY = "country";
+	private static final String VIA = "via";
 	
 	private static DateTimeFormatter dateFormatter = ISODateTimeFormat.dateTimeNoMillis().withOffsetParsed();
 	
@@ -89,7 +91,8 @@ public class SearchParser {
 		if (contentItemJSON.has(PLACE)) {
 			JSONObject placeJson = contentItemJSON.getJSONObject(PLACE);
 			final String timezone = placeJson.has(TIME_ZONE) ? placeJson.getString(TIME_ZONE) : null;
-			place = new Place(placeJson.getString(NAME), placeJson.getDouble(LATITUDE), placeJson.getDouble(LONGITUDE), timezone);
+			final String country = placeJson.has(COUNTRY) ? placeJson.getString(COUNTRY) : null;
+			place = new Place(placeJson.getString(NAME), placeJson.getDouble(LATITUDE), placeJson.getDouble(LONGITUDE), timezone, country);
 		}
 		
 		DateTime startDate = null;
@@ -122,6 +125,8 @@ public class SearchParser {
 			reposts = contentItemJSON.getInt(REPOSTS);			
 		}
 		
+		final String via = contentItemJSON.has(VIA) ? contentItemJSON.getString(VIA) :null;
+		
 		return new Content(contentItemJSON.getString(ID), 
 				contentItemJSON.getString(API_URL), 
 				contentItemJSON.getString(WEB_URL), 
@@ -139,7 +144,8 @@ public class SearchParser {
 				reoccurs,
 				reoccursTo,
 				interestingVotes,
-				reposts
+				reposts,
+				via
 				);
 	}
 	

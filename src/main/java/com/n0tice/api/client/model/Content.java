@@ -18,6 +18,7 @@ public class Content {
 	private final DateTime modified;
 	private final List<Tag> tags;
 	private final List<Update> updates;
+	private final String via;
 	
 	private final DateTime startDate;
 	private final DateTime endDate;
@@ -29,7 +30,7 @@ public class Content {
 	public Content(String id, String apiUrl, String webUrl, String type,
 			String headline, Place place, User user, String noticeboard,
 			DateTime created, DateTime modified, List<Tag> tags, List<Update> updates, DateTime startDate, DateTime endDate, 
-			Reoccurence reoccurence, DateTime reoccursTo, int interestingVotes, int reposts) {
+			Reoccurence reoccurence, DateTime reoccursTo, int interestingVotes, int reposts, String via) {
 		this.id = id;
 		this.apiUrl = apiUrl;
 		this.webUrl = webUrl;
@@ -48,6 +49,7 @@ public class Content {
 		this.reoccursTo = reoccursTo;
 		this.interestingVotes = interestingVotes;
 		this.reposts = reposts;
+		this.via = via;
 	}
 
 	public String getId() {
@@ -121,6 +123,10 @@ public class Content {
 	public int getReposts() {
 		return reposts;
 	}
+	
+	public String getVia() {
+		return via;
+	}
 
 	@Override
 	public String toString() {
@@ -129,10 +135,10 @@ public class Content {
 				+ ", place=" + place + ", user=" + user + ", noticeboard="
 				+ noticeboard + ", created=" + created + ", modified="
 				+ modified + ", tags=" + tags + ", updates=" + updates
-				+ ", startDate=" + startDate + ", endDate=" + endDate
-				+ ", reoccurence=" + reoccurence + ", reoccursTo=" + reoccursTo
-				+ ", interestingVotes=" + interestingVotes + ", reposts="
-				+ reposts + "]";
+				+ ", via=" + via + ", startDate=" + startDate + ", endDate="
+				+ endDate + ", reoccurence=" + reoccurence + ", reoccursTo="
+				+ reoccursTo + ", interestingVotes=" + interestingVotes
+				+ ", reposts=" + reposts + "]";
 	}
 	
 }
