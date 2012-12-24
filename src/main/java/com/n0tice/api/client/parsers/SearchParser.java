@@ -124,9 +124,7 @@ public class SearchParser {
 		if (contentItemJSON.has(REPOSTS)) {
 			reposts = contentItemJSON.getInt(REPOSTS);			
 		}
-		
-		final String via = contentItemJSON.has(VIA) ? contentItemJSON.getString(VIA) :null;
-		
+				
 		return new Content(contentItemJSON.getString(ID), 
 				contentItemJSON.getString(API_URL), 
 				contentItemJSON.getString(WEB_URL), 
@@ -144,8 +142,7 @@ public class SearchParser {
 				reoccurs,
 				reoccursTo,
 				interestingVotes,
-				reposts,
-				via
+				reposts
 				);
 	}
 	
@@ -229,16 +226,17 @@ public class SearchParser {
 				JSONObject jsonUpdate = jsonUpdates.getJSONObject(i);
 				final String body = jsonUpdate.has("body") ? jsonUpdate.getString("body") : null; 
 				final String link = jsonUpdate.has("link") ? jsonUpdate.getString("link") : null;
-				Image image = null;
-				User user = null;
+				final String via = jsonUpdate.has(VIA) ? jsonUpdate.getString(VIA) : null;
+				Image image = null;	// TODO populate
+				User user = null;	// TODO populate
 				if (jsonUpdate.has("image")) {
 					image = parseImage(jsonUpdate.getJSONObject("image"));
 				}
 				if (jsonUpdate.has(USER)) {
 					user = new UserParser().jsonToUser(jsonUpdate.getJSONObject(USER));
-				}				
-				updates.add(new Update(user, body, link, image));
-			}			
+				}
+				updates.add(new Update(user, body, link, image, via));
+			}		
 		}
 		return updates;
 	}
