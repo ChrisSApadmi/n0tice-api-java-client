@@ -310,6 +310,32 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
+	public boolean approve(String id) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/approve");
+		service.signRequest(scribeAccessToken, request);
+
+		final Response response = request.send();		
+		if (response.getCode() == 200) {
+	    	return true;
+		}
+
+		handleExceptions(response);
+		throw new RuntimeException();		
+	}
+	
+	public boolean reject(String id) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/reject");
+		service.signRequest(scribeAccessToken, request);
+
+		final Response response = request.send();		
+		if (response.getCode() == 200) {
+	    	return true;
+		}
+
+		handleExceptions(response);
+		throw new RuntimeException();		
+	}
+	
 	public int interestingVotes(String id) throws NotFoundException, ParsingException, NotAllowedException, AuthorisationException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.GET, apiUrl + "/" + id + "/votes/interesting");	
 			
