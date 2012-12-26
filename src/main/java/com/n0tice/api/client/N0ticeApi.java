@@ -215,6 +215,21 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
+	public ResultSet authedSearch(SearchQuery searchQuery) throws ParsingException, HttpFetchException, NotAllowedException, AuthorisationException, BadRequestException {				
+		OAuthRequest request = new OAuthRequest(Verb.GET, searchUrlBuilder.toUrl(searchQuery));
+		service.signRequest(scribeAccessToken, request);
+		
+		Response response = request.send();
+		
+		final String responseBody = response.getBody();
+		if (response.getCode() == 200) {
+	    	return searchParser.parseSearchResults(responseBody);
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
 	public Content postEvent(String headline, double latitude,
 			double longitude, String body, String link, ImageFile image,
 			String noticeboard, LocalDateTime startDate, LocalDateTime endDate, Reoccurence reoccurence, LocalDateTime reoccursTo)

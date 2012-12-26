@@ -17,5 +17,10 @@ public class AccessToken {
 	public String getSecret() {
 		return secret;
 	}
+
+	@Override
+	public String toString() {
+		return "AccessToken [secret=" + secret + ", token=" + token + "]";
+	}
 	
 }
