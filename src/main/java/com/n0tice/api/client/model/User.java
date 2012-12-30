@@ -26,6 +26,11 @@ public class User {
 		this.followedUsers = followedUsers;
 	}
 	
+	public User(String username, String displayName) {
+		this.username = username;
+		this.displayName = displayName;
+	}
+
 	public String getUsername() {
 		return username;
 	}

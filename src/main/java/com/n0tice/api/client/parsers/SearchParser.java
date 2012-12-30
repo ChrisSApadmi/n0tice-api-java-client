@@ -73,7 +73,8 @@ public class SearchParser {
 		User user = null;
 		if (contentItemJSON.has(USER)) {
 			JSONObject userJSON = contentItemJSON.getJSONObject(USER);			
-			user = new User(userJSON.getString("username"));
+			String displayName = userJSON.has("displayName") ? userJSON.getString("displayName") : null;
+			user = new User(userJSON.getString("username"), displayName);
 		}
 		
 		Place place = null;
