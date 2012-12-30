@@ -194,13 +194,14 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public void postReportUpdate(String reportId, String body, String link, ImageFile image) throws IOException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException {
+	public void postReportUpdate(String reportId, String body, String link, ImageFile image) throws IOException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException, AuthenticationException {
 		HttpPost post = new HttpPost(apiUrl + "/" + reportId  + "/update/new");
 		
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		populateUpdateFields(body, link, image, entity);
 		post.setEntity(entity);
-		
+		authenticateRequest(post);
+
 		HttpResponse response = client.execute(post);		
 		if (response.getStatusLine().getStatusCode() == 200) {
 			response.getEntity().consumeContent();
