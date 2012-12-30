@@ -73,7 +73,7 @@ public class SearchParser {
 		User user = null;
 		if (contentItemJSON.has(USER)) {
 			JSONObject userJSON = contentItemJSON.getJSONObject(USER);			
-			user = new UserParser().jsonToUser(userJSON);	// TODO Make into a field to avoid excessive GCing
+			user = new User(userJSON.getString("username"));
 		}
 		
 		Place place = null;
@@ -197,7 +197,7 @@ public class SearchParser {
 					image = new Image(imageJson.getString(SMALL));
 				}
 				if (jsonUpdate.has(USER)) {
-					user = new UserParser().jsonToUser(jsonUpdate.getJSONObject(USER));
+					user = new User(jsonUpdate.getJSONObject(USER).getString("username"));
 				}				
 				updates.add(new Update(user, body, link, image));
 			}			
