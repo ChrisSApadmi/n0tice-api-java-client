@@ -235,7 +235,9 @@ public class SearchParser {
 				if (jsonUpdate.has(USER)) {
 					user = new UserParser().jsonToUser(jsonUpdate.getJSONObject(USER));
 				}
-				updates.add(new Update(user, body, link, image, via));
+				final DateTime created = 	parseDate(jsonUpdate.getString("created"));
+				final DateTime modified = parseDate(jsonUpdate.getString("modified"));
+				updates.add(new Update(user, body, link, image, created, modified, via));
 			}		
 		}
 		return updates;

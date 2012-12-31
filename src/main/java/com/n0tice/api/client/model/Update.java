@@ -1,18 +1,24 @@
 package com.n0tice.api.client.model;
 
+import org.joda.time.DateTime;
+
 public class Update {
-	
+		
 	private String body;
 	private String link;
 	private Image image;
 	private final User user;
+	private final DateTime created;
+	private final DateTime modified;
 	private final String via;
 	
-	public Update(User user, String body, String link, Image image, String via) {
+	public Update(User user, String body, String link, Image image, DateTime created, DateTime modified, String via) {
 		this.user = user;
 		this.body = body;
 		this.link = link;
 		this.image = image;
+		this.created = created;
+		this.modified = modified;
 		this.via = via;
 	}
 	
@@ -32,14 +38,23 @@ public class Update {
 		return image;
 	}
 	
+	public DateTime getCreated() {
+		return created;
+	}
+
+	public DateTime getModified() {
+		return modified;
+	}
+
 	public String getVia() {
 		return via;
 	}
-
+	
 	@Override
 	public String toString() {
-		return "Update [body=" + body + ", image=" + image + ", link=" + link
-				+ ", user=" + user + ", via=" + via + "]";
+		return "Update [body=" + body + ", link=" + link + ", image=" + image
+				+ ", user=" + user + ", created=" + created + ", modified="
+				+ modified + ", via=" + via + "]";
 	}
 	
 }
