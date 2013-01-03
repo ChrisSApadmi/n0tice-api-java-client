@@ -2,6 +2,7 @@ package com.n0tice.api.client.urls;
 
 import static org.junit.Assert.assertEquals;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -92,6 +93,21 @@ public class SearchUrlBuilderTest {
 	@Test
 	public void canSpecifyMaximumFlags() throws Exception {
 		assertEquals("http://api.local/search?maximumFlags=2", builder.toUrl(new SearchQuery().maximumFlags(2)));
+	}
+	
+	@Test
+	public void canSpecifyHasImages() throws Exception {
+		assertEquals("http://api.local/search?hasImages=true", builder.toUrl(new SearchQuery().hasImages(true)));
+	}
+	
+	@Test
+	public void canSpecifyStartingAfterDate() throws Exception {
+		assertEquals("http://api.local/search?startingAfter=2012-02-12T10%3A12%3A00Z", builder.toUrl(new SearchQuery().startingAfter(new DateTime(2012, 2, 12, 10, 12, 0))));
+	}
+	
+	@Test
+	public void canSpecifyEndingAfterDate() throws Exception {
+		assertEquals("http://api.local/search?endingAfter=2012-02-12T10%3A12%3A00Z", builder.toUrl(new SearchQuery().endingAfter(new DateTime(2012, 2, 12, 10, 12, 0))));
 	}
 	
 }

@@ -3,6 +3,8 @@ package com.n0tice.api.client.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.DateTime;
+
 public class SearchQuery {
 
 	private String q = null;
@@ -19,6 +21,9 @@ public class SearchQuery {
 	private String country;
 	private String via;
 	private Integer maximumFlags;
+	private DateTime startingAfter;
+	private DateTime endingAfter;
+	private Boolean hasImages;
 	
 	public SearchQuery q(String q) {
 		this.q = q;
@@ -28,18 +33,6 @@ public class SearchQuery {
 	public SearchQuery limit(Integer limit) {
 		this.limit = limit;
 		return this;
-	}
-	
-	public String getQ() {
-		return q;
-	}
-
-	public Integer getPage() {
-		return page;
-	}
-	
-	public Integer getLimit() {
-		return limit;
 	}
 	
 	public SearchQuery tag(String tag) {
@@ -96,22 +89,49 @@ public class SearchQuery {
 		return this;
 	}
 	
-	public String getType() {
-		return type;
-	}
-	
 	public SearchQuery noticeBoard(String noticeBoard) {
 		this.noticeBoard = noticeBoard;
 		return this;
 	}
 	
-	public String getNoticeBoard() {
-		return noticeBoard;
-	}
-	
 	public SearchQuery location(String location) {
 		this.location = location;
 		return this;
+	}
+	
+	public SearchQuery startingAfter(DateTime startingAfter) {
+		this.startingAfter = startingAfter;
+		return this;
+	}
+	
+	public SearchQuery endingAfter(DateTime endingAfter) {
+		this.endingAfter = endingAfter;
+		return this;
+	}
+	
+	public SearchQuery hasImages(boolean hasImages) {
+		this.hasImages = hasImages;
+		return this;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public String getNoticeBoard() {
+		return noticeBoard;
+	}
+
+	public String getQ() {
+		return q;
+	}
+
+	public Integer getPage() {
+		return page;
+	}
+
+	public Integer getLimit() {
+		return limit;
 	}
 
 	public String getLocation() {
@@ -145,15 +165,29 @@ public class SearchQuery {
 	public Integer getMaximumFlags() {
 		return maximumFlags;
 	}
+	
+	public DateTime getStartingAfter() {
+		return startingAfter;
+	}
+
+	public DateTime getEndingAfter() {
+		return endingAfter;
+	}
+
+	public Boolean getHasImages() {
+		return hasImages;
+	}
 
 	@Override
 	public String toString() {
-		return "SearchQuery [country=" + country + ", latitude=" + latitude
-				+ ", limit=" + limit + ", location=" + location
-				+ ", longitude=" + longitude + ", maximumFlags=" + maximumFlags
-				+ ", noticeBoard=" + noticeBoard + ", page=" + page + ", q="
-				+ q + ", radius=" + radius + ", tags=" + tags + ", type="
-				+ type + ", user=" + user + ", via=" + via + "]";
+		return "SearchQuery [q=" + q + ", page=" + page + ", limit=" + limit
+				+ ", tags=" + tags + ", type=" + type + ", noticeBoard="
+				+ noticeBoard + ", location=" + location + ", user=" + user
+				+ ", latitude=" + latitude + ", longitude=" + longitude
+				+ ", radius=" + radius + ", country=" + country + ", via="
+				+ via + ", maximumFlags=" + maximumFlags + ", startingAfter="
+				+ startingAfter + ", endingAfter=" + endingAfter
+				+ ", hasImages=" + hasImages + "]";
 	}
 	
 }

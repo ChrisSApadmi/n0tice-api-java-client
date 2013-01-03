@@ -1,5 +1,7 @@
 package com.n0tice.api.client.urls;
 
+import org.joda.time.format.ISODateTimeFormat;
+
 import com.google.common.base.Joiner;
 import com.n0tice.api.client.model.SearchQuery;
 
@@ -64,6 +66,16 @@ public class SearchUrlBuilder {
 		if (searchQuery.getMaximumFlags() != null) {
 			url.appendParameter("maximumFlags", Integer.toString(searchQuery.getMaximumFlags()));
 		}
+		if (searchQuery.getHasImages() != null) {
+			url.appendParameter("hasImages", Boolean.toString(searchQuery.getHasImages()));
+		}
+		if (searchQuery.getStartingAfter() != null) {
+			url.appendParameter("startingAfter", ISODateTimeFormat.dateTimeNoMillis().print(searchQuery.getStartingAfter()));
+		}
+		if (searchQuery.getEndingAfter() != null) {
+			url.appendParameter("endingAfter", ISODateTimeFormat.dateTimeNoMillis().print(searchQuery.getEndingAfter()));
+		}
+		
 		return url.toString();
 	}
 	
