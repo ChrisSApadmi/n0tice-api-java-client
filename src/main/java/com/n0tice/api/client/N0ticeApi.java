@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.List;
 
 import javax.crypto.Mac;
@@ -160,14 +161,16 @@ public class N0ticeApi {
 		return postReport(headline, latitude, longitude, body, link, image, noticeboard, null);
 	}
 	
-	public Noticeboard createNoticeboard(String domain, String name, String description, boolean moderated) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, ParsingException, IOException {
+	public Noticeboard createNoticeboard(String domain, String name, String description, boolean moderated, Date endDate) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, ParsingException, IOException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/noticeboards/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		addEntityPartParameter(entity, "domain", domain);
 		addEntityPartParameter(entity, "name", name);
 		addEntityPartParameter(entity, "description", description);
 		addEntityPartParameter(entity, "moderated", Boolean.toString(moderated));
-		
+		if (endDate != null) {
+			addEntityPartParameter(entity, "endDate", ISODateTimeFormat.dateTimeNoMillis().print(new DateTime(endDate)));
+		}
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
 		service.signRequest(scribeAccessToken, request);

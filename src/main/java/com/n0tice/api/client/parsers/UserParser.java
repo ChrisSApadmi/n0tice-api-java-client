@@ -1,8 +1,10 @@
 package com.n0tice.api.client.parsers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +31,7 @@ public class UserParser {
 	private static final String SMALL = "small";
 	private static final String MEDIUM = "medium";
 	private static final String LARGE = "large";
+	private static final String END_DATE = "end_date";
 	
 	public User parseUserProfile(String json) throws ParsingException {
 		try {
@@ -125,7 +128,11 @@ public class UserParser {
 				JSONObject jsonNoticeboard = noticeboardsJSON.getJSONObject(i);
 				final Image background = jsonNoticeboard.has(BACKGROUND) ? parseImage(jsonNoticeboard.getJSONObject(BACKGROUND)) : null;
 				final Image cover =  jsonNoticeboard.has(COVER) ? parseImage(jsonNoticeboard.getJSONObject(COVER)) : null;
-				noticeboards.add(new Noticeboard(jsonNoticeboard.getString(DOMAIN), jsonNoticeboard.getString("name"), jsonNoticeboard.getString("description"), background, cover));
+				Date endDate = null;
+				if (jsonNoticeboard.has(END_DATE)) {
+					endDate = ISODateTimeFormat.dateTimeNoMillis().parseDateTime(jsonNoticeboard.getString(END_DATE)).toDate();
+				}				
+				noticeboards.add(new Noticeboard(jsonNoticeboard.getString(DOMAIN), jsonNoticeboard.getString("name"), jsonNoticeboard.getString("description"), background, cover, endDate));
 			}
 			return noticeboards;
 		} catch (JSONException e) {

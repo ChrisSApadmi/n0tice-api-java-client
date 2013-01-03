@@ -1,6 +1,7 @@
 package com.n0tice.api.client.parsers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -23,6 +24,7 @@ import com.n0tice.api.client.model.User;
 
 public class SearchParser {
 
+	private static final String END_DATE = "endDate";
 	private static final String REOCCURS_TO = "reoccursTo";
 	private static final String REOCCURS = "reoccurs";
 	private static final String MESSAGE = "message";
@@ -42,7 +44,6 @@ public class SearchParser {
 	private static final String HEADLINE = "headline";
 	private static final String NOTICEBOARD = "noticeboard";
 	private static final String START_DATE = "startDate";
-	private static final String END_DATE = "endDate";
 	private static final String INTERESTING = "interesting";
 	private static final String VOTES = "votes";
 	private static final String REPOSTS = "reposts";
@@ -162,8 +163,12 @@ public class SearchParser {
 			final Image background = jsonObject.has(BACKGROUND) ? parseImage(jsonObject.getJSONObject(BACKGROUND)) : null;
 			final Image cover =  jsonObject.has(COVER) ? parseImage(jsonObject.getJSONObject(COVER)) : null;
 			final String description = jsonObject.has("description") ? jsonObject.getString("description") : null;
-			return new Noticeboard(jsonObject.getString("domain"), jsonObject.getString("name"), description, background, cover);
-		
+			Date endDate = null;
+			if (jsonObject.has(END_DATE)) {
+				endDate = ISODateTimeFormat.dateTimeNoMillis().parseDateTime(jsonObject.getString(END_DATE)).toDate();
+			}
+			return new Noticeboard(jsonObject.getString("domain"), jsonObject.getString("name"), description, background, cover, endDate);
+			
 		} catch (JSONException e) {
 			throw new ParsingException();
 		}
