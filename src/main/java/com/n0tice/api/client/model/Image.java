@@ -2,7 +2,7 @@ package com.n0tice.api.client.model;
 
 public class Image {
 	
-	private String small;
+	private final String small;
 	private final String medium;
 	private final String large;
 	

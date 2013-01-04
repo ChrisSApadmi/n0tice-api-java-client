@@ -21,6 +21,7 @@ import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.Tag;
 import com.n0tice.api.client.model.Update;
 import com.n0tice.api.client.model.User;
+import com.n0tice.api.client.model.Video;
 
 public class SearchParser {
 
@@ -54,6 +55,7 @@ public class SearchParser {
 	private static final String LARGE = "large";
 	private static final String COUNTRY = "country";
 	private static final String VIA = "via";
+	private static final String ORIGINAL = "original";
 	
 	private static DateTimeFormatter dateFormatter = ISODateTimeFormat.dateTimeNoMillis().withOffsetParsed();
 	
@@ -232,24 +234,32 @@ public class SearchParser {
 				final String body = jsonUpdate.has("body") ? jsonUpdate.getString("body") : null; 
 				final String link = jsonUpdate.has("link") ? jsonUpdate.getString("link") : null;
 				final String via = jsonUpdate.has(VIA) ? jsonUpdate.getString(VIA) : null;
-				Image image = null;	// TODO populate
-				User user = null;	// TODO populate
+				Image image = null;
 				if (jsonUpdate.has("image")) {
 					image = parseImage(jsonUpdate.getJSONObject("image"));
 				}
+				Video video = null;
+				if (jsonUpdate.has("video")) {
+					video = parseVideo(jsonUpdate.getJSONObject("video"));
+				}
+				User user = null;
 				if (jsonUpdate.has(USER)) {
 					user = new UserParser().jsonToUser(jsonUpdate.getJSONObject(USER));
 				}
 				final DateTime created = 	parseDate(jsonUpdate.getString("created"));
 				final DateTime modified = parseDate(jsonUpdate.getString("modified"));
-				updates.add(new Update(user, body, link, image, created, modified, via));
+				updates.add(new Update(user, body, link, image, video, created, modified, via));
 			}		
 		}
 		return updates;
 	}
-
+	
 	private Image parseImage(JSONObject imageJson) throws JSONException {
 		return new Image(imageJson.getString(SMALL), imageJson.getString(MEDIUM), imageJson.getString(LARGE));
+	}
+	
+	private Video parseVideo(JSONObject videoJson) throws JSONException {
+		return new Video(videoJson.getString(ORIGINAL));
 	}
 	
 }

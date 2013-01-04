@@ -7,16 +7,18 @@ public class Update {
 	private String body;
 	private String link;
 	private Image image;
+	private Video video;
 	private final User user;
 	private final DateTime created;
 	private final DateTime modified;
 	private final String via;
 	
-	public Update(User user, String body, String link, Image image, DateTime created, DateTime modified, String via) {
+	public Update(User user, String body, String link, Image image, Video video, DateTime created, DateTime modified, String via) {
 		this.user = user;
 		this.body = body;
 		this.link = link;
 		this.image = image;
+		this.video = video;
 		this.created = created;
 		this.modified = modified;
 		this.via = via;
@@ -38,6 +40,10 @@ public class Update {
 		return image;
 	}
 	
+	public Video getVideo() {
+		return video;
+	}
+
 	public DateTime getCreated() {
 		return created;
 	}
@@ -49,12 +55,12 @@ public class Update {
 	public String getVia() {
 		return via;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Update [body=" + body + ", link=" + link + ", image=" + image
-				+ ", user=" + user + ", created=" + created + ", modified="
-				+ modified + ", via=" + via + "]";
+				+ ", video=" + video + ", user=" + user + ", created="
+				+ created + ", modified=" + modified + ", via=" + via + "]";
 	}
 	
 }

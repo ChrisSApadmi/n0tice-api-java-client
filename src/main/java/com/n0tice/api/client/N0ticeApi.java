@@ -39,7 +39,7 @@ import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.AccessToken;
 import com.n0tice.api.client.model.Content;
-import com.n0tice.api.client.model.ImageFile;
+import com.n0tice.api.client.model.MediaFile;
 import com.n0tice.api.client.model.NewUserResponse;
 import com.n0tice.api.client.model.Noticeboard;
 import com.n0tice.api.client.model.Reoccurence;
@@ -157,8 +157,8 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public Content postReport(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
-		return postReport(headline, latitude, longitude, body, link, image, noticeboard, null);
+	public Content postReport(String headline, double latitude, double longitude, String body, String link, MediaFile image, MediaFile video, String noticeboard) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
+		return postReport(headline, latitude, longitude, body, link, image, video, noticeboard, null);
 	}
 	
 	public Noticeboard createNoticeboard(String domain, String name, String description, boolean moderated, Date endDate) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, ParsingException, IOException {
@@ -186,7 +186,7 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public Content postReport(String headline, double latitude, double longitude, String body, String link, ImageFile image, String noticeboard, DateTime date) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
+	public Content postReport(String headline, double latitude, double longitude, String body, String link, MediaFile image, MediaFile video, String noticeboard, DateTime date) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (headline != null) {
@@ -197,7 +197,7 @@ public class N0ticeApi {
 		}
 		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName(UTF_8)));
 		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName(UTF_8)));
-		populateUpdateFields(body, link, image, entity);
+		populateUpdateFields(body, link, image, video, entity);
 		
 		if (date != null) {
 			entity.addPart("date", new StringBody(date.toString(ZULE_TIME_FORMAT), Charset.forName(UTF_8)));
@@ -234,7 +234,7 @@ public class N0ticeApi {
 	}
 	
 	public Content postEvent(String headline, double latitude,
-			double longitude, String body, String link, ImageFile image,
+			double longitude, String body, String link, MediaFile image, MediaFile video,
 			String noticeboard, LocalDateTime startDate, LocalDateTime endDate, Reoccurence reoccurence, LocalDateTime reoccursTo)
 			throws ParsingException, AuthorisationException, IOException,
 			NotAllowedException, NotFoundException, BadRequestException {		
@@ -245,7 +245,7 @@ public class N0ticeApi {
 		addEntityPartParameter(entity, "noticeboard", noticeboard);
 		addEntityPartParameter(entity, "latitude", Double.toString(latitude));
 		addEntityPartParameter(entity, "longitude", Double.toString(longitude));
-		populateUpdateFields(body, link, image, entity);
+		populateUpdateFields(body, link, image, video, entity);
 		
 		addEntityPartParameter(entity, "startDate", startDate.toString(LOCAL_DATE_TIME_FORMAT));
 		addEntityPartParameter(entity, "endDate", endDate.toString(LOCAL_DATE_TIME_FORMAT));
@@ -269,10 +269,10 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public void postReportUpdate(String reportId, String body, String link, ImageFile image) throws IOException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException {
+	public void postReportUpdate(String reportId, String body, String link, MediaFile image, MediaFile video) throws IOException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + reportId  + "/update/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-		populateUpdateFields(body, link, image, entity);
+		populateUpdateFields(body, link, image, video, entity);
 
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
@@ -518,7 +518,7 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public User updateUserDetails(String username, String displayName, String bio, ImageFile image) throws ParsingException, IOException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
+	public User updateUserDetails(String username, String displayName, String bio, MediaFile image) throws ParsingException, IOException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username);		
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (displayName != null) {
@@ -560,7 +560,7 @@ public class N0ticeApi {
 	}
 	
 	private void populateUpdateFields(String body, String link,
-			ImageFile image, MultipartEntity entity)
+			MediaFile image, MediaFile video, MultipartEntity entity)
 			throws UnsupportedEncodingException {
 		if (body != null) {
 			entity.addPart("body", new StringBody(body, Charset.forName(UTF_8)));
@@ -570,6 +570,9 @@ public class N0ticeApi {
 		}
 		if (image != null) {
 			entity.addPart("image", new ByteArrayBody(image.getData(), image.getFilename()));
+		}
+		if (video != null) {
+			entity.addPart("video", new ByteArrayBody(video.getData(), video.getFilename()));
 		}
 	}
 	

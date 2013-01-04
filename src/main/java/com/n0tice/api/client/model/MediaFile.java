@@ -1,11 +1,11 @@
 package com.n0tice.api.client.model;
 
-public class ImageFile {
+public class MediaFile {
 
 	private byte[] data;
 	private String filename;
 	
-	public ImageFile(byte[] data, String filename) {
+	public MediaFile(byte[] data, String filename) {
 		super();
 		this.data = data;
 		this.filename = filename;
