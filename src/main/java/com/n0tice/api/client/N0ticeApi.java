@@ -7,7 +7,9 @@ import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -39,7 +41,9 @@ import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.AccessToken;
 import com.n0tice.api.client.model.Content;
+import com.n0tice.api.client.model.Group;
 import com.n0tice.api.client.model.MediaFile;
+import com.n0tice.api.client.model.MediaType;
 import com.n0tice.api.client.model.NewUserResponse;
 import com.n0tice.api.client.model.Noticeboard;
 import com.n0tice.api.client.model.Reoccurence;
@@ -58,6 +62,7 @@ public class N0ticeApi {
 	private static Logger log = Logger.getLogger(N0ticeApi.class);
 	
 	private static final String UTF_8 = "UTF-8";
+	private static final String COMMA = ",";	
 	private static DateTimeFormatter LOCAL_DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 	private static DateTimeFormatter ZULE_TIME_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 	
@@ -141,16 +146,32 @@ public class N0ticeApi {
 		return postReport(headline, latitude, longitude, body, link, image, video, noticeboard, null);
 	}
 	
-	public Noticeboard createNoticeboard(String domain, String name, String description, boolean moderated, Date endDate) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, ParsingException, IOException {
+	public Noticeboard createNoticeboard(String domain, String name, String description, boolean moderated, Date endDate, Set<MediaType> supportedMediaTypes, String group) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, ParsingException, IOException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/noticeboards/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		addEntityPartParameter(entity, "domain", domain);
 		addEntityPartParameter(entity, "name", name);
 		addEntityPartParameter(entity, "description", description);
 		addEntityPartParameter(entity, "moderated", Boolean.toString(moderated));
+	
 		if (endDate != null) {
 			addEntityPartParameter(entity, "endDate", ISODateTimeFormat.dateTimeNoMillis().print(new DateTime(endDate)));
 		}
+		
+		StringBuilder supportedMediaTypesValue = new StringBuilder();
+		Iterator<MediaType> supportedMediaTypesIterator = supportedMediaTypes.iterator();
+		while(supportedMediaTypesIterator.hasNext()) {
+			supportedMediaTypesValue.append(supportedMediaTypesIterator.next());
+			if (supportedMediaTypesIterator.hasNext()) {
+				supportedMediaTypesValue.append(COMMA);
+			}
+		}
+		addEntityPartParameter(entity, "supportedMediaTypes", supportedMediaTypesValue.toString());
+		
+		if (group != null) {
+			addEntityPartParameter(entity, "group", group);
+		}
+		
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
 		service.signRequest(scribeAccessToken, request);
@@ -160,6 +181,26 @@ public class N0ticeApi {
 		final String responseBody = response.getBody();
 		if (response.getCode() == 200) {
 	    	return searchParser.parseNoticeboardResult(responseBody);
+		}
+		
+		handleExceptions(response);
+		throw new RuntimeException();
+	}
+	
+	public Group createGroup(String name) throws IOException, ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/groups/new");
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		addEntityPartParameter(entity, "name", name);
+		
+		request.addHeader("Content-Type", entity.getContentType().getValue());
+		request.addPayload(extractMultpartBytes(entity));
+		service.signRequest(scribeAccessToken, request);
+		
+		Response response = request.send();
+		
+		final String responseBody = response.getBody();
+		if (response.getCode() == 200) {
+	    	return searchParser.parseGroupResult(responseBody);
 		}
 		
 		handleExceptions(response);

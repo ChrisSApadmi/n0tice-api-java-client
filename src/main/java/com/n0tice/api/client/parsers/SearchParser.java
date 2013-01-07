@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
+import com.n0tice.api.client.model.Group;
 import com.n0tice.api.client.model.Image;
 import com.n0tice.api.client.model.Noticeboard;
 import com.n0tice.api.client.model.Place;
@@ -23,8 +24,10 @@ import com.n0tice.api.client.model.Update;
 import com.n0tice.api.client.model.User;
 import com.n0tice.api.client.model.Video;
 
+// TODO migrate to Jackson once we can prove that it is Android safe
 public class SearchParser {
 
+	private static final String DOMAIN = "domain";
 	private static final String END_DATE = "endDate";
 	private static final String REOCCURS_TO = "reoccursTo";
 	private static final String REOCCURS = "reoccurs";
@@ -169,8 +172,17 @@ public class SearchParser {
 			if (jsonObject.has(END_DATE)) {
 				endDate = ISODateTimeFormat.dateTimeNoMillis().parseDateTime(jsonObject.getString(END_DATE)).toDate();
 			}
-			return new Noticeboard(jsonObject.getString("domain"), jsonObject.getString("name"), description, background, cover, endDate);
+			return new Noticeboard(jsonObject.getString(DOMAIN), jsonObject.getString(NAME), description, background, cover, endDate);
 			
+		} catch (JSONException e) {
+			throw new ParsingException();
+		}
+	}
+	
+	public Group parseGroupResult(String json) throws ParsingException {
+		try {
+			final JSONObject jsonObject = new JSONObject(json);			
+			return new Group(jsonObject.getString(ID), jsonObject.getString(NAME));			
 		} catch (JSONException e) {
 			throw new ParsingException();
 		}
