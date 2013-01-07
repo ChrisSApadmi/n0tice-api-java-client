@@ -102,27 +102,7 @@ public class N0ticeApi {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(searchQuery), UTF_8));
 	}
 	
-	@Deprecated		// Use search
-	public ResultSet near(double latitude, double longitude) throws HttpFetchException, ParsingException {
-		return search(new SearchQuery().latitude(latitude).longitude(longitude));
-	}
-	
-	@Deprecated 	// Use search
-	public ResultSet user(String userName) throws HttpFetchException, ParsingException {
-		return search(new SearchQuery().user(userName));
-	}
-	
-	@Deprecated		// Use search
-	public ResultSet noticeboard(String noticeBoard) throws HttpFetchException, ParsingException {
-		return search(new SearchQuery().noticeBoard(noticeBoard));
-	}
-	
-	@Deprecated		// Use search
-	public ResultSet tag(String tag)  throws HttpFetchException, ParsingException {
-		return search(new SearchQuery().tag(tag));
-	}
-	
-	public User userProfile(String username) throws NotFoundException, ParsingException, HttpFetchException {
+	public User user(String username) throws NotFoundException, ParsingException, HttpFetchException {
 		return userParser.parseUserProfile(httpFetcher.fetchContent(urlBuilder.userProfile(username), UTF_8));
 	}
 	
@@ -141,7 +121,7 @@ public class N0ticeApi {
 	public Noticeboard noticeBoard(String noticeboard) throws NotFoundException, ParsingException, HttpFetchException {
 		return searchParser.parseNoticeboardResult((httpFetcher.fetchContent(urlBuilder.noticeBoard(noticeboard), UTF_8)));
 	}
-		
+	
 	public User verify() throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
 		OAuthRequest request = new OAuthRequest(Verb.GET, apiUrl + "/verify");		
 		service.signRequest(scribeAccessToken, request);
@@ -470,7 +450,7 @@ public class N0ticeApi {
 		handleExceptions(response);
 		throw new RuntimeException();
 	}
-
+	
 	public AccessToken authUser(String consumerKey, String username, String password, String consumerSecret) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException {
 		log.info("Attempting to auth user: " + consumerKey + ", " + username + ", " + password + ", " + consumerSecret);
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/auth");
@@ -598,7 +578,7 @@ public class N0ticeApi {
 			throw new BadRequestException();
 		}
 		
-		System.err.println(response.getCode() + ": " + response.getBody());
+		log.error(response.getCode() + ": " + response.getBody());
 		throw new RuntimeException();
 	}
 	
