@@ -51,6 +51,7 @@ import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.SearchQuery;
 import com.n0tice.api.client.model.User;
 import com.n0tice.api.client.oauth.N0ticeOauthApi;
+import com.n0tice.api.client.parsers.NoticeboardParser;
 import com.n0tice.api.client.parsers.SearchParser;
 import com.n0tice.api.client.parsers.UserParser;
 import com.n0tice.api.client.urls.SearchUrlBuilder;
@@ -72,6 +73,7 @@ public class N0ticeApi {
 	private final HttpFetcher httpFetcher;
 	private final SearchParser searchParser;
 	private final UserParser userParser;
+	private final NoticeboardParser noticeboardParser;
 
 	private OAuthService service;
 	private Token scribeAccessToken;
@@ -83,6 +85,7 @@ public class N0ticeApi {
 		this.httpFetcher = new HttpFetcher();
 		this.searchParser = new SearchParser();
 		this.userParser = new UserParser();
+		this.noticeboardParser = new NoticeboardParser();
 	}
 	
 	public N0ticeApi(String apiUrl, String consumerKey, String consumerSecret, AccessToken accessToken) {
@@ -92,6 +95,8 @@ public class N0ticeApi {
 		this.httpFetcher = new HttpFetcher();
 		this.searchParser = new SearchParser();
 		this.userParser = new UserParser();
+		this.noticeboardParser = new NoticeboardParser();
+
 		service = new ServiceBuilder().provider(new N0ticeOauthApi(apiUrl))
 			.apiKey(consumerKey)
 			.apiSecret(consumerSecret)
@@ -124,7 +129,7 @@ public class N0ticeApi {
 	}
 	
 	public Noticeboard noticeBoard(String noticeboard) throws NotFoundException, ParsingException, HttpFetchException {
-		return searchParser.parseNoticeboardResult((httpFetcher.fetchContent(urlBuilder.noticeBoard(noticeboard), UTF_8)));
+		return noticeboardParser.parseNoticeboardResult((httpFetcher.fetchContent(urlBuilder.noticeBoard(noticeboard), UTF_8)));
 	}
 	
 	public User verify() throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException {
@@ -180,7 +185,7 @@ public class N0ticeApi {
 		
 		final String responseBody = response.getBody();
 		if (response.getCode() == 200) {
-	    	return searchParser.parseNoticeboardResult(responseBody);
+	    	return noticeboardParser.parseNoticeboardResult(responseBody);
 		}
 		
 		handleExceptions(response);

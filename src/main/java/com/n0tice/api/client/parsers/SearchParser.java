@@ -27,6 +27,7 @@ import com.n0tice.api.client.model.Video;
 // TODO migrate to Jackson once we can prove that it is Android safe
 public class SearchParser {
 
+	private static final String GROUP = "group";
 	private static final String DOMAIN = "domain";
 	private static final String END_DATE = "endDate";
 	private static final String REOCCURS_TO = "reoccursTo";
@@ -51,8 +52,6 @@ public class SearchParser {
 	private static final String INTERESTING = "interesting";
 	private static final String VOTES = "votes";
 	private static final String REPOSTS = "reposts";
-	private static final String BACKGROUND = "background";
-	private static final String COVER = "cover";
 	private static final String SMALL = "small";
 	private static final String MEDIUM = "medium";
 	private static final String LARGE = "large";
@@ -156,23 +155,6 @@ public class SearchParser {
 		try {
 			JSONObject reportJSON = new JSONObject(json);			
 			return jsonToContentItem(reportJSON);
-			
-		} catch (JSONException e) {
-			throw new ParsingException();
-		}
-	}
-	
-	public Noticeboard parseNoticeboardResult(String json) throws ParsingException {
-		try {
-			final JSONObject jsonObject = new JSONObject(json);
-			final Image background = jsonObject.has(BACKGROUND) ? parseImage(jsonObject.getJSONObject(BACKGROUND)) : null;
-			final Image cover =  jsonObject.has(COVER) ? parseImage(jsonObject.getJSONObject(COVER)) : null;
-			final String description = jsonObject.has("description") ? jsonObject.getString("description") : null;
-			Date endDate = null;
-			if (jsonObject.has(END_DATE)) {
-				endDate = ISODateTimeFormat.dateTimeNoMillis().parseDateTime(jsonObject.getString(END_DATE)).toDate();
-			}
-			return new Noticeboard(jsonObject.getString(DOMAIN), jsonObject.getString(NAME), description, background, cover, endDate);
 			
 		} catch (JSONException e) {
 			throw new ParsingException();

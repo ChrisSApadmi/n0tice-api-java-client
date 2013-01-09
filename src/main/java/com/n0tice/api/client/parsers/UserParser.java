@@ -1,10 +1,8 @@
 package com.n0tice.api.client.parsers;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,20 +17,22 @@ import com.n0tice.api.client.model.User;
 public class UserParser {
 	
 	private static final String USERS = "users";
-	private static final String DOMAIN = "domain";
 	private static final String FOLLOWING = "following";
 	private static final String NOTICEBOARDS = "noticeboards";
 	private static final String USERNAME = "username";	
 	private static final String DISPLAY_NAME = "displayName";
 	private static final String BIO = "bio";
 	private static final String PROFILE_IMAGE = "image";
-	private static final String BACKGROUND = "background";
-	private static final String COVER = "cover";
 	private static final String SMALL = "small";
 	private static final String MEDIUM = "medium";
 	private static final String LARGE = "large";
-	private static final String END_DATE = "end_date";
 	
+	private final NoticeboardParser noticeboardParser;
+	
+	public UserParser() {
+		this.noticeboardParser = new NoticeboardParser();
+	}
+		
 	public User parseUserProfile(String json) throws ParsingException {
 		try {
 			JSONObject userJson = new JSONObject(json);
@@ -122,17 +122,9 @@ public class UserParser {
 	public List<Noticeboard> parseNoticeboards(String json) throws ParsingException {
 		List<Noticeboard> noticeboards = new ArrayList<Noticeboard>();		
 		try {
-			// TODO duplication
 			final JSONArray noticeboardsJSON = new JSONArray(json);
-			for (int i = 0; i < noticeboardsJSON.length(); i++) {
-				JSONObject jsonNoticeboard = noticeboardsJSON.getJSONObject(i);
-				final Image background = jsonNoticeboard.has(BACKGROUND) ? parseImage(jsonNoticeboard.getJSONObject(BACKGROUND)) : null;
-				final Image cover =  jsonNoticeboard.has(COVER) ? parseImage(jsonNoticeboard.getJSONObject(COVER)) : null;
-				Date endDate = null;
-				if (jsonNoticeboard.has(END_DATE)) {
-					endDate = ISODateTimeFormat.dateTimeNoMillis().parseDateTime(jsonNoticeboard.getString(END_DATE)).toDate();
-				}				
-				noticeboards.add(new Noticeboard(jsonNoticeboard.getString(DOMAIN), jsonNoticeboard.getString("name"), jsonNoticeboard.getString("description"), background, cover, endDate));
+			for (int i = 0; i < noticeboardsJSON.length(); i++) {					
+				noticeboards.add(noticeboardParser.parseNoticeboardResult(json));
 			}
 			return noticeboards;
 		} catch (JSONException e) {
