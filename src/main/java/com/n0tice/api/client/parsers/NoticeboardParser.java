@@ -17,6 +17,7 @@ import com.n0tice.api.client.model.Noticeboard;
 
 public class NoticeboardParser {
 
+	private static final String SUPPORTED_MEDIA_TYPES = "supportedMediaTypes";
 	private static final String BACKGROUND = "background";
 	private static final String COVER = "cover";
 	private static final String GROUP = "group";
@@ -45,8 +46,8 @@ public class NoticeboardParser {
 				group = new Group(groupJson.getString(ID), groupJson.getString(NAME));
 			}
 			Set<MediaType> supportedMediaTypes = new HashSet<MediaType>();
-			if (jsonObject.has("supportedMediaTypes")) {
-				JSONArray mediaTypesJson = jsonObject.getJSONArray("supportedMediaTypes");
+			if (jsonObject.has(SUPPORTED_MEDIA_TYPES)) {
+				JSONArray mediaTypesJson = jsonObject.getJSONArray(SUPPORTED_MEDIA_TYPES);
 				for (int i = 0; i < mediaTypesJson.length(); i++) {
 					String mediaType = (String) mediaTypesJson.get(i);
 					supportedMediaTypes.add(MediaType.valueOf(mediaType));					
@@ -55,7 +56,7 @@ public class NoticeboardParser {
 			return new Noticeboard(jsonObject.getString(DOMAIN), jsonObject.getString(NAME), description, background, cover, endDate, group, supportedMediaTypes);
 			
 		} catch (JSONException e) {
-			throw new ParsingException();
+			throw new ParsingException(e.getMessage());
 		}
 	}
 	
