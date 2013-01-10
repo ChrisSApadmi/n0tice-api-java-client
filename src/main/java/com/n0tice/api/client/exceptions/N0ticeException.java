@@ -4,10 +4,15 @@ public class N0ticeException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 	
-	private final String body;
-
-	public N0ticeException(String body) {
-		this.body = body;
+	private String message;
+	
+	public N0ticeException() {
+		super();
+	}
+	
+	public N0ticeException(String message) {
+		super();
+		this.message = message;
 	}
 
 	public static long getSerialversionuid() {
@@ -15,12 +20,12 @@ public class N0ticeException extends Exception {
 	}
 
 	public String getBody() {
-		return body;
+		return message;
 	}
 
 	@Override
 	public String toString() {
-		return "N0ticeException [body=" + body + "]";
+		return "N0ticeException [message=" + message + "]";
 	}
 	
 }

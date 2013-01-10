@@ -629,10 +629,10 @@ public class N0ticeApi {
 			throw new NotAllowedException();
 		}		
 		if (response.getCode() == 401) {
-			throw new AuthorisationException();
+			throw new AuthorisationException(response.getBody());
 		}
 		if (response.getCode() == 400) {
-			throw new BadRequestException();
+			throw new BadRequestException(response.getBody());
 		}		
 	}
 	
