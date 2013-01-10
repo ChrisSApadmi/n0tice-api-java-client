@@ -44,6 +44,7 @@ import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.Group;
 import com.n0tice.api.client.model.MediaFile;
 import com.n0tice.api.client.model.MediaType;
+import com.n0tice.api.client.model.ModerationComplaintType;
 import com.n0tice.api.client.model.NewUserResponse;
 import com.n0tice.api.client.model.Noticeboard;
 import com.n0tice.api.client.model.Reoccurence;
@@ -327,8 +328,17 @@ public class N0ticeApi {
 		throw new RuntimeException();
 	}
 	
-	public boolean flagAsInappropriate(String id) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/flag");	
+	public boolean flagAsInappropriate(String id, ModerationComplaintType type, String notes, String email) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException {
+		final OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/flag");
+		if (type != null) {
+			addBodyParameter(request, "type", type.toString());
+		}
+		if (notes != null) {
+			addBodyParameter(request, "notes", notes);
+		}
+		if (email != null) {
+			addBodyParameter(request, "email", email);
+		}		
 		service.signRequest(scribeAccessToken, request);
 		
 		final Response response = request.send();		
