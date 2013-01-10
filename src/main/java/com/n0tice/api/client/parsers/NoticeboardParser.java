@@ -1,7 +1,9 @@
 package com.n0tice.api.client.parsers;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.joda.time.format.ISODateTimeFormat;
@@ -29,31 +31,54 @@ public class NoticeboardParser {
 	private static final String MEDIUM = "medium";
 	private static final String LARGE = "large";
 	
+	public List<Noticeboard> parseNoticeboards(String json) throws ParsingException {
+		List<Noticeboard> noticeboards = new ArrayList<Noticeboard>();		
+		try {
+			final JSONArray noticeboardsJSON = new JSONArray(json);
+			for (int i = 0; i < noticeboardsJSON.length(); i++) {					
+				noticeboards.add(parseNoticeboardResult(noticeboardsJSON.getJSONObject(i)));
+			}
+			return noticeboards;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			throw new ParsingException();
+		}
+	}
+	
 	public Noticeboard parseNoticeboardResult(String json) throws ParsingException {
 		try {
-			final JSONObject jsonObject = new JSONObject(json);
-			final Image background = jsonObject.has(BACKGROUND) ? parseImage(jsonObject.getJSONObject(BACKGROUND)) : null;
-			final Image cover =  jsonObject.has(COVER) ? parseImage(jsonObject.getJSONObject(COVER)) : null;
-			final String description = jsonObject.has("description") ? jsonObject.getString("description") : null;
+			return parseNoticeboardResult(new JSONObject(json));
+		} catch (ParsingException e) {
+			throw new ParsingException(e.getMessage());
+		} catch (JSONException e) {
+			throw new ParsingException(e.getMessage());
+		}
+	}
+	
+	public Noticeboard parseNoticeboardResult(JSONObject noticeboardJsonObject) throws ParsingException {
+		try {
+			final Image background = noticeboardJsonObject.has(BACKGROUND) ? parseImage(noticeboardJsonObject.getJSONObject(BACKGROUND)) : null;
+			final Image cover =  noticeboardJsonObject.has(COVER) ? parseImage(noticeboardJsonObject.getJSONObject(COVER)) : null;
+			final String description = noticeboardJsonObject.has("description") ? noticeboardJsonObject.getString("description") : null;
 			Date endDate = null;
-			if (jsonObject.has(END_DATE)) {
-				endDate = ISODateTimeFormat.dateTimeNoMillis().parseDateTime(jsonObject.getString(END_DATE)).toDate();
+			if (noticeboardJsonObject.has(END_DATE)) {
+				endDate = ISODateTimeFormat.dateTimeNoMillis().parseDateTime(noticeboardJsonObject.getString(END_DATE)).toDate();
 			}
 			
 			Group group = null;
-			if (jsonObject.has(GROUP)) {
-				final JSONObject groupJson = jsonObject.getJSONObject(GROUP);
+			if (noticeboardJsonObject.has(GROUP)) {
+				final JSONObject groupJson = noticeboardJsonObject.getJSONObject(GROUP);
 				group = new Group(groupJson.getString(ID), groupJson.getString(NAME));
 			}
-			Set<MediaType> supportedMediaTypes = new HashSet<MediaType>();
-			if (jsonObject.has(SUPPORTED_MEDIA_TYPES)) {
-				JSONArray mediaTypesJson = jsonObject.getJSONArray(SUPPORTED_MEDIA_TYPES);
+			
+			final Set<MediaType> supportedMediaTypes = new HashSet<MediaType>();
+			if (noticeboardJsonObject.has(SUPPORTED_MEDIA_TYPES)) {
+				JSONArray mediaTypesJson = noticeboardJsonObject.getJSONArray(SUPPORTED_MEDIA_TYPES);
 				for (int i = 0; i < mediaTypesJson.length(); i++) {
-					String mediaType = (String) mediaTypesJson.get(i);
-					supportedMediaTypes.add(MediaType.valueOf(mediaType));					
+					supportedMediaTypes.add(MediaType.valueOf(mediaTypesJson.getString(i)));
 				}
 			}
-			return new Noticeboard(jsonObject.getString(DOMAIN), jsonObject.getString(NAME), description, background, cover, endDate, group, supportedMediaTypes);
+			return new Noticeboard(noticeboardJsonObject.getString(DOMAIN), noticeboardJsonObject.getString(NAME), description, background, cover, endDate, group, supportedMediaTypes);
 			
 		} catch (JSONException e) {
 			throw new ParsingException(e.getMessage());

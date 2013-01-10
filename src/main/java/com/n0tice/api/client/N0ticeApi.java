@@ -123,15 +123,15 @@ public class N0ticeApi {
 	}
 	
 	public List<Noticeboard> followedNoticeboards(String username) throws NotFoundException, ParsingException, HttpFetchException {
-		return userParser.parseNoticeboards(httpFetcher.fetchContent(urlBuilder.userFollowedNoticeboards(username), UTF_8));
+		return noticeboardParser.parseNoticeboards(httpFetcher.fetchContent(urlBuilder.userFollowedNoticeboards(username), UTF_8));
 	}
 	
 	public List<Noticeboard> noticeboards(String username) throws NotFoundException, ParsingException, HttpFetchException {
-		return userParser.parseNoticeboards(httpFetcher.fetchContent(urlBuilder.userNoticeboards(username), UTF_8));
+		return noticeboardParser.parseNoticeboards(httpFetcher.fetchContent(urlBuilder.userNoticeboards(username), UTF_8));
 	}
 	
 	public Noticeboard noticeBoard(String noticeboard) throws NotFoundException, ParsingException, HttpFetchException {
-		return noticeboardParser.parseNoticeboardResult((httpFetcher.fetchContent(urlBuilder.noticeBoard(noticeboard), UTF_8)));
+		return noticeboardParser.parseNoticeboardResult(httpFetcher.fetchContent(urlBuilder.noticeBoard(noticeboard), UTF_8));
 	}
 	
 	public User verify() throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException, N0ticeException {

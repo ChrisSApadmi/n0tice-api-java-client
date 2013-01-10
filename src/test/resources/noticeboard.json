@@ -1,1 +1,31 @@
-{"name":"Street Art","description":"spotting #streetart around the world","domain":"streetart","logo":{"small":"http://n0tice-static.s3.amazonaws.com/images/noticeboards/logos/small/1082f1ea530998ee.png","medium":"http://n0tice-static.s3.amazonaws.com/images/noticeboards/logos/medium/1082f1ea530998ee.png","large":"http://n0tice-static.s3.amazonaws.com/images/noticeboards/logos/large/1082f1ea530998ee.png"},"background":{"small":"http://n0tice-static.s3.amazonaws.com/images/noticeboards/backgrounds/small/428b2049ddb1f35e.jpg","medium":"http://n0tice-static.s3.amazonaws.com/images/noticeboards/backgrounds/medium/428b2049ddb1f35e.jpg","large":"http://n0tice-static.s3.amazonaws.com/images/noticeboards/backgrounds/large/428b2049ddb1f35e.jpg"},"cover":{"small":"http://n0tice-static.s3.amazonaws.com/images/noticeboards/cover/small/0d99228a410fc307.jpg","medium":"http://n0tice-static.s3.amazonaws.com/images/noticeboards/cover/medium/0d99228a410fc307.jpg","large":"http://n0tice-static.s3.amazonaws.com/images/noticeboards/cover/large/0d99228a410fc307.jpg"}}
+{
+    "domain": "test",
+    "name": "Test",
+    "description": "Test board",
+    "moderated": true,
+    "featured": false,
+    "endDate": "2013-01-11T18:00:00Z",
+    "contributors": 0,
+    "followers": 0,
+    "supportedMediaTypes": [
+        "TEXT",
+        "IMAGE",
+    ],
+    "background": {
+	    "tiny": "http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/backgrounds/tiny/41717efdefc22bd4.jpg",
+	    "smalldouble": "http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/backgrounds/smalldouble/41717efdefc22bd4.jpg",
+	    "mediumlandscape": "http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/backgrounds/mediumlandscape/41717efdefc22bd4.jpg",
+	    "tinydouble": "http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/backgrounds/tinydouble/41717efdefc22bd4.jpg",
+	    "mediumlandscapedouble": "http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/backgrounds/mediumlandscapedouble/41717efdefc22bd4.jpg",
+	    "small": "http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/backgrounds/small/41717efdefc22bd4.jpg",
+	    "medium": "http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/backgrounds/medium/41717efdefc22bd4.jpg",
+	    "large": "http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/backgrounds/large/41717efdefc22bd4.jpg",
+	    "extralarge": "http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/backgrounds/extralarge/41717efdefc22bd4.jpg"
+	},
+	"cover": {
+    	"small": "http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/cover/small/80d6d2125fabebea.jpg",
+    	"medium": "http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/cover/medium/80d6d2125fabebea.jpg",
+    	"large": "http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/cover/large/80d6d2125fabebea.jpg",
+    	"mediumdouble": "http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/cover/mediumdouble/80d6d2125fabebea.jpg"
+	}
+}

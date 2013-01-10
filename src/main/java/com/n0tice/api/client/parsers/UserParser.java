@@ -11,7 +11,6 @@ import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.AccessToken;
 import com.n0tice.api.client.model.Image;
 import com.n0tice.api.client.model.NewUserResponse;
-import com.n0tice.api.client.model.Noticeboard;
 import com.n0tice.api.client.model.User;
 
 public class UserParser {
@@ -26,11 +25,8 @@ public class UserParser {
 	private static final String SMALL = "small";
 	private static final String MEDIUM = "medium";
 	private static final String LARGE = "large";
-	
-	private final NoticeboardParser noticeboardParser;
-	
+		
 	public UserParser() {
-		this.noticeboardParser = new NoticeboardParser();
 	}
 		
 	public User parseUserProfile(String json) throws ParsingException {
@@ -117,20 +113,6 @@ public class UserParser {
 			followedUsers = followsJSON.getInt(USERS);
 		}
 		return new User(userJSON.getString(USERNAME), displayName, bio, profileImage, noticeboards, followedNoticeboards, followedUsers);
-	}
-	
-	public List<Noticeboard> parseNoticeboards(String json) throws ParsingException {
-		List<Noticeboard> noticeboards = new ArrayList<Noticeboard>();		
-		try {
-			final JSONArray noticeboardsJSON = new JSONArray(json);
-			for (int i = 0; i < noticeboardsJSON.length(); i++) {					
-				noticeboards.add(noticeboardParser.parseNoticeboardResult(json));
-			}
-			return noticeboards;
-		} catch (JSONException e) {
-			e.printStackTrace();
-			throw new ParsingException();
-		}
 	}
 	
 	// TODO duplication
