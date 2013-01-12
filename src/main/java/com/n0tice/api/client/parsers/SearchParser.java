@@ -240,6 +240,7 @@ public class SearchParser {
 	}
 
 	private Update parseJsonUpdate(JSONObject jsonUpdate) throws JSONException {
+		final String id = jsonUpdate.getString("id");
 		final String body = jsonUpdate.has("body") ? jsonUpdate.getString("body") : null; 
 		final String link = jsonUpdate.has("link") ? jsonUpdate.getString("link") : null;
 		final String via = jsonUpdate.has(VIA) ? jsonUpdate.getString(VIA) : null;
@@ -257,7 +258,7 @@ public class SearchParser {
 		}
 		final DateTime created = 	parseDate(jsonUpdate.getString("created"));
 		final DateTime modified = parseDate(jsonUpdate.getString("modified"));
-		return new Update(user, body, link, image, video, created, modified, via);
+		return new Update(id, user, body, link, image, video, created, modified, via);
 	}
 	
 	private Image parseImage(JSONObject imageJson) throws JSONException {

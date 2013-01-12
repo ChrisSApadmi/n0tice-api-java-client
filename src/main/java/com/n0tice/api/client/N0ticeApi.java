@@ -112,6 +112,10 @@ public class N0ticeApi {
 		return searchParser.parseReport(httpFetcher.fetchContent(urlBuilder.get(id), UTF_8));
 	}
 	
+	public Update getUpdate(String id) throws HttpFetchException, NotFoundException, ParsingException {
+		return searchParser.parseUpdate(httpFetcher.fetchContent(urlBuilder.get(id), UTF_8));
+	}
+	
 	public Content authedGet(String id) throws HttpFetchException, NotFoundException, ParsingException, N0ticeException, NotAllowedException {		
 		final OAuthRequest request = new OAuthRequest(Verb.GET, urlBuilder.get(id));
 		oauthSignRequest(request);

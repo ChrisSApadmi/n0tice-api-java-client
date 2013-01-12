@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 
 public class Update {
 		
+	private final String id;
 	private String body;
 	private String link;
 	private Image image;
@@ -13,7 +14,8 @@ public class Update {
 	private final DateTime modified;
 	private final String via;
 	
-	public Update(User user, String body, String link, Image image, Video video, DateTime created, DateTime modified, String via) {
+	public Update(String id, User user, String body, String link, Image image, Video video, DateTime created, DateTime modified, String via) {
+		this.id = id;
 		this.user = user;
 		this.body = body;
 		this.link = link;
@@ -22,6 +24,10 @@ public class Update {
 		this.created = created;
 		this.modified = modified;
 		this.via = via;
+	}
+	
+	public String getId() {
+		return id;
 	}
 	
 	public User getUser() {
@@ -58,9 +64,10 @@ public class Update {
 
 	@Override
 	public String toString() {
-		return "Update [body=" + body + ", link=" + link + ", image=" + image
-				+ ", video=" + video + ", user=" + user + ", created="
-				+ created + ", modified=" + modified + ", via=" + via + "]";
+		return "Update [id=" + id + ", body=" + body + ", link=" + link
+				+ ", image=" + image + ", video=" + video + ", user=" + user
+				+ ", created=" + created + ", modified=" + modified + ", via="
+				+ via + "]";
 	}
 	
 }
