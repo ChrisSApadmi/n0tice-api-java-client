@@ -36,6 +36,7 @@ import org.scribe.oauth.OAuthService;
 import com.n0tice.api.client.exceptions.AuthorisationException;
 import com.n0tice.api.client.exceptions.BadRequestException;
 import com.n0tice.api.client.exceptions.HttpFetchException;
+import com.n0tice.api.client.exceptions.MissingCredentialsExeception;
 import com.n0tice.api.client.exceptions.N0ticeException;
 import com.n0tice.api.client.exceptions.NotAllowedException;
 import com.n0tice.api.client.exceptions.NotFoundException;
@@ -136,7 +137,7 @@ public class N0ticeApi {
 	
 	public User verify() throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException, N0ticeException {
 		OAuthRequest request = new OAuthRequest(Verb.GET, apiUrl + "/verify");		
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		Response response = request.send();
 		
@@ -181,7 +182,7 @@ public class N0ticeApi {
 		
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		Response response = request.send();
 		
@@ -201,7 +202,7 @@ public class N0ticeApi {
 		
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		Response response = request.send();
 		
@@ -233,7 +234,7 @@ public class N0ticeApi {
 		
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		Response response = request.send();
 		
@@ -245,10 +246,10 @@ public class N0ticeApi {
 		handleExceptions(response);
 		throw new N0ticeException(response.getBody());
 	}
-	
+
 	public ResultSet authedSearch(SearchQuery searchQuery) throws ParsingException, HttpFetchException, NotAllowedException, AuthorisationException, BadRequestException, N0ticeException {				
 		OAuthRequest request = new OAuthRequest(Verb.GET, searchUrlBuilder.toUrl(searchQuery));
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		Response response = request.send();
 		
@@ -284,7 +285,7 @@ public class N0ticeApi {
 		
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		Response response = request.send();
 		
@@ -304,7 +305,7 @@ public class N0ticeApi {
 
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		final Response response = request.send();
 		
@@ -318,7 +319,7 @@ public class N0ticeApi {
 	
 	public boolean voteInteresting(String id) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException, N0ticeException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/vote/interesting");	
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		final Response response = request.send();		
 		if (response.getCode() == 200) {
@@ -339,8 +340,8 @@ public class N0ticeApi {
 		}
 		if (email != null) {
 			addBodyParameter(request, "email", email);
-		}		
-		service.signRequest(scribeAccessToken, request);
+		}
+		oauthSignRequest(request);
 		
 		final Response response = request.send();		
 		if (response.getCode() == 200) {
@@ -354,7 +355,7 @@ public class N0ticeApi {
 	public boolean repost(String id, String noticeboard) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, N0ticeException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/repost");
 		addBodyParameter(request, "noticeboard", noticeboard);
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 
 		final Response response = request.send();		
 		if (response.getCode() == 200) {
@@ -367,7 +368,7 @@ public class N0ticeApi {
 	
 	public boolean approve(String id) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, N0ticeException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/approve");
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 
 		final Response response = request.send();		
 		if (response.getCode() == 200) {
@@ -380,7 +381,7 @@ public class N0ticeApi {
 	
 	public boolean reject(String id) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, N0ticeException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id + "/reject");
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 
 		final Response response = request.send();		
 		if (response.getCode() == 200) {
@@ -406,7 +407,7 @@ public class N0ticeApi {
 	
 	public List<String> notifications(String username) throws NotFoundException, ParsingException, NotAllowedException, AuthorisationException, BadRequestException, N0ticeException {		
 		OAuthRequest request = new OAuthRequest(Verb.GET, urlBuilder.userNotifications(username));
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		final Response response = request.send();
 		
@@ -421,7 +422,7 @@ public class N0ticeApi {
 	public Content updateReport(String id, String headline, String body) throws ParsingException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException, N0ticeException {	
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + id);	
 		addBodyParameter(request, "headline", headline);
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		Response response = request.send();
 		
@@ -436,7 +437,7 @@ public class N0ticeApi {
 	
 	public boolean followUser(String username) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException, N0ticeException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username + "/follow");	
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		final Response response = request.send();
 		
@@ -450,7 +451,7 @@ public class N0ticeApi {
 	
 	public boolean unfollowUser(String username) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException, N0ticeException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username + "/unfollow");	
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		final Response response = request.send();
 		
@@ -464,7 +465,7 @@ public class N0ticeApi {
 	
 	public boolean followNoticeboard(String noticeboard) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException, N0ticeException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/noticeboard/" + noticeboard + "/follow");	
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		final Response response = request.send();
 		
@@ -478,7 +479,7 @@ public class N0ticeApi {
 	
 	public boolean unfollowNoticeboard(String noticeboard) throws NotFoundException, AuthorisationException, NotAllowedException, BadRequestException, N0ticeException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/noticeboard/" + noticeboard + "/unfollow");	
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		final Response response = request.send();
 		
@@ -569,7 +570,7 @@ public class N0ticeApi {
 		}
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		Response response = request.send();
 
@@ -584,7 +585,7 @@ public class N0ticeApi {
 	
 	public boolean deleteReport(String id) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, N0ticeException {
 		OAuthRequest request = new OAuthRequest(Verb.DELETE, apiUrl + "/" + id);	
-		service.signRequest(scribeAccessToken, request);
+		oauthSignRequest(request);
 		
 		final Response response = request.send();
 		
@@ -652,6 +653,14 @@ public class N0ticeApi {
 		}
 	}
 	
+	private void oauthSignRequest(OAuthRequest request) throws MissingCredentialsExeception {
+		if (scribeAccessToken != null) {
+			service.signRequest(scribeAccessToken, request);
+			return;
+		}
+		throw new MissingCredentialsExeception();
+	}
+
 	private String sign(String effectiveUrl, String secret) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
 	    SecretKeySpec key = new SecretKeySpec(secret.getBytes(UTF_8), "HmacSHA1");
 	    Mac mac = Mac.getInstance("HmacSHA1");
