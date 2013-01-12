@@ -1,7 +1,6 @@
 package com.n0tice.api.client.parsers;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -15,7 +14,6 @@ import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
 import com.n0tice.api.client.model.Group;
 import com.n0tice.api.client.model.Image;
-import com.n0tice.api.client.model.Noticeboard;
 import com.n0tice.api.client.model.Place;
 import com.n0tice.api.client.model.Reoccurence;
 import com.n0tice.api.client.model.ResultSet;
@@ -27,6 +25,7 @@ import com.n0tice.api.client.model.Video;
 // TODO migrate to Jackson once we can prove that it is Android safe
 public class SearchParser {
 
+	private static final String AWAITING_MODERATION = "awaitingModeration";
 	private static final String GROUP = "group";
 	private static final String DOMAIN = "domain";
 	private static final String END_DATE = "endDate";
@@ -129,7 +128,9 @@ public class SearchParser {
 		if (contentItemJSON.has(REPOSTS)) {
 			reposts = contentItemJSON.getInt(REPOSTS);			
 		}
-				
+		
+		final Boolean awaitingModeration = contentItemJSON.has(AWAITING_MODERATION) ? contentItemJSON.getBoolean(AWAITING_MODERATION) : null;
+		
 		return new Content(contentItemJSON.getString(ID), 
 				contentItemJSON.getString(API_URL), 
 				contentItemJSON.getString(WEB_URL), 
@@ -147,7 +148,8 @@ public class SearchParser {
 				reoccurs,
 				reoccursTo,
 				interestingVotes,
-				reposts
+				reposts,
+				awaitingModeration
 				);
 	}
 	

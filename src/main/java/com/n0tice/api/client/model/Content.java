@@ -25,11 +25,12 @@ public class Content {
 	private final DateTime reoccursTo;	
 	private final int interestingVotes;
 	private final int reposts;
+	private final Boolean awaitingModeration;
 	
 	public Content(String id, String apiUrl, String webUrl, String type,
 			String headline, Place place, User user, String noticeboard,
 			DateTime created, DateTime modified, List<Tag> tags, List<Update> updates, DateTime startDate, DateTime endDate, 
-			Reoccurence reoccurence, DateTime reoccursTo, int interestingVotes, int reposts) {
+			Reoccurence reoccurence, DateTime reoccursTo, int interestingVotes, int reposts, Boolean awaitingModeration) {
 		this.id = id;
 		this.apiUrl = apiUrl;
 		this.webUrl = webUrl;
@@ -48,6 +49,7 @@ public class Content {
 		this.reoccursTo = reoccursTo;
 		this.interestingVotes = interestingVotes;
 		this.reposts = reposts;
+		this.awaitingModeration = awaitingModeration;
 	}
 
 	public String getId() {
@@ -122,18 +124,22 @@ public class Content {
 		return reposts;
 	}
 	
+	public Boolean isAwaitingModeration() {
+		return awaitingModeration;
+	}
 
 	@Override
 	public String toString() {
-		return "Content [id=" + id + ", apiUrl=" + apiUrl + ", webUrl="
-				+ webUrl + ", type=" + type + ", headline=" + headline
-				+ ", place=" + place + ", user=" + user + ", noticeboard="
-				+ noticeboard + ", created=" + created + ", modified="
-				+ modified + ", tags=" + tags + ", updates=" + updates
-				+ ", startDate=" + startDate + ", endDate="
-				+ endDate + ", reoccurence=" + reoccurence + ", reoccursTo="
-				+ reoccursTo + ", interestingVotes=" + interestingVotes
-				+ ", reposts=" + reposts + "]";
+		return "Content [apiUrl=" + apiUrl + ", awaitingModeration="
+				+ awaitingModeration + ", created=" + created + ", endDate="
+				+ endDate + ", headline=" + headline + ", id=" + id
+				+ ", interestingVotes=" + interestingVotes + ", modified="
+				+ modified + ", noticeboard=" + noticeboard + ", place="
+				+ place + ", reoccurence=" + reoccurence + ", reoccursTo="
+				+ reoccursTo + ", reposts=" + reposts + ", startDate="
+				+ startDate + ", tags=" + tags + ", type=" + type
+				+ ", updates=" + updates + ", user=" + user + ", webUrl="
+				+ webUrl + "]";
 	}
 	
 }
