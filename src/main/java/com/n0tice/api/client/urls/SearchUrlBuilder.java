@@ -69,6 +69,9 @@ public class SearchUrlBuilder {
 		if (searchQuery.getHasImages() != null) {
 			url.appendParameter("hasImages", Boolean.toString(searchQuery.getHasImages()));
 		}
+		if (searchQuery.getAwaitingModeration() != null) {
+			url.appendParameter("awaitingModeration", Boolean.toString(searchQuery.getAwaitingModeration()));
+		}
 		if (searchQuery.getStartingAfter() != null) {
 			url.appendParameter("startingAfter", ISODateTimeFormat.dateTimeNoMillis().print(searchQuery.getStartingAfter()));
 		}

@@ -101,6 +101,11 @@ public class SearchUrlBuilderTest {
 	}
 	
 	@Test
+	public void canSpecifyAwaitingModeration() throws Exception {
+		assertEquals("http://api.local/search?awaitingModeration=true", builder.toUrl(new SearchQuery().awaitingModeration(true)));
+	}
+	
+	@Test
 	public void canSpecifyStartingAfterDate() throws Exception {
 		assertEquals("http://api.local/search?startingAfter=2012-02-12T10%3A12%3A00Z", builder.toUrl(new SearchQuery().startingAfter(new DateTime(2012, 2, 12, 10, 12, 0))));
 	}
