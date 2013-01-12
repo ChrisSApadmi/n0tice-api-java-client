@@ -13,8 +13,9 @@ public class Noticeboard {
 	private final Date endDate;
 	private final Group group;
 	private final Set<MediaType> supportedMediaTypes;
+	private final int contributors;
 
-	public Noticeboard(String domain, String name, String description, Image background, Image cover, Date endDate, Group group, Set<MediaType> supportedMediaTypes) {
+	public Noticeboard(String domain, String name, String description, Image background, Image cover, Date endDate, Group group, Set<MediaType> supportedMediaTypes, int contributors) {
 		this.domain = domain;
 		this.name = name;
 		this.description = description;
@@ -23,6 +24,7 @@ public class Noticeboard {
 		this.endDate = endDate;
 		this.group = group;
 		this.supportedMediaTypes = supportedMediaTypes;
+		this.contributors = contributors;
 	}
 
 	public String getDomain() {
@@ -56,13 +58,18 @@ public class Noticeboard {
 	public Set<MediaType> getSupportedMediaTypes() {
 		return supportedMediaTypes;
 	}
+	
+	public int getContributors() {
+		return contributors;
+	}
 
 	@Override
 	public String toString() {
 		return "Noticeboard [domain=" + domain + ", name=" + name
 				+ ", description=" + description + ", background=" + background
 				+ ", cover=" + cover + ", endDate=" + endDate + ", group="
-				+ group + ", supportedMediaTypes=" + supportedMediaTypes + "]";
+				+ group + ", supportedMediaTypes=" + supportedMediaTypes
+				+ ", contributors=" + contributors + "]";
 	}
 	
 }

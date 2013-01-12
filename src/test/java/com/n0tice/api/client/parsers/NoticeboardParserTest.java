@@ -23,7 +23,7 @@ public class NoticeboardParserTest {
 		assertEquals(2, noticeboard.getSupportedMediaTypes().size());
 		assertTrue(noticeboard.getSupportedMediaTypes().contains(MediaType.TEXT));
 		assertTrue(noticeboard.getSupportedMediaTypes().contains(MediaType.IMAGE));
-
+		assertEquals(23, noticeboard.getContributors());
 	}
 
 }
