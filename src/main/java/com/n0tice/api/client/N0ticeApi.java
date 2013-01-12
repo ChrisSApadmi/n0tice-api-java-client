@@ -111,6 +111,19 @@ public class N0ticeApi {
 		return searchParser.parseReport(httpFetcher.fetchContent(urlBuilder.get(id), UTF_8));
 	}
 	
+	public Content authedGet(String id) throws HttpFetchException, NotFoundException, ParsingException, N0ticeException, NotAllowedException {		
+		final OAuthRequest request = new OAuthRequest(Verb.GET, urlBuilder.get(id));
+		oauthSignRequest(request);
+		
+		final Response response = request.send();
+		if (response.getCode() == 200) {
+			return searchParser.parseReport(response.getBody());
+		}
+		
+		handleExceptions(response);
+		throw new N0ticeException(response.getBody());
+	}
+	
 	public ResultSet search(SearchQuery searchQuery) throws ParsingException, HttpFetchException {
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(searchQuery), UTF_8));
 	}
@@ -136,7 +149,7 @@ public class N0ticeApi {
 	}
 	
 	public User verify() throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException, N0ticeException {
-		OAuthRequest request = new OAuthRequest(Verb.GET, apiUrl + "/verify");		
+		OAuthRequest request = new OAuthRequest(Verb.GET, apiUrl + "/verify");	// TODO most be a POST
 		oauthSignRequest(request);
 		
 		Response response = request.send();
