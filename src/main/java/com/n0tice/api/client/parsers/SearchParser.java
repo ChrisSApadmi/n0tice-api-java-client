@@ -26,8 +26,6 @@ import com.n0tice.api.client.model.Video;
 public class SearchParser {
 
 	private static final String AWAITING_MODERATION = "awaitingModeration";
-	private static final String GROUP = "group";
-	private static final String DOMAIN = "domain";
 	private static final String END_DATE = "endDate";
 	private static final String REOCCURS_TO = "reoccursTo";
 	private static final String REOCCURS = "reoccurs";
@@ -163,6 +161,14 @@ public class SearchParser {
 		}
 	}
 	
+	public Update parseUpdate(String json) throws ParsingException {
+		try {
+			return parseJsonUpdate(new JSONObject(json));			
+		} catch (JSONException e) {
+			throw new ParsingException();
+		}
+	}
+	
 	public Group parseGroupResult(String json) throws ParsingException {
 		try {
 			final JSONObject jsonObject = new JSONObject(json);			
@@ -227,27 +233,31 @@ public class SearchParser {
 			JSONArray jsonUpdates = contentItemJSON.getJSONArray(UPDATES);
 			for (int i = 0; i < jsonUpdates.length(); i++) {
 				JSONObject jsonUpdate = jsonUpdates.getJSONObject(i);
-				final String body = jsonUpdate.has("body") ? jsonUpdate.getString("body") : null; 
-				final String link = jsonUpdate.has("link") ? jsonUpdate.getString("link") : null;
-				final String via = jsonUpdate.has(VIA) ? jsonUpdate.getString(VIA) : null;
-				Image image = null;
-				if (jsonUpdate.has("image")) {
-					image = parseImage(jsonUpdate.getJSONObject("image"));
-				}
-				Video video = null;
-				if (jsonUpdate.has("video")) {
-					video = parseVideo(jsonUpdate.getJSONObject("video"));
-				}
-				User user = null;
-				if (jsonUpdate.has(USER)) {
-					user = new UserParser().jsonToUser(jsonUpdate.getJSONObject(USER));
-				}
-				final DateTime created = 	parseDate(jsonUpdate.getString("created"));
-				final DateTime modified = parseDate(jsonUpdate.getString("modified"));
-				updates.add(new Update(user, body, link, image, video, created, modified, via));
+				updates.add(parseJsonUpdate(jsonUpdate));
 			}		
 		}
 		return updates;
+	}
+
+	private Update parseJsonUpdate(JSONObject jsonUpdate) throws JSONException {
+		final String body = jsonUpdate.has("body") ? jsonUpdate.getString("body") : null; 
+		final String link = jsonUpdate.has("link") ? jsonUpdate.getString("link") : null;
+		final String via = jsonUpdate.has(VIA) ? jsonUpdate.getString(VIA) : null;
+		Image image = null;
+		if (jsonUpdate.has("image")) {
+			image = parseImage(jsonUpdate.getJSONObject("image"));
+		}
+		Video video = null;
+		if (jsonUpdate.has("video")) {
+			video = parseVideo(jsonUpdate.getJSONObject("video"));
+		}
+		User user = null;
+		if (jsonUpdate.has(USER)) {
+			user = new UserParser().jsonToUser(jsonUpdate.getJSONObject(USER));
+		}
+		final DateTime created = 	parseDate(jsonUpdate.getString("created"));
+		final DateTime modified = parseDate(jsonUpdate.getString("modified"));
+		return new Update(user, body, link, image, video, created, modified, via);
 	}
 	
 	private Image parseImage(JSONObject imageJson) throws JSONException {

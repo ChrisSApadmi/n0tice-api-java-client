@@ -52,6 +52,7 @@ import com.n0tice.api.client.model.Noticeboard;
 import com.n0tice.api.client.model.Reoccurence;
 import com.n0tice.api.client.model.ResultSet;
 import com.n0tice.api.client.model.SearchQuery;
+import com.n0tice.api.client.model.Update;
 import com.n0tice.api.client.model.User;
 import com.n0tice.api.client.oauth.N0ticeOauthApi;
 import com.n0tice.api.client.parsers.NoticeboardParser;
@@ -311,7 +312,7 @@ public class N0ticeApi {
 		throw new N0ticeException(response.getBody());
 	}
 	
-	public void postReportUpdate(String reportId, String body, String link, MediaFile image, MediaFile video) throws IOException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException, N0ticeException {
+	public Update postReportUpdate(String reportId, String body, String link, MediaFile image, MediaFile video) throws IOException, AuthorisationException, NotFoundException, NotAllowedException, BadRequestException, N0ticeException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/" + reportId  + "/update/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		populateUpdateFields(body, link, image, video, entity);
@@ -323,7 +324,7 @@ public class N0ticeApi {
 		final Response response = request.send();
 		
 		if (response.getCode() == 200) {
-	    	return;
+	    	return searchParser.parseUpdate(response.getBody());
 		}
 		
 		handleExceptions(response);
