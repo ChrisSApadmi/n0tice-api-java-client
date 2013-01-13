@@ -18,7 +18,8 @@ public class NoticeboardParserTest {
 		assertEquals("Test", noticeboard.getName());
 		assertEquals("test", noticeboard.getDomain());
 		assertEquals("Test board", noticeboard.getDescription());
-		
+		assertTrue(noticeboard.isModerated());
+
 		assertEquals("http://n0tice-devstatic.s3.amazonaws.com/images/noticeboards/backgrounds/large/41717efdefc22bd4.jpg", noticeboard.getBackground().getLarge());
 		assertEquals(2, noticeboard.getSupportedMediaTypes().size());
 		assertTrue(noticeboard.getSupportedMediaTypes().contains(MediaType.TEXT));

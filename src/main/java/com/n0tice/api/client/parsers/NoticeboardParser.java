@@ -19,6 +19,7 @@ import com.n0tice.api.client.model.Noticeboard;
 
 public class NoticeboardParser {
 
+	private static final String MODERATED = "moderated";
 	private static final String CONTRIBUTORS = "contributors";
 	private static final String SUPPORTED_MEDIA_TYPES = "supportedMediaTypes";
 	private static final String BACKGROUND = "background";
@@ -85,10 +86,12 @@ public class NoticeboardParser {
 				contributors = noticeboardJsonObject.getInt(CONTRIBUTORS);
 			}
 			
+			final boolean moderated = noticeboardJsonObject.getBoolean(MODERATED);
+			
 			return new Noticeboard(noticeboardJsonObject.getString(DOMAIN),
 					noticeboardJsonObject.getString(NAME), description,
 					background, cover, endDate, group, supportedMediaTypes,
-					contributors);
+					contributors, moderated);
 			
 		} catch (JSONException e) {
 			throw new ParsingException(e.getMessage());
