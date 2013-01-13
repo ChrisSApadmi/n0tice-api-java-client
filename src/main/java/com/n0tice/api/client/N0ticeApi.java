@@ -642,7 +642,7 @@ public class N0ticeApi {
 	private void handleExceptions(Response response) throws NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, N0ticeException {
 		log.error("Exception during n0tice api call: " + response.getCode() + ", " + response.getBody());
 		if (response.getCode() == 404) {
-			throw new NotFoundException();
+			throw new NotFoundException("Not found");
 		}
 		if (response.getCode() == 403) {
 			throw new NotAllowedException();

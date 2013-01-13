@@ -38,19 +38,20 @@ public class HttpFetcher {	// TODO should be be visible by apps using this jar
 	}
 	
 	public String fetchContent(String url, String charEncoding) throws HttpFetchException, NotFoundException {
+		System.out.println(url);
 		InputStream inputStream = httpFetch(url);
 		try {
 			return readResponseBody(charEncoding, inputStream);		
 		} catch (UnsupportedEncodingException e) {
-			throw new HttpFetchException();
+			throw new HttpFetchException(e.getMessage());
 		} catch (IOException e) {
-			throw new HttpFetchException();
+			throw new HttpFetchException(e.getMessage());
 		}
 	}
 	
-	private InputStream httpFetch(String uri) throws NotFoundException, HttpFetchException {
+	private InputStream httpFetch(String url) throws NotFoundException, HttpFetchException {
 		try {
-			HttpGet get = new HttpGet(uri);
+			HttpGet get = new HttpGet(url);
 
 			get.addHeader(new BasicHeader("User-agent", "gzip"));
 			get.addHeader(new BasicHeader("Accept-Encoding", "gzip"));
@@ -61,7 +62,7 @@ public class HttpFetcher {	// TODO should be be visible by apps using this jar
 				return execute.getEntity().getContent();
 			}
 			if (statusCode == 404) {
-				throw new NotFoundException();
+				throw new NotFoundException("Not found: " + url);
 			}
 			throw new HttpFetchException();
 
@@ -73,7 +74,10 @@ public class HttpFetcher {	// TODO should be be visible by apps using this jar
 	}
 	
 	private HttpResponse executeRequest(HttpRequestBase request) throws IOException, ClientProtocolException {
-		return setupHttpClient().execute(request);
+		System.out.println(request.getURI());
+		HttpClient setupHttpClient = setupHttpClient();
+		System.out.println(setupHttpClient);
+		return setupHttpClient.execute(request);
 	}
 	
 	private HttpClient setupHttpClient() {
