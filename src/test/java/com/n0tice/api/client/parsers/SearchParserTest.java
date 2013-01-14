@@ -1,5 +1,6 @@
 package com.n0tice.api.client.parsers;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import org.joda.time.DateTime;
@@ -57,6 +58,11 @@ public class SearchParserTest {
 		assertEquals(-0.154179, report.getPlace().getLongitude(), 0);
 		assertEquals(new DateTime("2012-01-16T14:49:08Z", DateTimeZone.UTC), new DateTime(report.getCreated()));
 		assertEquals(new DateTime("2012-01-16T14:49:08Z", DateTimeZone.UTC), new DateTime(report.getModified()));
+	}
+	
+	@Test
+	public void canParseReportWithVideoUpdate() throws Exception {
+		Content report = searchParser.parseReport(ContentLoader.loadContent("reportWithVideoUpdate.json"));
 	}
 	
 }

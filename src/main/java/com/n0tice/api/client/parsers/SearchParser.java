@@ -157,7 +157,7 @@ public class SearchParser {
 			return jsonToContentItem(reportJSON);
 			
 		} catch (JSONException e) {
-			throw new ParsingException();
+			throw new ParsingException(e.getMessage());
 		}
 	}
 	
@@ -165,7 +165,7 @@ public class SearchParser {
 		try {
 			return parseJsonUpdate(new JSONObject(json));			
 		} catch (JSONException e) {
-			throw new ParsingException();
+			throw new ParsingException(e.getMessage());
 		}
 	}
 	
@@ -266,7 +266,7 @@ public class SearchParser {
 	}
 	
 	private Video parseVideo(JSONObject videoJson) throws JSONException {
-		return new Video(videoJson.getString(ORIGINAL));
+		return new Video(videoJson.has(ORIGINAL) ? videoJson.getString(ORIGINAL) : null);
 	}
 	
 }
