@@ -38,7 +38,6 @@ public class HttpFetcher {	// TODO should be be visible by apps using this jar
 	}
 	
 	public String fetchContent(String url, String charEncoding) throws HttpFetchException, NotFoundException {
-		System.out.println(url);
 		InputStream inputStream = httpFetch(url);
 		try {
 			return readResponseBody(charEncoding, inputStream);		
@@ -74,9 +73,7 @@ public class HttpFetcher {	// TODO should be be visible by apps using this jar
 	}
 	
 	private HttpResponse executeRequest(HttpRequestBase request) throws IOException, ClientProtocolException {
-		System.out.println(request.getURI());
-		HttpClient setupHttpClient = setupHttpClient();
-		System.out.println(setupHttpClient);
+		final HttpClient setupHttpClient = setupHttpClient();
 		return setupHttpClient.execute(request);
 	}
 	
