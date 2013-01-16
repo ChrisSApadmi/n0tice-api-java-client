@@ -215,6 +215,19 @@ public class N0ticeApi {
 		throw new N0ticeException(response.getBody());
 	}
 	
+	public void closeNoticeboard(String domain) throws NotFoundException, AuthorisationException, BadRequestException, NotAllowedException, N0ticeException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, urlBuilder.closeNoticeboard(domain));
+		oauthSignRequest(request);
+		
+		final Response response = request.send();		
+		if (response.getCode() == 200) {
+	    	return;
+		}
+		
+		handleExceptions(response);
+		throw new N0ticeException(response.getBody());
+	}
+	
 	public Group createGroup(String name) throws IOException, ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, N0ticeException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/groups/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
