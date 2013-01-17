@@ -239,7 +239,20 @@ public class N0ticeApi
 		handleExceptions(response);
 		throw new N0ticeException(response.getBody());
 	}
-
+	
+	public void closeNoticeboard(String domain) throws NotFoundException, AuthorisationException, BadRequestException, NotAllowedException, N0ticeException {
+		OAuthRequest request = new OAuthRequest(Verb.POST, urlBuilder.closeNoticeboard(domain));
+		oauthSignRequest(request);
+		
+		final Response response = request.send();		
+		if (response.getCode() == 200) {
+	    	return;
+		}
+		
+		handleExceptions(response);
+		throw new N0ticeException(response.getBody());
+	}
+	
 	public Group createGroup(String name) throws IOException, ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, N0ticeException
 	{
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/groups/new");
@@ -261,10 +274,7 @@ public class N0ticeApi
 		handleExceptions(response);
 		throw new N0ticeException(response.getBody());
 	}
-
-	public Content postReport(String headline, double latitude, double longitude, String body, String link, MediaFile image, VideoAttachment video, String noticeboard, DateTime date) throws ParsingException, AuthorisationException, IOException,
-			NotAllowedException, NotFoundException, BadRequestException, N0ticeException
-	{
+	public Content postReport(String headline, Double latitude, Double longitude, String body, String link, MediaFile image, VideoAttachment video, String noticeboard, DateTime date) throws ParsingException, AuthorisationException, IOException, NotAllowedException, NotFoundException, BadRequestException, N0ticeException {
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/report/new");
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		if (headline != null)
@@ -275,8 +285,12 @@ public class N0ticeApi
 		{
 			entity.addPart("noticeboard", new StringBody(noticeboard, Charset.forName(UTF_8)));
 		}
-		entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName(UTF_8)));
-		entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName(UTF_8)));
+
+		if (latitude != null && longitude != null) {
+			entity.addPart("latitude", new StringBody(Double.toString(latitude), Charset.forName(UTF_8)));
+			entity.addPart("longitude", new StringBody(Double.toString(longitude), Charset.forName(UTF_8)));
+		}
+		
 		populateUpdateFields(body, link, image, video, entity);
 
 		if (date != null)

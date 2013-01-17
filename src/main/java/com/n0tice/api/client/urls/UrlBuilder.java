@@ -1,8 +1,14 @@
 package com.n0tice.api.client.urls;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 
 public class UrlBuilder {
 
+	private static final String CLOSE = "close";
+	private static final String UTF_8 = "UTF-8";
+	
 	final private String apiUrl;
 	
 	public UrlBuilder(String apiUrl) {
@@ -14,7 +20,7 @@ public class UrlBuilder {
 	}
 	
 	public String userProfile(String username) {
-		return apiUrl + "/user/" + username;
+		return apiUrl + "/user/" + urlEncode(username);
 	}
 	
 	public String userNotifications(String username) {
@@ -22,7 +28,7 @@ public class UrlBuilder {
 	}
 	
 	public String noticeBoard(String noticeboard) {
-		return apiUrl + "/noticeboard/" + noticeboard;
+		return apiUrl + "/noticeboard/" + urlEncode(noticeboard);
 	}
 	
 	public String userFollowedUsers(String username) {
@@ -35,6 +41,18 @@ public class UrlBuilder {
 
 	public String userNoticeboards(String username) {
 		return userProfile(username) + "/noticeboards";
+	}
+
+	public String closeNoticeboard(String domain) {
+		return noticeBoard(domain) + "/" + CLOSE;
+	}
+	
+	private String urlEncode(String value) {
+		try {
+			return URLEncoder.encode(value, UTF_8);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 }
