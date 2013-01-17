@@ -22,6 +22,7 @@ public class NoticeboardParser
 
 	private static final String MODERATED = "moderated";
 	private static final String CONTRIBUTORS = "contributors";
+	private static final String CONTRIBUTIONS = "contributions";
 	private static final String SUPPORTED_MEDIA_TYPES = "supportedMediaTypes";
 	private static final String BACKGROUND = "background";
 	private static final String COVER = "cover";
@@ -114,7 +115,8 @@ public class NoticeboardParser
 
 			final boolean moderated = noticeboardJsonObject.getBoolean(MODERATED);
 
-			return new Noticeboard(noticeboardJsonObject.getString(DOMAIN), noticeboardJsonObject.getString(NAME), description, background, cover, endDate, group, supportedMediaTypes, contributors, moderated, featured);
+			return new Noticeboard(noticeboardJsonObject.getString(DOMAIN), noticeboardJsonObject.getString(NAME), description, background, cover, endDate, group, supportedMediaTypes, contributors, noticeboardJsonObject.optInt(CONTRIBUTIONS), moderated,
+					featured);
 
 		}
 		catch (JSONException e)

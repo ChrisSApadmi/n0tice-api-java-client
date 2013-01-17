@@ -15,10 +15,11 @@ public class Noticeboard
 	private final Group group;
 	private final Set<MediaType> supportedMediaTypes;
 	private final int contributors;
+	private final int contributions;
 	private final boolean moderated;
 	private final boolean featured;
 
-	public Noticeboard(String domain, String name, String description, Image background, Image cover, Date endDate, Group group, Set<MediaType> supportedMediaTypes, int contributors, boolean moderated, boolean featured)
+	public Noticeboard(String domain, String name, String description, Image background, Image cover, Date endDate, Group group, Set<MediaType> supportedMediaTypes, int contributors, int contributions, boolean moderated, boolean featured)
 	{
 		this.domain = domain;
 		this.name = name;
@@ -29,6 +30,7 @@ public class Noticeboard
 		this.group = group;
 		this.supportedMediaTypes = supportedMediaTypes;
 		this.contributors = contributors;
+		this.contributions = contributions;
 		this.moderated = moderated;
 		this.featured = featured;
 	}
@@ -76,6 +78,11 @@ public class Noticeboard
 	public int getContributors()
 	{
 		return contributors;
+	}
+
+	public int getContributions()
+	{
+		return contributions;
 	}
 
 	public boolean isModerated()

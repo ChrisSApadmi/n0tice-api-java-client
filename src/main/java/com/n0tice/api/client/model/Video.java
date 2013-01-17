@@ -1,20 +1,38 @@
 package com.n0tice.api.client.model;
 
-public class Video {
-	
+public class Video
+{
+
 	private final String original;
-	
-	public Video(String original) {
-		this.original = original;
+	private final String youtubeId;
+	private final String imageThumbnail;
+
+	public Video(String aOriginal, String aYoutubeId, String aImageThumbnail)
+	{
+		original = aOriginal;
+		youtubeId = aYoutubeId;
+		imageThumbnail = aImageThumbnail;
 	}
-	
-	public String getOriginal() {
+
+	public String getOriginal()
+	{
 		return original;
 	}
 
-	@Override
-	public String toString() {
-		return "Video [original=" + original + "]";
+	public String getYoutubeId()
+	{
+		return youtubeId;
 	}
-	
+
+	public String getImageThumbnail()
+	{
+		return imageThumbnail;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Video [original=" + original + " youtubeId=" + youtubeId + " imageThumbnail=" + imageThumbnail + "]";
+	}
+
 }
