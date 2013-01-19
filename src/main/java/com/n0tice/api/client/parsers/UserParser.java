@@ -22,11 +22,11 @@ public class UserParser {
 	private static final String DISPLAY_NAME = "displayName";
 	private static final String BIO = "bio";
 	private static final String PROFILE_IMAGE = "image";
-	private static final String SMALL = "small";
-	private static final String MEDIUM = "medium";
-	private static final String LARGE = "large";
+	
+	private ImageParser imageParser;
 		
 	public UserParser() {
+		this.imageParser = new ImageParser();
 	}
 		
 	public User parseUserProfile(String json) throws ParsingException {
@@ -97,7 +97,7 @@ public class UserParser {
 		}
 		if (userJSON.has(PROFILE_IMAGE)) {
 			final JSONObject imageJSON = userJSON.getJSONObject(PROFILE_IMAGE);
-			profileImage = parseImage(imageJSON);
+			profileImage = imageParser.parseImage(imageJSON);
 		}
 		
 		Integer noticeboards = null;
@@ -113,14 +113,6 @@ public class UserParser {
 			followedUsers = followsJSON.getInt(USERS);
 		}
 		return new User(userJSON.getString(USERNAME), displayName, bio, profileImage, noticeboards, followedNoticeboards, followedUsers);
-	}
-	
-	// TODO duplication
-	private Image parseImage(JSONObject imageJson) throws JSONException {
-		return new Image(
-				imageJson.has(SMALL) ? imageJson.getString(SMALL) : null,
-				imageJson.has(MEDIUM) ? imageJson.getString(MEDIUM) : null,
-				imageJson.has(LARGE) ? imageJson.getString(LARGE) : null);
 	}
 	
 }
