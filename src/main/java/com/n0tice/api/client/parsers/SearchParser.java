@@ -50,9 +50,6 @@ public class SearchParser
 	private static final String INTERESTING = "interesting";
 	private static final String VOTES = "votes";
 	private static final String REPOSTS = "reposts";
-	private static final String SMALL = "small";
-	private static final String MEDIUM = "medium";
-	private static final String LARGE = "large";
 	private static final String COUNTRY = "country";
 	private static final String VIA = "via";
 	private static final String ORIGINAL = "original";
@@ -61,11 +58,15 @@ public class SearchParser
 	private static final String MEDIUM_LANDSCAPE = "mediumlandscape";
 
 	private static DateTimeFormatter dateFormatter = ISODateTimeFormat.dateTimeNoMillis().withOffsetParsed();
-
-	public ResultSet parseSearchResults(String json) throws ParsingException
-	{
-		try
-		{
+	
+	private ImageParser imageParser;
+	
+	public SearchParser() {
+		this.imageParser = new ImageParser();
+	}
+	
+	public ResultSet parseSearchResults(String json) throws ParsingException {
+		try {
 			JSONObject searchResultsJSON = new JSONObject(json);
 			final int totalMatches = searchResultsJSON.getInt("numberFound");
 			final int startIndex = searchResultsJSON.getInt("startIndex");
@@ -282,7 +283,7 @@ public class SearchParser
 		Image image = null;
 		if (jsonUpdate.has("image"))
 		{
-			image = parseImage(jsonUpdate.getJSONObject("image"));
+			image = imageParser.parseImage(jsonUpdate.getJSONObject("image"));
 		}
 		Video video = null;
 		if (jsonUpdate.has("video"))
@@ -297,11 +298,6 @@ public class SearchParser
 		final DateTime created = parseDate(jsonUpdate.getString("created"));
 		final DateTime modified = parseDate(jsonUpdate.getString("modified"));
 		return new Update(id, user, body, link, image, video, created, modified, via);
-	}
-
-	private Image parseImage(JSONObject imageJson) throws JSONException
-	{
-		return new Image(imageJson.getString(SMALL), imageJson.getString(MEDIUM), imageJson.getString(LARGE));
 	}
 
 	private Video parseVideo(JSONObject videoJson) throws JSONException

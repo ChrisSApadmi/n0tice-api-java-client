@@ -31,9 +31,12 @@ public class NoticeboardParser
 	private static final String END_DATE = "endDate";
 	private static final String NAME = "name";
 	private static final String ID = "id";
-	private static final String SMALL = "small";
-	private static final String MEDIUM = "medium";
-	private static final String LARGE = "large";
+	
+	private ImageParser imageParser;
+	
+	public NoticeboardParser() {
+		this.imageParser = new ImageParser();
+	}
 	private static final String FEATURED = "featured";
 
 	public List<Noticeboard> parseNoticeboards(String json) throws ParsingException
@@ -75,8 +78,8 @@ public class NoticeboardParser
 	{
 		try
 		{
-			final Image background = noticeboardJsonObject.has(BACKGROUND) ? parseImage(noticeboardJsonObject.getJSONObject(BACKGROUND)) : null;
-			final Image cover = noticeboardJsonObject.has(COVER) ? parseImage(noticeboardJsonObject.getJSONObject(COVER)) : null;
+			final Image background = noticeboardJsonObject.has(BACKGROUND) ? imageParser.parseImage(noticeboardJsonObject.getJSONObject(BACKGROUND)) : null;
+			final Image cover =  noticeboardJsonObject.has(COVER) ? imageParser.parseImage(noticeboardJsonObject.getJSONObject(COVER)) : null;
 			final String description = noticeboardJsonObject.has("description") ? noticeboardJsonObject.getString("description") : null;
 			Date endDate = null;
 			if (noticeboardJsonObject.has(END_DATE))
@@ -124,11 +127,5 @@ public class NoticeboardParser
 			throw new ParsingException(e.getMessage());
 		}
 	}
-
-	// TODO duplication
-	private Image parseImage(JSONObject imageJson) throws JSONException
-	{
-		return new Image(imageJson.getString(SMALL), imageJson.getString(MEDIUM), imageJson.getString(LARGE));
-	}
-
+	
 }
