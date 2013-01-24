@@ -153,7 +153,7 @@ public class N0ticeApi
 		throw new N0ticeException(response.getBody());
 	}
 
-	public ResultSet search(SearchQuery searchQuery) throws ParsingException, HttpFetchException, UnsupportedEncodingException
+	public ResultSet search(SearchQuery searchQuery) throws ParsingException, HttpFetchException, UnsupportedEncodingException, NotFoundException
 	{
 		return searchParser.parseSearchResults(httpFetcher.fetchContent(searchUrlBuilder.toUrl(searchQuery), UTF_8));
 	}
@@ -669,74 +669,87 @@ public class N0ticeApi
 		throw new N0ticeException(response.getBody());
 	}
 
-	public AccessToken authGuardianUser(String consumerKey, String token, String consumerSecret) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException, N0ticeException {
+	public AccessToken authGuardianUser(String consumerKey, String token, String consumerSecret) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, InvalidKeyException, UnsupportedEncodingException,
+			NoSuchAlgorithmException, N0ticeException
+	{
 		log.info("Attempting to auth guardian user: " + consumerKey + ", " + token);
 		final OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/auth");
 		addBodyParameter(request, "consumerkey", consumerKey);
 		addBodyParameter(request, "guardianToken", token);
 
-		// Manually sign this request using the consumer secret rather than the access key/access secret.
+		// Manually sign this request using the consumer secret rather than the
+		// access key/access secret.
 		addBodyParameter(request, "oauth_signature_method", "HMAC-SHA1");
 		addBodyParameter(request, "oauth_version", "1.0");
 		addBodyParameter(request, "oauth_timestamp", Long.toString(DateTimeUtils.currentTimeMillis()));
 		final String effectiveUrl = request.getCompleteUrl() + "?" + request.getBodyContents();
 		addBodyParameter(request, "oauth_signature", sign(effectiveUrl, consumerSecret));
-		
+
 		final Response response = request.send();
 		final String responseBody = response.getBody();
-		if (response.getCode() == 200) {		
+		if (response.getCode() == 200)
+		{
 			return new UserParser().parseAuthUserResponse(responseBody);
 		}
-		
+
 		handleExceptions(response);
 		throw new N0ticeException(response.getBody());
 	}
-	
-	public AccessToken authGuardianCookie(String consumerKey, String cookie, String consumerSecret) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, InvalidKeyException, UnsupportedEncodingException, NoSuchAlgorithmException, N0ticeException {
+
+	public AccessToken authGuardianCookie(String consumerKey, String cookie, String consumerSecret) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, InvalidKeyException,
+			UnsupportedEncodingException, NoSuchAlgorithmException, N0ticeException
+	{
 		final OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/auth");
 		addBodyParameter(request, "consumerkey", consumerKey);
 		addBodyParameter(request, "guardianCookie", cookie);
 
-		// Manually sign this request using the consumer secret rather than the access key/access secret.
+		// Manually sign this request using the consumer secret rather than the
+		// access key/access secret.
 		addBodyParameter(request, "oauth_signature_method", "HMAC-SHA1");
 		addBodyParameter(request, "oauth_version", "1.0");
 		addBodyParameter(request, "oauth_timestamp", Long.toString(DateTimeUtils.currentTimeMillis()));
 		final String effectiveUrl = request.getCompleteUrl() + "?" + request.getBodyContents();
 		addBodyParameter(request, "oauth_signature", sign(effectiveUrl, consumerSecret));
-		
+
 		final Response response = request.send();
 		final String responseBody = response.getBody();
-		if (response.getCode() == 200) {		
+		if (response.getCode() == 200)
+		{
 			return new UserParser().parseAuthUserResponse(responseBody);
 		}
-		
+
 		handleExceptions(response);
 		throw new N0ticeException(response.getBody());
 	}
-	
-	public User updateUserDetails(String username, String displayName, String bio, MediaFile image) throws ParsingException, IOException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, N0ticeException {
-		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username);		
+
+	public User updateUserDetails(String username, String displayName, String bio, MediaFile image) throws ParsingException, IOException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, N0ticeException
+	{
+		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/" + username);
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-		if (displayName != null) {
+		if (displayName != null)
+		{
 			entity.addPart("displayName", new StringBody(displayName, Charset.forName(UTF_8)));
 		}
-		if (bio != null) {
+		if (bio != null)
+		{
 			entity.addPart("bio", new StringBody(bio, Charset.forName(UTF_8)));
 		}
-		if (image != null) {
+		if (image != null)
+		{
 			entity.addPart("image", new ByteArrayBody(image.getData(), image.getFilename()));
 		}
 		request.addHeader("Content-Type", entity.getContentType().getValue());
 		request.addPayload(extractMultpartBytes(entity));
 		oauthSignRequest(request);
-		
+
 		Response response = request.send();
 
 		final String repsonseBody = response.getBody();
-		if (response.getCode() == 200) {
+		if (response.getCode() == 200)
+		{
 			return new UserParser().parseUserProfile(repsonseBody);
 		}
-		
+
 		handleExceptions(response);
 		throw new N0ticeException(response.getBody());
 	}
