@@ -29,10 +29,7 @@ import com.n0tice.api.client.exceptions.HttpFetchException;
 import com.n0tice.api.client.exceptions.NotFoundException;
 
 public class HttpFetcher
-{	// TODO should be be visible by apps using this jar
-
-	// private final Logger log = Logger.getLogger(HttpFetcher.class);
-
+{
 	private static final int HTTP_TIMEOUT = 15000;
 
 	public HttpFetcher()
@@ -78,8 +75,11 @@ public class HttpFetcher
 
 	private HttpResponse executeRequest(HttpRequestBase request) throws IOException, ClientProtocolException
 	{
+		log.debug("<< " + request.getMethod() + " " + request.getURI() + " " + request.getProtocolVersion().getProtocol());
 		final HttpClient setupHttpClient = setupHttpClient();
-		return setupHttpClient.execute(request);
+		final HttpResponse response = setupHttpClient.execute(request);
+		log.debug(">> " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase());
+		return response;
 	}
 
 	private HttpClient setupHttpClient()
@@ -159,6 +159,24 @@ public class HttpFetcher
 		public long getContentLength()
 		{
 			return this.wrappedEntity.getContentLength();
+		}
+	}
+
+	private static class log
+	{
+		public static void info(String str)
+		{
+			System.out.println(str);
+		}
+
+		public static void error(String str)
+		{
+			System.err.println(str);
+		}
+
+		public static void debug(String str)
+		{
+			System.err.println(str);
 		}
 	}
 

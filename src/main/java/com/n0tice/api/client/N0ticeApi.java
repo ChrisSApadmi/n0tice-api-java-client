@@ -31,7 +31,6 @@ import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.joda.time.LocalDateTime;
@@ -79,9 +78,6 @@ import com.n0tice.api.client.util.HttpFetcher;
 
 public class N0ticeApi
 {
-
-	private static Logger log = Logger.getLogger(N0ticeApi.class);
-
 	private static final String UTF_8 = "UTF-8";
 	private static final String COMMA = ",";
 	private static DateTimeFormatter LOCAL_DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
@@ -644,7 +640,8 @@ public class N0ticeApi
 	public AccessToken authUser(String consumerKey, String username, String password, String consumerSecret) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, InvalidKeyException,
 			UnsupportedEncodingException, NoSuchAlgorithmException, N0ticeException
 	{
-		log.info("Attempting to auth user: " + consumerKey + ", " + username + ", " + password + ", " + consumerSecret);
+		// log.info("Attempting to auth user: " + consumerKey + ", " + username
+		// + ", " + password + ", " + consumerSecret);
 		OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/auth");
 		addBodyParameter(request, "consumerkey", consumerKey);
 		addBodyParameter(request, "username", username);
@@ -672,7 +669,8 @@ public class N0ticeApi
 	public AccessToken authGuardianUser(String consumerKey, String token, String consumerSecret) throws ParsingException, NotFoundException, NotAllowedException, AuthorisationException, BadRequestException, InvalidKeyException, UnsupportedEncodingException,
 			NoSuchAlgorithmException, N0ticeException
 	{
-		log.info("Attempting to auth guardian user: " + consumerKey + ", " + token);
+		// log.info("Attempting to auth guardian user: " + consumerKey + ", " +
+		// token);
 		final OAuthRequest request = new OAuthRequest(Verb.POST, apiUrl + "/user/auth");
 		addBodyParameter(request, "consumerkey", consumerKey);
 		addBodyParameter(request, "guardianToken", token);
@@ -859,4 +857,16 @@ public class N0ticeApi
 		return new String(Base64.encodeBase64(bytes)).replace("\r\n", "");
 	}
 
+	private static class log
+	{
+		public static void info(String str)
+		{
+			System.out.println(str);
+		}
+
+		public static void error(String str)
+		{
+			System.err.println(str);
+		}
+	}
 }
