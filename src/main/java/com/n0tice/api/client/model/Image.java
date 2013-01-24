@@ -3,22 +3,33 @@ package com.n0tice.api.client.model;
 public class Image
 {
 
+	private final String tiny;
+	private final String tinyDouble;
 	private final String small;
+	private final String smallDouble;
 	private final String medium;
 	private final String mediumDouble;
+	private final String mediumLandscapeCrop;
+	private final String mediumLandscapeCropDouble;
+	private final String mediumOriginalAspectDouble;
 	private final String large;
+	private final String extralarge;
 	private final String orientation;
-	private final String mediumLandscape;
-	private final String mediumLandscapeDouble;
 
-	public Image(String small, String medium, String mediumDouble, String mediumLandscape, String mediumLandscapeDouble, String large, String orientation)
+	public Image(String tiny, String tinyDouble, String small, String smallDouble, String medium, String mediumDouble, String mediumLandscapeCrop, String mediumLandscapeCropDouble, String mediumOriginalAspectDouble, String large, String extralarge,
+			String orientation)
 	{
+		this.tiny = tiny;
+		this.tinyDouble = tinyDouble;
 		this.small = small;
+		this.smallDouble = smallDouble;
 		this.medium = medium;
 		this.mediumDouble = mediumDouble;
-		this.mediumLandscape = mediumLandscape;
-		this.mediumLandscapeDouble = mediumLandscapeDouble;
+		this.mediumLandscapeCrop = mediumLandscapeCrop;
+		this.mediumLandscapeCropDouble = mediumLandscapeCropDouble;
+		this.mediumOriginalAspectDouble = mediumOriginalAspectDouble;
 		this.large = large;
+		this.extralarge = extralarge;
 		this.orientation = orientation;
 	}
 
@@ -37,19 +48,29 @@ public class Image
 		return mediumDouble;
 	}
 
-	public String getMediumLandscape()
+	public String getMediumLandscapeCrop()
 	{
-		return mediumLandscape;
+		return mediumLandscapeCrop;
 	}
 
-	public String getMediumLandscapeDouble()
+	public String getMediumLandscapeCropDouble()
 	{
-		return mediumLandscapeDouble;
+		return mediumLandscapeCropDouble;
+	}
+
+	public String getMediumOriginalAspectDouble()
+	{
+		return mediumOriginalAspectDouble;
 	}
 
 	public String getLarge()
 	{
 		return large;
+	}
+
+	public String getExtralarge()
+	{
+		return extralarge;
 	}
 
 	public String getOrientation()
