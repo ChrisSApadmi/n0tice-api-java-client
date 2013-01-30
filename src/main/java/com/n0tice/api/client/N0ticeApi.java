@@ -200,7 +200,7 @@ public class N0ticeApi
 		throw new N0ticeException(response.getBody());
 	}
 
-	public Content postReport(String headline, double latitude, double longitude, String body, String link, Attachment image, Attachment video, String noticeboard) throws ParsingException, AuthorisationException, IOException, NotAllowedException,
+	public Content postReport(String headline, Double latitude, Double longitude, String body, String link, Attachment image, Attachment video, String noticeboard) throws ParsingException, AuthorisationException, IOException, NotAllowedException,
 			NotFoundException, BadRequestException, N0ticeException, OAuthMessageSignerException, OAuthExpectationFailedException, OAuthCommunicationException
 	{
 		return postReport(headline, latitude, longitude, body, link, image, video, noticeboard, null);
